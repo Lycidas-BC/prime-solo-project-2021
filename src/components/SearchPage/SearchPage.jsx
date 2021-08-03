@@ -11,6 +11,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormLabel from '@material-ui/core/FormLabel';
 
 //material-ui functions
 const useStyles = makeStyles((theme) => ({
@@ -43,17 +47,9 @@ function SearchPage() {
     const [open, setOpen] = useState(false);
   
     const handleChange = (event) => {
-        let typeObject = event.target.value;
-        setSearchType(typeObject.type);
+        setSearchType(event.target.value);
     };
   
-    const handleClose = () => {
-      setOpen(false);
-    };
-  
-    const handleOpen = () => {
-      setOpen(true);
-    };
     const paginationNext = () => {
         dispatch({
             type: 'API_SEARCH',
@@ -64,6 +60,7 @@ function SearchPage() {
             }
         })
     };
+
     const paginationPrevious = () => {
         dispatch({
             type: 'API_SEARCH',
@@ -91,23 +88,16 @@ function SearchPage() {
         <>
             <TextField style={{ width: "400px" }} id="outlined-search" label="Search" type="search" variant="outlined" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)}/>
             <Button style={{ width: "150px", height: "55px" }} variant="contained" color="primary" onClick={search}>Search</Button>
-            <Button className={classes.button} onClick={handleOpen}></Button>
-                <FormControl className={classes.formControl}>
-                    <InputLabel id="demo-controlled-open-select-label">Search Type</InputLabel>
-                    <Select
-                    labelId="demo-controlled-open-select-label"
-                    id="demo-controlled-open-select"
-                    open={open}
-                    onClose={handleClose}
-                    onOpen={handleOpen}
-                    value={searchType}
-                    onChange={handleChange}
-                    >
+            <FormControl component="fieldset">
+                <FormLabel component="legend">Search type</FormLabel>
+                <RadioGroup row aria-label="searchType" name="searchType1" value={searchType} onChange={handleChange}>
                     {searchTypeList.map((element, index) => {
-                        return (<MenuItem key={index} value={{type: element.type}}>{element.type}</MenuItem>)
+                        return (
+                            <FormControlLabel key={index} value={element.type} control={<Radio />} label={element.type} />
+                        )
                     })}
-                    </Select>
-                </FormControl>
+                </RadioGroup>
+            </FormControl>
             <Grid container spacing={2}>
             {(searchObject.results).map((responseItem, index) => {
                 return (
