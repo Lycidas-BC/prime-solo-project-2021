@@ -19,6 +19,7 @@ import InfoPage from '../InfoPage/InfoPage';
 import LandingPage from '../LandingPage/LandingPage';
 import LoginPage from '../LoginPage/LoginPage';
 import RegisterPage from '../RegisterPage/RegisterPage';
+import SearchPage from '../SearchPage/SearchPage';
 
 import './App.css';
 
@@ -44,6 +45,15 @@ function App() {
             path="/about"
           >
             <AboutPage />
+          </Route>
+
+          {/* Visiting localhost:3000/search will show the search page. */}
+          <Route
+            // shows SearchPage at all times (logged in or not)
+            exact
+            path="/search"
+          >
+            <SearchPage />
           </Route>
 
           {/* For protected routes, the view could show one of several things on the same route.
