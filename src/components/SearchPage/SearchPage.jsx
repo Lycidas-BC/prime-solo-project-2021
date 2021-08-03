@@ -6,15 +6,17 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import grey from '@material-ui/core/colors/grey';
+import { LocationSearching } from '@material-ui/icons';
 
 //material-ui functions
 const useStyles = makeStyles((theme) => ({
@@ -26,6 +28,10 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
       minWidth: 120,
     },
+    root: {
+        width: 500,
+        color: grey[900]
+        },
   }));
 
 const searchTypeList = [
@@ -44,30 +50,28 @@ function SearchPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchType, setSearchType] = useState('multi');
     const searchObject = useSelector(store => store.tmdbSearchReducer);
-    const [open, setOpen] = useState(false);
   
     const handleChange = (event) => {
         setSearchType(event.target.value);
     };
   
-    const paginationNext = () => {
+    const handlePageChange = (pageNavigation) => {
+        console.log('***** pageNavigation *****',pageNavigation, searchType, searchTerm);
+        console.log("page:", searchObject.page, "total pages:", searchObject.total_pages, "min:", Math.min(Number(searchObject.page)+1, Number(searchObject.total_pages)));
+        console.log("page:", Number(searchObject.page), "total pages:", searchObject.total_pages, "min:", Math.min(Number(searchObject.page)+1, Number(searchObject.total_pages)));
+        console.log("page:", searchObject.page, "total pages:", searchObject.total_pages, "max:", Math.max(Number(searchObject.page)-1, 1));
+        
+        let targetPage = (
+            pageNavigation === "next" ? Math.min(Number(searchObject.page)+1, Number(searchObject.total_pages)) :
+            pageNavigation === "previous" ? Math.max(Number(searchObject.page)-1, 1) :
+            Number(searchObject.page)
+        );
         dispatch({
             type: 'API_SEARCH',
             payload: {
                 type: searchType,
                 query: searchTerm,
-                page: 'next'
-            }
-        })
-    };
-
-    const paginationPrevious = () => {
-        dispatch({
-            type: 'API_SEARCH',
-            payload: {
-                type: searchType,
-                query: searchTerm,
-                page: 'previous'
+                page: targetPage,
             }
         })
     };
@@ -78,12 +82,14 @@ function SearchPage() {
             payload: {
                 type: searchType,
                 query: searchTerm,
-                page: 'newSearch'
+                page: 1
             }
         });
     };
  
     console.log('searchObject:', searchObject);
+    console.log('searchType:', searchType);
+    console.log('searchTerm:', searchTerm);
     return (
         <>
             <TextField style={{ width: "400px" }} id="outlined-search" label="Search" type="search" variant="outlined" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)}/>
@@ -109,9 +115,13 @@ function SearchPage() {
                     // <SearchItem key={index} url={testItem.url} title={testItem.title} />
             );})}
             </Grid>
-            <BottomNavigation style={{width: '100%', position: 'fixed', bottom: 0}}>
-                <Button style={{ width: "150px", height: "55px" }} variant="contained" color="primary" onClick={paginationPrevious}>Previous Page</Button>
-                <Button style={{ width: "150px", height: "55px" }} variant="contained" color="primary" onClick={paginationNext}>Next Page</Button>
+            <BottomNavigation 
+                style={{width: '100%', position: 'fixed', bottom: 0}}
+                showLabels
+                className={classes.root}
+                >
+                <BottomNavigationAction disabled={Number(searchObject.page) === 1} label="previous" onClick={() => handlePageChange("previous")} icon={<NavigateBeforeIcon />} />
+                <BottomNavigationAction disabled={searchObject.page === searchObject.total_pages} label="next" onClick={() => handlePageChange("next")} icon={<NavigateNextIcon />} />
             </BottomNavigation>
         </>
     );

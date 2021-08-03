@@ -4,7 +4,6 @@ const emptySearchResultObject = {
   total_pages: -1,
   total_results: -1
 };
-
   
 // emptySearchResultObject.results object examples:
 // movie:
@@ -60,10 +59,11 @@ const emptySearchResultObject = {
 // Used to store api search results
 const tmdbSearchReducer = (state = emptySearchResultObject, action) => {
   switch (action.type) {
-      case 'SET_TMDB_SEARCH':
-          return action.payload;
-      default:
-          return state;
+    case 'SET_TMDB_SEARCH':
+      console.log('in search tmdb reducer', action.payload);
+      return action.payload;
+    default:
+      return state;
   }
 }
   

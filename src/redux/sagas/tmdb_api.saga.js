@@ -14,6 +14,7 @@ function* getTmdbConfiguration() {
 
 function* searchTmdb(action) {
     try {
+      console.log('in searchTMDB saga', action.payload);
       const searchResults = yield axios.post(`/api/tmdb/search`, action.payload);
       yield put({ type: 'SET_TMDB_SEARCH', payload: searchResults.data });
     }
@@ -25,8 +26,8 @@ function* searchTmdb(action) {
   function* tmdbSaga() {
     yield takeEvery('INITIALIZE_TMDB', getTmdbConfiguration);
     yield takeEvery('API_SEARCH', searchTmdb);
-    yield takeEvery('API_SEARCH', searchTmdb);
-    yield takeEvery('API_SEARCH', searchTmdb);
+    // yield takeEvery('API_SEARCH', searchTmdb);
+    // yield takeEvery('API_SEARCH', searchTmdb);
 
   };
 
