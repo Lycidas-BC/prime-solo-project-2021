@@ -15,8 +15,6 @@ import FormLabel from '@material-ui/core/FormLabel';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import grey from '@material-ui/core/colors/grey';
-import { LocationSearching } from '@material-ui/icons';
 
 //material-ui functions
 const useStyles = makeStyles((theme) => ({
@@ -30,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
     },
     root: {
         width: 500,
-        color: grey[900]
         },
   }));
 
@@ -50,6 +47,7 @@ function SearchPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchType, setSearchType] = useState('multi');
     const searchObject = useSelector(store => store.tmdbSearchReducer);
+    const configObject = useSelector(store => store.tmdbConfigReducer);
   
     const handleChange = (event) => {
         setSearchType(event.target.value);
@@ -90,6 +88,7 @@ function SearchPage() {
     console.log('searchObject:', searchObject);
     console.log('searchType:', searchType);
     console.log('searchTerm:', searchTerm);
+    console.log('configObject', configObject);
     return (
         <>
             <TextField style={{ width: "400px" }} id="outlined-search" label="Search" type="search" variant="outlined" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)}/>
@@ -111,6 +110,7 @@ function SearchPage() {
                         <li>{responseItem.title}</li>
                         <li>{responseItem.release_date}</li>
                         <li>{responseItem.overview}</li>
+                        <li><img src={`${configObject.images.base_url}${configObject.images.poster_sizes[2]}${responseItem.poster_path}`} alt={responseItem.title}/></li>
                     </ul></div>
                     // <SearchItem key={index} url={testItem.url} title={testItem.title} />
             );})}

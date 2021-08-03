@@ -28,6 +28,7 @@ function App() {
 
   useEffect(() => {
     dispatch({ type: 'FETCH_USER' });
+    dispatch({ type: 'INITIALIZE_TMDB' }); // initialize API config
   }, [dispatch]);
 
   return (
