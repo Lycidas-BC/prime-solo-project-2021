@@ -106,12 +106,39 @@ function SearchPage() {
             <Grid container spacing={2}>
             {(searchObject.results).map((responseItem, index) => {
                 return (
-                    <div key={index}><ul>
-                        <li>{responseItem.title}</li>
-                        <li>{responseItem.release_date}</li>
-                        <li>{responseItem.overview}</li>
-                        <li><img src={`${configObject.images.base_url}${configObject.images.poster_sizes[2]}${responseItem.poster_path}`} alt={responseItem.title}/></li>
-                    </ul></div>
+                    <div key={index}>
+                        {responseItem.media_type === "movie" ? // check if item is a movie
+                            (<ul>
+                                <li>{responseItem.title}</li>
+                                <li>{responseItem.release_date}</li>
+                                <li>{responseItem.overview}</li>
+                                <li><img src={`${configObject.images.base_url}${configObject.images.poster_sizes[2]}${responseItem.poster_path}`} alt={responseItem.title}/></li>
+                            </ul>)
+                        : responseItem.media_type === "tv" ? // check if item is a tv show
+                            (<ul>
+                                <li>{responseItem.name}</li>
+                                <li>{responseItem.first_air_date}</li>
+                                <li>{responseItem.overview}</li>
+                                <li><img src={`${configObject.images.base_url}${configObject.images.poster_sizes[2]}${responseItem.poster_path}`} alt={responseItem.name}/></li>
+                            </ul>)
+                        : responseItem.gender !== undefined ? // check if item is a person
+                        (<ul>
+                            <li>{responseItem.name}</li>
+                            <li>{responseItem.known_for_department}</li>
+                            <li>
+                                {responseItem.known_for.map((response, index) => {
+                                    return (
+                                        <img key={index} src={`${configObject.images.base_url}${configObject.images.poster_sizes[0]}${response.poster_path}`} alt={response.title}/>)
+                                })}
+                            </li>
+                            <li><img src={`${configObject.images.base_url}${configObject.images.poster_sizes[2]}${responseItem.profile_path}`} alt={responseItem.title}/></li>
+                        </ul>)
+                        : (<ul>
+                            <li>{responseItem.name}</li>
+                            <li>{responseItem.id}</li>
+                        </ul>)
+                        }
+                    </div>
                     // <SearchItem key={index} url={testItem.url} title={testItem.title} />
             );})}
             </Grid>
