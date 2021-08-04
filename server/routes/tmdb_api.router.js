@@ -20,7 +20,7 @@ router.get('/configuration', (req, res) => {
 })
 
 router.get('/movieDetails/:tmdbId', (req, res) => {
-    const tmdbId = req.params.tmdbId
+    const tmdbId = req.params.tmdbId;
     console.log('GET movie from TMDB', tmdbId);
 
     axios.get(
@@ -59,12 +59,13 @@ router.post('/search', (req, res) => {
     })
 })
 
-router.get('/streamingOptions/:tmdbId', (req, res) => {
-    const tmdbId = req.params.tmdbId
+router.post('/streamingOptions/:tmdbId', (req, res) => {
+    const tmdbId = encodeURIComponent(req.params.tmdbId);
+    const tvOrMovie = encodeURIComponent(req.body.type);
     console.log('GET streaming options from TMDB', tmdbId);
 
     axios.get(
-        `https://api.themoviedb.org/3/movie/${tmdbId}/watch/providers?api_key=${process.env.TMDB_API_KEY}`
+        `https://api.themoviedb.org/3/${tvOrMovie}/${tmdbId}/watch/providers?api_key=${process.env.TMDB_API_KEY}`
     )
     .then(response => {
         console.log('GET streaming options from API successful', response.data.results.US);

@@ -12,6 +12,28 @@ function* getTmdbConfiguration() {
   };
 };
 
+function* getTmdbMovieDetails(action) {
+  try {
+    const movieDetails = yield axios.get(`/api/tmdb/movieDetails/${action.payload}`);
+    console.log("movieDetails:", movieDetails);
+    yield put({ type: 'SET_TMDB_MOVIE_DETAILS', payload: movieDetails.data });
+  }
+  catch (error) {
+    console.log('Error in getTmdbMovieDetails:', error);
+  };
+};
+
+function* getTmdbStreamingOptions(action) {
+  try {
+    const streamingOptions = yield axios.post(`/api/tmdb/streamingOptions/${action.payload.id}`, action.payload);
+    console.log("streamingOptions:", streamingOptions);
+    yield put({ type: 'SET_TMDB_STREAMING_OPTIONS', payload: streamingOptions.data });
+  }
+  catch (error) {
+    console.log('Error in getTmdbStreamingOptions:', error);
+  };
+};
+
 function* searchTmdb(action) {
     try {
       console.log('in searchTMDB saga', action.payload);
@@ -26,8 +48,8 @@ function* searchTmdb(action) {
   function* tmdbSaga() {
     yield takeEvery('INITIALIZE_TMDB', getTmdbConfiguration);
     yield takeEvery('API_SEARCH', searchTmdb);
-    // yield takeEvery('API_SEARCH', searchTmdb);
-    // yield takeEvery('API_SEARCH', searchTmdb);
+    yield takeEvery('API_MOVIE_DETAILS', getTmdbMovieDetails);
+    yield takeEvery('API_STREAMING_OPTIONS', getTmdbStreamingOptions);
 
   };
 
