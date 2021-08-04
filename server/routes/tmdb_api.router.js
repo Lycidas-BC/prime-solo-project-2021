@@ -11,7 +11,6 @@ router.get('/configuration', (req, res) => {
         `https://api.themoviedb.org/3/configuration?api_key=${process.env.TMDB_API_KEY}`
     )
     .then(response => {
-        console.log('in configuration API', response.data);
         res.send(response.data);
     })
     .catch(err => {
