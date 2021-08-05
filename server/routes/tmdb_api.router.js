@@ -21,10 +21,11 @@ router.get('/configuration', (req, res) => {
 
 router.get('/movieDetails/:tmdbId', (req, res) => {
     const tmdbId = req.params.tmdbId;
+    const tvOrMovie = req.query.tvOrMovie;
     console.log('GET movie from TMDB', tmdbId);
 
     axios.get(
-        `https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${process.env.TMDB_API_KEY}&language=en-US&append_to_response=credits,release_dates`
+        `https://api.themoviedb.org/3/${tvOrMovie}/${tmdbId}?api_key=${process.env.TMDB_API_KEY}&language=en-US&append_to_response=${tvOrMovie==="movie" ? "credits,release_dates" : "credits"}`
     )
     .then(response => {
         console.log('GET movie details from API successful', response.data);
@@ -36,15 +37,15 @@ router.get('/movieDetails/:tmdbId', (req, res) => {
     })
 })
 
-router.post('/search', (req, res) => {
-    console.log('in tmdb search', req.body);
+router.get('/search', (req, res) => {
+    console.log('in tmdb search', req.query);
 
     // What type of search? movie, tv, person, multi, keyword
-    let searchType = encodeURIComponent(req.body.type);
+    let searchType = req.query.type;
     // What are you searching for?
-    let searchText = encodeURIComponent(req.body.query);
+    let searchText = req.query.q;
     // Handle search result pagination
-    let targetPage = encodeURIComponent(req.body.page);
+    let targetPage = req.query.page;
 
     axios.get(
         `https://api.themoviedb.org/3/search/${searchType}?api_key=${process.env.TMDB_API_KEY}&query=${searchText}&page=${targetPage}&include_adult=false`
@@ -59,9 +60,9 @@ router.post('/search', (req, res) => {
     })
 })
 
-router.post('/streamingOptions/:tmdbId', (req, res) => {
-    const tmdbId = encodeURIComponent(req.params.tmdbId);
-    const tvOrMovie = encodeURIComponent(req.body.type);
+router.get('/streamingOptions/:tmdbId', (req, res) => {
+    const tmdbId = req.params.tmdbId;
+    const tvOrMovie = req.query.tvOrMovie;
     console.log('GET streaming options from TMDB', tmdbId);
 
     axios.get(

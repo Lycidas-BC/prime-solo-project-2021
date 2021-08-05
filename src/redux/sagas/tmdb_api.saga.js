@@ -14,7 +14,7 @@ function* getTmdbConfiguration() {
 
 function* getTmdbMovieDetails(action) {
   try {
-    const movieDetails = yield axios.get(`/api/tmdb/movieDetails/${action.payload}`);
+    const movieDetails = yield axios.get(`/api/tmdb/movieDetails/${action.payload}/?tvOrMovie=${encodeURIComponent(action.payload.tvOrMovie)}`);
     console.log("movieDetails:", movieDetails);
     yield put({ type: 'SET_TMDB_MOVIE_DETAILS', payload: movieDetails.data });
   }
@@ -25,7 +25,7 @@ function* getTmdbMovieDetails(action) {
 
 function* getTmdbStreamingOptions(action) {
   try {
-    const streamingOptions = yield axios.post(`/api/tmdb/streamingOptions/${action.payload.id}`, action.payload);
+    const streamingOptions = yield axios.get(`/api/tmdb/streamingOptions/${action.payload.id}/?tvOrMovie=${encodeURIComponent(action.payload.tvOrMovie)}`);
     console.log("streamingOptions:", streamingOptions);
     yield put({ type: 'SET_TMDB_STREAMING_OPTIONS', payload: streamingOptions.data });
   }
@@ -37,7 +37,7 @@ function* getTmdbStreamingOptions(action) {
 function* searchTmdb(action) {
     try {
       console.log('in searchTMDB saga', action.payload);
-      const searchResults = yield axios.post(`/api/tmdb/search`, action.payload);
+      const searchResults = yield axios.get(`/api/tmdb/search/?type=${encodeURIComponent(action.payload.type)}&q=${encodeURIComponent(action.payload.query)}&page=${encodeURIComponent(action.payload.page)}`);
       yield put({ type: 'SET_TMDB_SEARCH', payload: searchResults.data });
     }
     catch (error) {
