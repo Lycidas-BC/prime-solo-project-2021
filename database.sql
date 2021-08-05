@@ -9,7 +9,7 @@ CREATE TABLE "user" (
 	"email" varchar(255) NOT NULL UNIQUE,
 	"first_name" varchar(255) NOT NULL,
 	"last_name" varchar(255) NOT NULL,
-	"image_url" varchar(255) NOT NULL,
+	"image_url" varchar(2000) NOT NULL,
 	CONSTRAINT "user_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -34,10 +34,10 @@ CREATE TABLE "movie" (
 	"id" serial NOT NULL,
 	"name" varchar(220) NOT NULL,
 	"tmdb_id" integer NOT NULL,
-	"letterboxd_url" varchar(255) NOT NULL,
-	"imdb_url" varchar(255) NOT NULL,
-	"rottentomatoes_url" varchar(255) NOT NULL,
-	"amazon_url" varchar(255) NOT NULL,
+	"letterboxd_url" varchar(500) NOT NULL,
+	"imdb_url" varchar(500) NOT NULL,
+	"rottentomatoes_url" varchar(500) NOT NULL,
+	"amazon_url" varchar(2000) NOT NULL,
 	CONSTRAINT "movie_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -57,7 +57,7 @@ CREATE TABLE "media_movie" (
 
 CREATE TABLE "framegrab" (
 	"id" serial NOT NULL,
-	"path" varchar(255) NOT NULL,
+	"path" varchar(2000) NOT NULL,
 	CONSTRAINT "framegrab_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -87,7 +87,7 @@ CREATE TABLE "media_specialfeature" (
 
 CREATE TABLE "art" (
 	"id" serial NOT NULL,
-	"path" varchar(255) NOT NULL,
+	"path" varchar(2000) NOT NULL,
 	"style" varchar(100) NOT NULL,
 	CONSTRAINT "art_pk" PRIMARY KEY ("id")
 ) WITH (
