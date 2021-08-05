@@ -3,7 +3,6 @@ const express = require('express');
 const router = express.Router();
 //use dotenv config to get API keys without uploading them to github
 require('dotenv').config();
-//initialize global
 
 router.get('/configuration', (req, res) => {
     //doesn't change often; should only need to run once per session
