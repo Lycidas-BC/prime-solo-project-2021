@@ -9,7 +9,7 @@ CREATE TABLE "user" (
 	"email" varchar(255) NOT NULL UNIQUE,
 	"first_name" varchar(255) NOT NULL,
 	"last_name" varchar(255) NOT NULL,
-	"image_url" varchar(2000) NOT NULL,
+	"image_url" varchar(2000),
 	CONSTRAINT "user_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -19,11 +19,12 @@ CREATE TABLE "user" (
 CREATE TABLE "media" (
 	"id" serial NOT NULL,
 	"item" varchar(220) NOT NULL,
-	"distributor" varchar(120) NOT NULL,
-	"format" varchar(50) NOT NULL,
-	"cover_art" varchar(255) NOT NULL,
-	"dimensions" varchar(50) NOT NULL,
-	"shelf" varchar(50) NOT NULL,
+	"distributor" varchar(120),
+	"format" varchar(50),
+	"cover_art" varchar(255),
+	"description" TEXT,
+	"dimensions" varchar(50),
+	"shelf" varchar(50),
 	CONSTRAINT "media_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -33,11 +34,11 @@ CREATE TABLE "media" (
 CREATE TABLE "movie" (
 	"id" serial NOT NULL,
 	"name" varchar(220) NOT NULL,
-	"tmdb_id" integer NOT NULL,
-	"letterboxd_url" varchar(500) NOT NULL,
-	"imdb_url" varchar(500) NOT NULL,
-	"rottentomatoes_url" varchar(500) NOT NULL,
-	"amazon_url" varchar(2000) NOT NULL,
+	"tmdb_id" integer,
+	"letterboxd_url" varchar(500),
+	"imdb_url" varchar(500),
+	"rottentomatoes_url" varchar(500),
+	"amazon_url" varchar(2000),
 	CONSTRAINT "movie_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -48,7 +49,7 @@ CREATE TABLE "media_movie" (
 	"id" serial NOT NULL,
 	"movie_id" integer NOT NULL,
 	"media_id" integer NOT NULL,
-	"length" integer NOT NULL,
+	"length" integer,
 	CONSTRAINT "media_movie_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -66,9 +67,9 @@ CREATE TABLE "framegrab" (
 
 CREATE TABLE "specialfeature" (
 	"id" serial NOT NULL,
-	"name" varchar(100) NOT NULL,
-	"type" varchar(50) NOT NULL,
-	"description" varchar(255) NOT NULL,
+	"name" varchar(100),
+	"type" varchar(50),
+	"description" varchar(255),
 	CONSTRAINT "specialfeature_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -88,7 +89,7 @@ CREATE TABLE "media_specialfeature" (
 CREATE TABLE "art" (
 	"id" serial NOT NULL,
 	"path" varchar(2000) NOT NULL,
-	"style" varchar(100) NOT NULL,
+	"style" varchar(100),
 	CONSTRAINT "art_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -108,8 +109,8 @@ CREATE TABLE "movie_art" (
 CREATE TABLE "artist" (
 	"id" serial NOT NULL,
 	"name" varchar(255) NOT NULL,
-	"country" varchar(100) NOT NULL,
-	"picture?" varchar(100) NOT NULL,
+	"country" varchar(100),
+	"picture" varchar(100),
 	CONSTRAINT "artist_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -168,10 +169,9 @@ CREATE TABLE "framegrab_note" (
 
 CREATE TABLE "media_movie_note" (
 	"id" serial NOT NULL,
-	"movie_id" integer NOT NULL,
+	"media_movie_id" integer NOT NULL,
 	"note_id" integer NOT NULL,
-	"framegrab_id" integer NOT NULL,
-	"seen" BOOLEAN NOT NULL,
+	"seen" BOOLEAN,
 	CONSTRAINT "media_movie_note_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -212,7 +212,7 @@ CREATE TABLE "specialfeature_note" (
 	"id" serial NOT NULL,
 	"note_id" integer NOT NULL,
 	"specialfeature_id" integer NOT NULL,
-	"seen" BOOLEAN NOT NULL DEFAULT 'false',
+	"seen" BOOLEAN DEFAULT 'false',
 	CONSTRAINT "specialfeature_note_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -242,8 +242,17 @@ CREATE TABLE "artist_note" (
 CREATE TABLE "access" (
 	"id" serial NOT NULL,
 	"type" varchar(50) NOT NULL UNIQUE,
-	"description" varchar(255) NOT NULL,
+	"description" varchar(255),
 	CONSTRAINT "access_pk" PRIMARY KEY ("id")
+) WITH (
+  OIDS=FALSE
+);
+
+CREATE TABLE "media_movie_framegrab" (
+	"id" serial NOT NULL,
+	"media_movie_id" integer NOT NULL,
+	"framegrab_id" integer NOT NULL,
+	CONSTRAINT "media_movie_framegrab_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
 );
@@ -270,9 +279,8 @@ ALTER TABLE "user_media" ADD CONSTRAINT "user_media_fk1" FOREIGN KEY ("media_id"
 ALTER TABLE "framegrab_note" ADD CONSTRAINT "framegrab_note_fk0" FOREIGN KEY ("note_id") REFERENCES "note"("id") ON DELETE CASCADE;
 ALTER TABLE "framegrab_note" ADD CONSTRAINT "framegrab_note_fk1" FOREIGN KEY ("framegrab_id") REFERENCES "framegrab"("id") ON DELETE CASCADE;
 
-ALTER TABLE "media_movie_note" ADD CONSTRAINT "media_movie_note_fk0" FOREIGN KEY ("movie_id") REFERENCES "media_movie"("id") ON DELETE CASCADE;
+ALTER TABLE "media_movie_note" ADD CONSTRAINT "media_movie_note_fk0" FOREIGN KEY ("media_movie_id") REFERENCES "media_movie"("id") ON DELETE CASCADE;
 ALTER TABLE "media_movie_note" ADD CONSTRAINT "media_movie_note_fk1" FOREIGN KEY ("note_id") REFERENCES "note"("id") ON DELETE CASCADE;
-ALTER TABLE "media_movie_note" ADD CONSTRAINT "media_movie_note_fk2" FOREIGN KEY ("framegrab_id") REFERENCES "framegrab"("id") ON DELETE CASCADE;
 
 ALTER TABLE "media_note" ADD CONSTRAINT "media_note_fk0" FOREIGN KEY ("media_id") REFERENCES "media"("id") ON DELETE CASCADE;
 ALTER TABLE "media_note" ADD CONSTRAINT "media_note_fk1" FOREIGN KEY ("note_id") REFERENCES "note"("id") ON DELETE CASCADE;
@@ -291,3 +299,6 @@ ALTER TABLE "art_artist" ADD CONSTRAINT "art_artist_fk1" FOREIGN KEY ("artist_id
 
 ALTER TABLE "artist_note" ADD CONSTRAINT "artist_note_fk0" FOREIGN KEY ("note_id") REFERENCES "note"("id") ON DELETE CASCADE;
 ALTER TABLE "artist_note" ADD CONSTRAINT "artist_note_fk1" FOREIGN KEY ("artist_id") REFERENCES "artist"("id") ON DELETE CASCADE;
+
+ALTER TABLE "media_movie_framegrab" ADD CONSTRAINT "media_movie_framegrab_fk0" FOREIGN KEY ("media_movie_id") REFERENCES "media_movie"("id") ON DELETE CASCADE;
+ALTER TABLE "media_movie_framegrab" ADD CONSTRAINT "media_movie_framegrab_fk1" FOREIGN KEY ("framegrab_id") REFERENCES "framegrab"("id") ON DELETE CASCADE;
