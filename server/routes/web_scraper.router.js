@@ -16,17 +16,29 @@ router.get('/test', (req, res) => {
       const boxArt = $($('.product-box-art').children('img')[0]).attr('src');
       const metaList = [];
       const featuresList = [];
-      $('.film-meta-list').children().each((_idx, el) => {
+      $('.film-meta-list').find('li').each((_idx, el) => {
+        console.log(_idx, 'html', $(el).html().trim());
+        if ($($(el).find('span')).length > 0) {
+          console.log('span text:', $($(el).find('span')).text().trim());
+          console.log('span itemprop:', $($(el).find('span')).attr('itemprop'));
+        }
+        if ($($(el).find('meta')).length > 0) {
+          console.log('meta text:', $($(el).find('meta')).text().trim());
+          console.log('meta itemprop:', $($(el).find('meta')).attr('itemprop'));
+          console.log('meta content:', $($(el).find('meta')).attr('content'));
+        }
+        // console.log(_idx, 'html', $(el).html().trim(), $($(el).find('span')).length, $($(el).find('meta')).length);
         const metaText = $(el).html().trim();
         metaList.push(metaText);
       });
-      $('.product-features-list').children().each((_idx, el) => {
+      // console.log('ul', $('.product-features-list').find('ul'));
+      $('.product-features-list').last().find('li').each((_idx, el) => {
         const featureText = $(el).text();
         featuresList.push(featureText);
       });
-      console.log('boxArt', boxArt);
+      // console.log('boxArt', boxArt);
       console.log('metaList', metaList);
-      console.log('featuresList', featuresList);
+      // console.log('featuresList', featuresList);
       const webScrapeObject = {
         boxArt: boxArt,
         metaList: metaList,

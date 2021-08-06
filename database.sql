@@ -140,12 +140,11 @@ CREATE TABLE "note" (
 	"user_id" integer NOT NULL,
 	"note" TEXT NOT NULL,
 	"access_id" integer NOT NULL,
-	"date" TIMESTAMP NOT NULL,
+	"date" TIMESTAMP DEFAULT NOW(),
 	CONSTRAINT "note_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
 );
-
 
 CREATE TABLE "user_media" (
 	"id" serial NOT NULL,
@@ -250,45 +249,45 @@ CREATE TABLE "access" (
 );
 
 
-ALTER TABLE "media_movie" ADD CONSTRAINT "media_movie_fk0" FOREIGN KEY ("movie_id") REFERENCES "movie"("id");
-ALTER TABLE "media_movie" ADD CONSTRAINT "media_movie_fk1" FOREIGN KEY ("media_id") REFERENCES "media"("id");
+ALTER TABLE "media_movie" ADD CONSTRAINT "media_movie_fk0" FOREIGN KEY ("movie_id") REFERENCES "movie"("id") ON DELETE CASCADE;
+ALTER TABLE "media_movie" ADD CONSTRAINT "media_movie_fk1" FOREIGN KEY ("media_id") REFERENCES "media"("id") ON DELETE CASCADE;
 
-ALTER TABLE "media_specialfeature" ADD CONSTRAINT "media_specialfeature_fk0" FOREIGN KEY ("media_id") REFERENCES "media"("id");
-ALTER TABLE "media_specialfeature" ADD CONSTRAINT "media_specialfeature_fk1" FOREIGN KEY ("specialfeature_id") REFERENCES "specialfeature"("id");
+ALTER TABLE "media_specialfeature" ADD CONSTRAINT "media_specialfeature_fk0" FOREIGN KEY ("media_id") REFERENCES "media"("id") ON DELETE CASCADE;
+ALTER TABLE "media_specialfeature" ADD CONSTRAINT "media_specialfeature_fk1" FOREIGN KEY ("specialfeature_id") REFERENCES "specialfeature"("id") ON DELETE CASCADE;
 
-ALTER TABLE "movie_art" ADD CONSTRAINT "movie_art_fk0" FOREIGN KEY ("movie_id") REFERENCES "movie"("id");
-ALTER TABLE "movie_art" ADD CONSTRAINT "movie_art_fk1" FOREIGN KEY ("art_id") REFERENCES "art"("id");
+ALTER TABLE "movie_art" ADD CONSTRAINT "movie_art_fk0" FOREIGN KEY ("movie_id") REFERENCES "movie"("id") ON DELETE CASCADE;
+ALTER TABLE "movie_art" ADD CONSTRAINT "movie_art_fk1" FOREIGN KEY ("art_id") REFERENCES "art"("id") ON DELETE CASCADE;
 
-ALTER TABLE "art_tag" ADD CONSTRAINT "art_tag_fk0" FOREIGN KEY ("art_id") REFERENCES "art"("id");
-ALTER TABLE "art_tag" ADD CONSTRAINT "art_tag_fk1" FOREIGN KEY ("tag_id") REFERENCES "tag"("id");
+ALTER TABLE "art_tag" ADD CONSTRAINT "art_tag_fk0" FOREIGN KEY ("art_id") REFERENCES "art"("id") ON DELETE CASCADE;
+ALTER TABLE "art_tag" ADD CONSTRAINT "art_tag_fk1" FOREIGN KEY ("tag_id") REFERENCES "tag"("id") ON DELETE CASCADE;
 
-ALTER TABLE "note" ADD CONSTRAINT "note_fk0" FOREIGN KEY ("user_id") REFERENCES "user"("id");
-ALTER TABLE "note" ADD CONSTRAINT "note_fk1" FOREIGN KEY ("access_id") REFERENCES "access"("id");
+ALTER TABLE "note" ADD CONSTRAINT "note_fk0" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE;
+ALTER TABLE "note" ADD CONSTRAINT "note_fk1" FOREIGN KEY ("access_id") REFERENCES "access"("id") ON DELETE CASCADE;
 
-ALTER TABLE "user_media" ADD CONSTRAINT "user_media_fk0" FOREIGN KEY ("user_id") REFERENCES "user"("id");
-ALTER TABLE "user_media" ADD CONSTRAINT "user_media_fk1" FOREIGN KEY ("media_id") REFERENCES "media"("id");
+ALTER TABLE "user_media" ADD CONSTRAINT "user_media_fk0" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE;
+ALTER TABLE "user_media" ADD CONSTRAINT "user_media_fk1" FOREIGN KEY ("media_id") REFERENCES "media"("id") ON DELETE CASCADE;
 
-ALTER TABLE "framegrab_note" ADD CONSTRAINT "framegrab_note_fk0" FOREIGN KEY ("note_id") REFERENCES "note"("id");
-ALTER TABLE "framegrab_note" ADD CONSTRAINT "framegrab_note_fk1" FOREIGN KEY ("framegrab_id") REFERENCES "framegrab"("id");
+ALTER TABLE "framegrab_note" ADD CONSTRAINT "framegrab_note_fk0" FOREIGN KEY ("note_id") REFERENCES "note"("id") ON DELETE CASCADE;
+ALTER TABLE "framegrab_note" ADD CONSTRAINT "framegrab_note_fk1" FOREIGN KEY ("framegrab_id") REFERENCES "framegrab"("id") ON DELETE CASCADE;
 
-ALTER TABLE "media_movie_note" ADD CONSTRAINT "media_movie_note_fk0" FOREIGN KEY ("movie_id") REFERENCES "media_movie"("id");
-ALTER TABLE "media_movie_note" ADD CONSTRAINT "media_movie_note_fk1" FOREIGN KEY ("note_id") REFERENCES "note"("id");
-ALTER TABLE "media_movie_note" ADD CONSTRAINT "media_movie_note_fk2" FOREIGN KEY ("framegrab_id") REFERENCES "framegrab"("id");
+ALTER TABLE "media_movie_note" ADD CONSTRAINT "media_movie_note_fk0" FOREIGN KEY ("movie_id") REFERENCES "media_movie"("id") ON DELETE CASCADE;
+ALTER TABLE "media_movie_note" ADD CONSTRAINT "media_movie_note_fk1" FOREIGN KEY ("note_id") REFERENCES "note"("id") ON DELETE CASCADE;
+ALTER TABLE "media_movie_note" ADD CONSTRAINT "media_movie_note_fk2" FOREIGN KEY ("framegrab_id") REFERENCES "framegrab"("id") ON DELETE CASCADE;
 
-ALTER TABLE "media_note" ADD CONSTRAINT "media_note_fk0" FOREIGN KEY ("media_id") REFERENCES "media"("id");
-ALTER TABLE "media_note" ADD CONSTRAINT "media_note_fk1" FOREIGN KEY ("note_id") REFERENCES "note"("id");
+ALTER TABLE "media_note" ADD CONSTRAINT "media_note_fk0" FOREIGN KEY ("media_id") REFERENCES "media"("id") ON DELETE CASCADE;
+ALTER TABLE "media_note" ADD CONSTRAINT "media_note_fk1" FOREIGN KEY ("note_id") REFERENCES "note"("id") ON DELETE CASCADE;
 
-ALTER TABLE "art_note" ADD CONSTRAINT "art_note_fk0" FOREIGN KEY ("note_id") REFERENCES "note"("id");
-ALTER TABLE "art_note" ADD CONSTRAINT "art_note_fk1" FOREIGN KEY ("art_id") REFERENCES "art"("id");
+ALTER TABLE "art_note" ADD CONSTRAINT "art_note_fk0" FOREIGN KEY ("note_id") REFERENCES "note"("id") ON DELETE CASCADE;
+ALTER TABLE "art_note" ADD CONSTRAINT "art_note_fk1" FOREIGN KEY ("art_id") REFERENCES "art"("id") ON DELETE CASCADE;
 
-ALTER TABLE "follow_table" ADD CONSTRAINT "follow_table_fk0" FOREIGN KEY ("user_id") REFERENCES "user"("id");
-ALTER TABLE "follow_table" ADD CONSTRAINT "follow_table_fk1" FOREIGN KEY ("followeduser_id") REFERENCES "user"("id");
+ALTER TABLE "follow_table" ADD CONSTRAINT "follow_table_fk0" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE;
+ALTER TABLE "follow_table" ADD CONSTRAINT "follow_table_fk1" FOREIGN KEY ("followeduser_id") REFERENCES "user"("id") ON DELETE CASCADE;
 
-ALTER TABLE "specialfeature_note" ADD CONSTRAINT "specialfeature_note_fk0" FOREIGN KEY ("note_id") REFERENCES "note"("id");
-ALTER TABLE "specialfeature_note" ADD CONSTRAINT "specialfeature_note_fk1" FOREIGN KEY ("specialfeature_id") REFERENCES "specialfeature"("id");
+ALTER TABLE "specialfeature_note" ADD CONSTRAINT "specialfeature_note_fk0" FOREIGN KEY ("note_id") REFERENCES "note"("id") ON DELETE CASCADE;
+ALTER TABLE "specialfeature_note" ADD CONSTRAINT "specialfeature_note_fk1" FOREIGN KEY ("specialfeature_id") REFERENCES "specialfeature"("id") ON DELETE CASCADE;
 
-ALTER TABLE "art_artist" ADD CONSTRAINT "art_artist_fk0" FOREIGN KEY ("art_id") REFERENCES "art"("id");
-ALTER TABLE "art_artist" ADD CONSTRAINT "art_artist_fk1" FOREIGN KEY ("artist_id") REFERENCES "artist"("id");
+ALTER TABLE "art_artist" ADD CONSTRAINT "art_artist_fk0" FOREIGN KEY ("art_id") REFERENCES "art"("id") ON DELETE CASCADE;
+ALTER TABLE "art_artist" ADD CONSTRAINT "art_artist_fk1" FOREIGN KEY ("artist_id") REFERENCES "artist"("id") ON DELETE CASCADE;
 
-ALTER TABLE "artist_note" ADD CONSTRAINT "artist_note_fk0" FOREIGN KEY ("note_id") REFERENCES "note"("id");
-ALTER TABLE "artist_note" ADD CONSTRAINT "artist_note_fk1" FOREIGN KEY ("artist_id") REFERENCES "artist"("id");
+ALTER TABLE "artist_note" ADD CONSTRAINT "artist_note_fk0" FOREIGN KEY ("note_id") REFERENCES "note"("id") ON DELETE CASCADE;
+ALTER TABLE "artist_note" ADD CONSTRAINT "artist_note_fk1" FOREIGN KEY ("artist_id") REFERENCES "artist"("id") ON DELETE CASCADE;
