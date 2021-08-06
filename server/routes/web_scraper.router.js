@@ -112,7 +112,7 @@ const scrapeCriterionSetData = (siteHtml) => {
     const movie = $($(el).find('.film-set-title')).text();
     const year = $($(el).find('.film-set-year')).text();
     const image = $($(el).find('img')).attr('src');
-    const description = $($(el).find('.film-set-descrip')).text();
+    const description = $($(el).find('.film-set-descrip')).text().trim();
     const url = $($(el).parents()).attr('href');
 
 

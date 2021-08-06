@@ -21,7 +21,7 @@ CREATE TABLE "media" (
 	"item" varchar(220) NOT NULL,
 	"distributor" varchar(120),
 	"format" varchar(50),
-	"cover_art" varchar(255),
+	"cover_art" varchar(2000),
 	"description" TEXT,
 	"dimensions" varchar(50),
 	"shelf" varchar(50),
@@ -49,6 +49,7 @@ CREATE TABLE "media_movie" (
 	"id" serial NOT NULL,
 	"movie_id" integer NOT NULL,
 	"media_id" integer NOT NULL,
+	"cover_art" varchar(2000),
 	"length" integer,
 	CONSTRAINT "media_movie_pk" PRIMARY KEY ("id")
 ) WITH (
