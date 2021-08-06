@@ -22,9 +22,18 @@ function AddMedia() {
           }
       });
   };
-
+  // box set urls for testing
+  // https://www.criterion.com/boxsets/2648-godzilla-the-showa-era-films-1954-1975
+  // https://www.criterion.com/boxsets/1427-ingmar-bergman-s-cinema
+  // https://www.criterion.com/boxsets/4117-world-of-wong-kar-wai
+  // https://www.criterion.com/boxsets/1554-police-story-police-story-2
+  // https://www.criterion.com/boxsets/3432-the-complete-films-of-agn-s-varda
+  // https://www.criterion.com/boxsets/825-eclipse-series-28-the-warped-world-of-koreyoshi-kurahara
   useEffect(() => {
-    dispatch({ type: 'TEST'});
+    dispatch({
+      type: 'SCRAPE_WEBSITE',
+      payload: {productUrl: `https://www.criterion.com/films/29081-after-life`}
+  });
   }, []);
 
   console.log('webScrape', webScrape);

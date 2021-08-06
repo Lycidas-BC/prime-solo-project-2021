@@ -51,6 +51,12 @@ router.get('/search', (req, res) => {
     )
     .then(response => {
         console.log('in search API', response.data.page);
+        let searchResultObject = response.data;
+        if (searchType === 'movie' || searchType === 'tv') {
+            searchResultObject.results.map((element, index) => {
+                element.media_type = searchType
+            });
+        }
         res.send(response.data);
     })
     .catch(err => {
