@@ -27,12 +27,13 @@ function AddMedia() {
   const [addMovie, setAddMovie] = useState(false);
   const [displayProduct, setDisplayProduct] = useState(false);
   const dispatch = useDispatch();
+  const configObject = useSelector(store => store.tmdbConfigReducer);
   const webScrape = useSelector(store => store.webScrapeReducer);
   const [format, setFormat] = React.useState('DVD');
   const [boxSet, setBoxSet] = React.useState(false);
   const [coverArt, setCoverArt] = useState("");
   const [description, setDescription] = useState("");
-  const [mediaMovies, setMediaMovies] = useState([]);
+  const [mediaMovieList, setMediaMovieList] = useState([]);
 
   const handleFormatChange = (event) => {
     setFormat(event.target.value);
@@ -53,15 +54,33 @@ function AddMedia() {
     dispatch({
       type: 'SCRAPE_WEBSITE',
       payload: {productUrl: productUrl}
-  });
-
+    });
   };
 
-  const addResultToMedia = (item) => {
-    setMediaMovies([...mediaMovies, item]);
-    console.log('mediaMovies', mediaMovies);
+  const addResultToMedia = (apiObject) => {
+    let convertApiObject = {};
+    console.log("apiObject", apiObject);
+    if (apiObject.media_type === "movie") {
+      convertApiObject = {
+        movie: apiObject.title,
+        year: apiObject.release_date.substring(0,4),
+        image: `${configObject.images.base_url}${configObject.images.poster_sizes[2]}${apiObject.poster_path}`,
+        description: apiObject.overview,
+        tmdbId: apiObject.id
+      };
+    } else {
+      convertApiObject = {
+        movie: apiObject.name,
+        year: apiObject.first_air_date.substring(0,4),
+        image: `${configObject.images.base_url}${configObject.images.poster_sizes[2]}${apiObject.poster_path}`,
+        description: apiObject.overview,
+        tmdbId: apiObject.id
+      };
+    }
+    setMediaMovieList([...mediaMovieList, convertApiObject]);
+    console.log('mediaMovies', mediaMovieList);
   }
-
+  
   console.log('webScrape', webScrape);
   return (
     <section style={{margin: "5%"}}>
@@ -161,13 +180,21 @@ function AddMedia() {
         </section>
         <section>
           <h3>{boxSet ? "Movie List" : "Movie"}</h3>
+          <section className="movies" style={{ alignItems: "flex-end", display : "flex", flexWrap: "wrap" }}>
+            {mediaMovieList.map((element,index) => {
+              return (
+                <MovieItem key={index} movieIn={element} addMovieScreen={false} ></MovieItem>
+              )
+            })}
+            
+          </section>
           {
             addMovie ?
             <div>
             <div><Button onClick={() => setAddMovie(!addMovie)}><RemoveIcon /></Button></div>
             <SearchPage addResultToMedia={addResultToMedia}></SearchPage>
             </div> :
-            <Button onClick={() => setAddMovie(!addMovie)}><AddIcon /></Button>
+            <Button style={{ width: "24%", height: "24%" }} onClick={() => setAddMovie(!addMovie)}><MovieItem movieIn={"none"} addMovieScreen={true} addMovieIcon={true}></MovieItem></Button>
           }
         </section>
       </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { makeStyles } from "@material-ui/core/styles";
+import { useSelector } from 'react-redux';
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -10,10 +11,13 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 
 const useStyles = makeStyles((theme) => ({root: {flexGrow: 1},paper: {padding: theme.spacing(2), textAlign: "center", color: theme.palette.text.secondary, justifyContent: "center", alignItems: "flex-end" }})); // materialUI stuff
 
-function SearchItem({responseItem, configObject, addResultToMedia, getDetails}) {
+function SearchItem({responseItem, addResultToMedia, getDetails}) {
     const classes = useStyles();
     const itemType = responseItem.media_type;
+    const configObject = useSelector(store => store.tmdbConfigReducer);
 
+
+    console.log("searchItem", responseItem);
     return (
       <>
       {itemType === "movie"?

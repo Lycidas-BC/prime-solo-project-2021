@@ -48,7 +48,6 @@ function SearchPage({addResultToMedia}) {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchType, setSearchType] = useState('multi');
     const searchObject = useSelector(store => store.tmdbSearchReducer);
-    const configObject = useSelector(store => store.tmdbConfigReducer);
   
     const handleChange = (event) => {
         setSearchType(event.target.value);
@@ -92,7 +91,6 @@ function SearchPage({addResultToMedia}) {
     console.log('searchObject:', searchObject);
     console.log('searchType:', searchType);
     console.log('searchTerm:', searchTerm);
-    console.log('configObject', configObject);
     return (
         <>
             <TextField style={{ width: "400px" }} id="outlined-search" label="Search" type="search" variant="outlined" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)}/>
@@ -110,7 +108,7 @@ function SearchPage({addResultToMedia}) {
             <Grid container spacing={2} style={{ alignItems: "flex-end" }}>
                 {searchObject.results.map((responseItem,index) => {
                     return (
-                        <SearchItem key={index} responseItem={responseItem} configObject={configObject} addResultToMedia={addResultToMedia} getDetails={getDetails}></SearchItem>
+                        <SearchItem key={index} responseItem={responseItem} addResultToMedia={addResultToMedia} getDetails={getDetails}></SearchItem>
                     )
                 })}
             </Grid>
