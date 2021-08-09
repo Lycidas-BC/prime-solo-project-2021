@@ -34,7 +34,7 @@ CREATE TABLE "media" (
 CREATE TABLE "movie" (
 	"id" serial NOT NULL,
 	"name" varchar(220) NOT NULL,
-	"tmdb_id" integer,
+	"tmdb_id" integer UNIQUE,
 	"letterboxd_url" varchar(500),
 	"imdb_url" varchar(500),
 	"rottentomatoes_url" varchar(500),
@@ -172,7 +172,7 @@ CREATE TABLE "media_movie_note" (
 	"id" serial NOT NULL,
 	"media_movie_id" integer NOT NULL,
 	"note_id" integer NOT NULL,
-	"seen" BOOLEAN,
+	"seen" BOOLEAN DEFAULT 'false',
 	CONSTRAINT "media_movie_note_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
