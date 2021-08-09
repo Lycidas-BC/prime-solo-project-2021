@@ -1,8 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 require('dotenv').config();
-const tmdbRouter = require('./routes/tmdb_api.router.js')
-const webScraperRouter = require('./routes/web_scraper.router.js')
+const tmdbRouter = require('./routes/tmdb_api.router.js');
+const webScraperRouter = require('./routes/web_scraper.router.js');
+const mediaCollectionRouter = require('./routes/media_collection.router');
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use(passport.session());
 app.use('/api/user', userRouter);
 app.use('/api/tmdb', tmdbRouter);
 app.use('/web_scraper', webScraperRouter);
+app.use('/media_collection', mediaCollectionRouter);
 
 // Serve static files
 app.use(express.static('build'));

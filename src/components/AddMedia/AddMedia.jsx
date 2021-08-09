@@ -42,7 +42,7 @@ function AddMedia() {
       // check if we have a webscrape object
       webScrape !== "blank" ? 
         // identify type of webscrape object and render accordingly
-        webScrape.type = "criterion set" ? 
+        webScrape.type === "criterion set" ? 
           // object is a Criterion box set
           <div>
             <h2 className={"primaryTitle"}>{webScrape.primaryTitle}</h2>
@@ -71,7 +71,7 @@ function AddMedia() {
               </ul>
             </section>
           </div> :
-          webScrape.type = "criterion film" ? 
+          webScrape.type === "criterion film" ? 
           // object is a Criterion film
           <div>
             <h2 className={"primaryTitle"}>{webScrape.primaryTitle}</h2>
