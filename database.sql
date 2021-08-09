@@ -20,6 +20,7 @@ CREATE TABLE "media" (
 	"id" serial NOT NULL,
 	"item" varchar(220) NOT NULL,
 	"distributor" varchar(120),
+	"product_page" varchar(2000),
 	"format" varchar(50),
 	"cover_art" varchar(2000),
 	"description" TEXT,
@@ -111,7 +112,7 @@ CREATE TABLE "artist" (
 	"id" serial NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"country" varchar(100),
-	"picture" varchar(100),
+	"picture" varchar(2000),
 	CONSTRAINT "artist_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE

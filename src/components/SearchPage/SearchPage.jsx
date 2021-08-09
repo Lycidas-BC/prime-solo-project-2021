@@ -15,6 +15,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import SearchItem from '../SearchItem/SearchItem';
 
 //material-ui functions
 const useStyles = makeStyles((theme) => ({
@@ -32,16 +33,16 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 const searchTypeList = [
-    {type: 'multi'},
+    //{type: 'multi'},
     {type: 'movie'},
     {type: 'tv'},
-    {type: 'person'},
-    {type: 'keyword'}
+    //{type: 'person'},
+    //{type: 'keyword'}
 ];
 
 
 
-function SearchPage() {
+function SearchPage({addResultToMedia}) {
     const classes = useStyles();
     const dispatch = useDispatch();
     const [searchTerm, setSearchTerm] = useState('');
@@ -85,6 +86,9 @@ function SearchPage() {
         });
     };
  
+    const getDetails = (item) => {
+        console.log('in getDetails', item);
+    }
     console.log('searchObject:', searchObject);
     console.log('searchType:', searchType);
     console.log('searchTerm:', searchTerm);
@@ -92,7 +96,6 @@ function SearchPage() {
     return (
         <>
             <TextField style={{ width: "400px" }} id="outlined-search" label="Search" type="search" variant="outlined" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)}/>
-            <Button style={{ width: "150px", height: "55px" }} variant="contained" color="primary" onClick={search}>Search</Button>
             <FormControl component="fieldset">
                 <FormLabel component="legend">Search type</FormLabel>
                 <RadioGroup row aria-label="searchType" name="searchType1" value={searchType} onChange={handleChange}>
@@ -103,44 +106,13 @@ function SearchPage() {
                     })}
                 </RadioGroup>
             </FormControl>
-            <Grid container spacing={2}>
-            {(searchObject.results).map((responseItem, index) => {
-                return (
-                    <div key={index}>
-                        {responseItem.media_type === "movie" ? // check if item is a movie
-                            (<ul>
-                                <li>{responseItem.title}</li>
-                                <li>{responseItem.release_date}</li>
-                                <li>{responseItem.overview}</li>
-                                <li><img src={`${configObject.images.base_url}${configObject.images.poster_sizes[2]}${responseItem.poster_path}`} alt={responseItem.title}/></li>
-                            </ul>)
-                        : responseItem.media_type === "tv" ? // check if item is a tv show
-                            (<ul>
-                                <li>{responseItem.name}</li>
-                                <li>{responseItem.first_air_date}</li>
-                                <li>{responseItem.overview}</li>
-                                <li><img src={`${configObject.images.base_url}${configObject.images.poster_sizes[2]}${responseItem.poster_path}`} alt={responseItem.name}/></li>
-                            </ul>)
-                        : responseItem.gender !== undefined ? // check if item is a person
-                        (<ul>
-                            <li>{responseItem.name}</li>
-                            <li>{responseItem.known_for_department}</li>
-                            <li>
-                                {responseItem.known_for.map((response, index) => {
-                                    return (
-                                        <img key={index} src={`${configObject.images.base_url}${configObject.images.poster_sizes[0]}${response.poster_path}`} alt={response.title}/>)
-                                })}
-                            </li>
-                            <li><img src={`${configObject.images.base_url}${configObject.images.poster_sizes[2]}${responseItem.profile_path}`} alt={responseItem.title}/></li>
-                        </ul>)
-                        : (<ul>
-                            <li>{responseItem.name}</li>
-                            <li>{responseItem.id}</li>
-                        </ul>)
-                        }
-                    </div>
-                    // <SearchItem key={index} url={testItem.url} title={testItem.title} />
-            );})}
+            <Button style={{ width: "150px", height: "55px" }} variant="contained" color="primary" onClick={search}>Search</Button>
+            <Grid container spacing={2} style={{ alignItems: "flex-end" }}>
+                {searchObject.results.map((responseItem,index) => {
+                    return (
+                        <SearchItem key={index} responseItem={responseItem} configObject={configObject} addResultToMedia={addResultToMedia} getDetails={getDetails}></SearchItem>
+                    )
+                })}
             </Grid>
             <BottomNavigation 
                 style={{width: '100%', position: 'fixed', bottom: 0}}

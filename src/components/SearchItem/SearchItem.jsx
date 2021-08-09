@@ -1,76 +1,58 @@
 import React from 'react';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
-import CardActions from '@material-ui/core/CardActions';
-import Modal from '@material-ui/core/Modal';
+import './SearchItem';
+import AddIcon from '@material-ui/icons/Add';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 
-const useStyles = makeStyles((theme) => ({root: {flexGrow: 1},paper: {padding: theme.spacing(2), textAlign: "center", color: theme.palette.text.secondary}})); // materialUI stuff
+const useStyles = makeStyles((theme) => ({root: {flexGrow: 1},paper: {padding: theme.spacing(2), textAlign: "center", color: theme.palette.text.secondary, justifyContent: "center", alignItems: "flex-end" }})); // materialUI stuff
 
-function SearchItem(item) {
-    const [searchItem, setSearchItem] = useState([]);
-    const dispatch = useDispatch();
+function SearchItem({responseItem, configObject, addResultToMedia, getDetails}) {
     const classes = useStyles();
-    const [category, SetCategory] = useState(0)
-
-
-    const postToFavorites = (itemToAdd) => {
-        console.log('Adding to favorites', itemToAdd);
-        if(category === 0) {
-          alert('please pick a category')
-        }
-        if (category > 0) {  dispatch({
-            type: 'ADD_FAVORITE',
-            payload: {url: item.url, category_id: category}   
-        });
-      }
-    };
-  
+    const itemType = responseItem.media_type;
 
     return (
       <>
-        <Grid item style={{height: "520px" }} id={item.id}> 
-        <Card>
+      {itemType === "movie"?
+        <Grid item style={{height: "100%", width: "24%", padding: "20px 10px" }}>
           <Paper className={classes.paper}>
-          <CardMedia
-          className={item.title}
-          style = {{ height: '350px'}}
-          component="img"
-          alt={item.title}
-          src={item.url}
-          title={item.title}
-        />
+              <Button onClick={() => addResultToMedia(responseItem)}><AddIcon /></Button>
+              <h2><em>{responseItem.title}</em> ({responseItem.release_date}) </h2>
+            <CardMedia
+              style={{maxHeight: "80%", maxWidth: "80%", margin: "auto", padding: "10% 7% 10% 7%", backgroundImage: "url(images/frame.jpg)", backgroundRepeat: "no-repeat", backgroundSize: "100% 100%" }}
+              className={responseItem.title}
+              component="img"
+              alt={responseItem.title}
+              src={`${configObject.images.base_url}${configObject.images.poster_sizes[2]}${responseItem.poster_path}`}
+              title={responseItem.title}
+            />
             <br />
-            <Button
-              style={{ width: "180px", height: "42px" }}
-              variant="contained"
-              color="primary"
-              onClick={() => postToFavorites(item)}
-            >
-              Add to Favorites
-            </Button>
-            <CardActions>
-            <table>
-              <tbody>
-                <tr>
-                  <td>Funny<input value='1' type="radio" name='category' onChange={(evt) => SetCategory(evt.target.value)} /><h4></h4></td>
-                  <td>Cohort<input value='2' type="radio" name='category' onChange={(evt) => SetCategory(evt.target.value)} /><h4></h4></td>
-                  <td>Cartoon<input value='3' type="radio" name='category' onChange={(evt) => SetCategory(evt.target.value)}/><h4></h4></td>
-                  <td>NSFW<input value='4' type="radio" name='category' onChange={(evt) => SetCategory(evt.target.value)} /><h4></h4></td>
-                  <td>MEME<input value='5' type="radio" name='category' onChange={(evt) => SetCategory(evt.target.value)}/><h4></h4></td>
-                </tr>
-              </tbody>
-            </table>
-            </CardActions>
+            <p>{responseItem.overview}</p>
+            <Button onClick={() => getDetails(responseItem)}><MoreHorizIcon /></Button>
           </Paper>
-          </Card>
-        </Grid>
-        </>
+        </Grid> :
+        <Grid item style={{height: "100%", width: "24%", padding: "20px 10px" }}>
+          <Paper className={classes.paper}>
+              <Button onClick={() => addResultToMedia(responseItem)}><AddIcon /></Button>
+              <h2><em>{responseItem.name}</em> ({responseItem.first_air_date})</h2>
+            <CardMedia
+              style={{maxHeight: "80%", maxWidth: "80%", margin: "auto", padding: "10% 7% 10% 7%", backgroundImage: "url(images/frame.jpg)", backgroundRepeat: "no-repeat", backgroundSize: "100% 100%" }}
+              className={responseItem.name}
+              component="img"
+              alt={responseItem.name}
+              src={`${configObject.images.base_url}${configObject.images.poster_sizes[2]}${responseItem.poster_path}`}
+              title={responseItem.name}
+            />
+          <br />
+          <p>{responseItem.overview}</p>
+          <Button onClick={() => getDetails(responseItem)}><MoreHorizIcon /></Button>
+        </Paper>
+      </Grid>
+      }
+      </>
     );
 };
 

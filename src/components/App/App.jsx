@@ -21,6 +21,8 @@ import LoginPage from '../LoginPage/LoginPage';
 import RegisterPage from '../RegisterPage/RegisterPage';
 import SearchPage from '../SearchPage/SearchPage';
 import AddMedia from '../AddMedia/AddMedia';
+import MediaItem from '../MediaItem/MediaItem';
+import DisplayCollection from '../DisplayCollection/DisplayCollection';
 
 import './App.css';
 
@@ -58,6 +60,14 @@ function App() {
             <SearchPage />
           </Route>
 
+          <Route
+            // shows MediaItem (logged in or not)
+            exact
+            path="/media_details/:mediaId"
+          >
+            <MediaItem />
+          </Route>
+
           <ProtectedRoute
             // with authRedirect:
             // - if logged in, redirects to "/add_media"
@@ -75,6 +85,25 @@ function App() {
             path="/add_media"
           >
             <AddMedia />
+          </ProtectedRoute>
+
+          <ProtectedRoute
+            // with authRedirect:
+            // - if logged in, redirects to "/add_media"
+            // - else shows RegisterPage at "/login"
+            exact
+            path="/login"
+            authRedirect="/collection"
+          >
+            <LoginPage />
+          </ProtectedRoute>
+
+          <ProtectedRoute
+            // logged in shows UserPage else shows LoginPage
+            exact
+            path="/collection"
+          >
+            <DisplayCollection />
           </ProtectedRoute>
 
           {/* For protected routes, the view could show one of several things on the same route.
@@ -128,7 +157,7 @@ function App() {
             // - else shows LandingPage at "/home"
             exact
             path="/home"
-            authRedirect="/user"
+            authRedirect="/collection"
           >
             <LandingPage />
           </ProtectedRoute>

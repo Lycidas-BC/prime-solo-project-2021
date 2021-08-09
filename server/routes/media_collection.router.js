@@ -8,23 +8,68 @@ const { rejectUnauthenticated } = require('../modules/authentication-middleware'
  */
 router.get('/', rejectUnauthenticated, (req, res) => {
   // GET route code here
+  console.log("in GET collection");
   const orderBy = req.query.orderBy || req.query.orderBy === "" ? `"media"."${req.query.orderBy}"` : '"media"."id"';
 
   const queryText = `
-    SELECT "media"."id", "media"."item", "media"."distributor", "media"."format", "media"."cover_art", "media"."description", "media"."dimensions", "media"."shelf"
+    SELECT "media"."id", "media"."item", "media"."distributor", "media"."product_page", "media"."format", "media"."cover_art", "media"."description", "media"."dimensions", "media"."shelf"
     FROM "media"
     JOIN "user_media" ON "media"."id" = "user_media"."media_id"
     WHERE "user_media"."user_id" = $1
     ORDER BY $2;
   `;
-
   pool
     .query(queryText, [req.user.id, orderBy])
     .then((response) => {
-      res.send(response.data);
+      console.log([{columnHeaders: response.fields.map(element => {return element.name})}]);
+      if (response.rows.length === 0) {
+        res.send([{columnHeaders: response.fields.map(element => {return element.name})}]);
+      } else {
+        res.send(response.data);
+      }
     })
     .catch((err) => {
       console.log('GET media collection failed: ', err);
+      res.sendStatus(500);
+    });
+});
+
+/**
+ * GET media item details
+ */
+ router.get('/media_details/:mediaId', rejectUnauthenticated, (req, res) => {
+  // GET route code here
+  console.log("in GET media item details");
+  const mediaId = req.params.mediaId;
+
+  const queryText = `
+    SELECT "media"."id" AS "media_id", "media"."item", "media"."distributor", "media"."format", "media"."cover_art", "media"."description", "media"."dimensions", "media"."shelf"
+    FROM "media"
+    WHERE "media"."id" = $1;
+    
+    SELECT "movie"."id" AS "movie_id", "movie"."name", "movie"."tmdb_id"
+    FROM "media_movie"
+    JOIN "movie" ON "movie"."id" = "media_movie"."movie_id"
+    WHERE "media_movie"."media_id" = $1;
+    
+    SELECT "media_movie_note"."media_movie_id" ,"media_movie_note"."seen", "note"."note", "note"."date", "access"."type"
+    FROM "media_movie_note"
+    JOIN "note" ON "note"."id" = "media_movie_note"."note_id"
+    JOIN "access" ON "access"."id" = "note"."access_id"
+    WHERE "media_movie_note"."media_movie_id" = $1 AND "note"."user_id" = $2;
+  `;
+  pool
+    .query(queryText, [mediaId, req.user.id])
+    .then((response) => {
+      console.log(response.data);
+      if (response.rows.length === 0) {
+        res.send([{columnHeaders: response.fields.map(element => {return element.name})}]);
+      } else {
+        res.send(response.data);
+      }
+    })
+    .catch((err) => {
+      console.log('GET media item details failed: ', err);
       res.sendStatus(500);
     });
 });

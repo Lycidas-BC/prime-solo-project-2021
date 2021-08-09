@@ -4,6 +4,7 @@ import registrationSaga from './registration.saga';
 import userSaga from './user.saga';
 import tmdbSaga from './tmdb_api.saga';
 import webScraperSaga from './web_scraper.saga';
+import mediaCollectionSaga from './media_collection.saga';
 
 // rootSaga is the primary saga.
 // It bundles up all of the other sagas so our project can use them.
@@ -19,5 +20,6 @@ export default function* rootSaga() {
     userSaga(),
     tmdbSaga(),
     webScraperSaga(),
+    mediaCollectionSaga(),
   ]);
 }
