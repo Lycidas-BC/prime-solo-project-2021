@@ -158,15 +158,28 @@ pool
 /**
  * PUT to update item in media collection
  */
- router.put('/', (req, res) => {
-  // POST route code here
+ router.put('/:mediaId', (req, res) => {
+  // PUT route code here
 });
 
 /**
  * DELETE item from collection - this will remove art and notes associated with item
  */
  router.delete('/:mediaId', (req, res) => {
-  // POST route code here
+  // DELETE route code here
+  const userMediaDeleteQuery = `
+    DELETE FROM "user_media"
+    WHERE "user_id" = $1 AND "media_id" = $2;
+  `;
+  pool
+    .query(userMediaDeleteQuery, [req.user.id, req.params.mediaId])
+    .then((response) => {
+        res.sendStatus(201);
+    })
+    .catch((err) => {
+      console.log("DELETE failed", err);
+      res.sendStatus(500);
+    });
 });
 
 module.exports = router;
