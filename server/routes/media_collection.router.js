@@ -216,8 +216,9 @@ pool
 /**
  * DELETE item from collection - this will remove art and notes associated with item
  */
- router.delete('/:mediaId', (req, res) => {
+ router.delete('/:mediaId', rejectUnauthenticated, (req, res) => {
   // DELETE route code here
+  console.log("in delete route", req.user.id, req.params.mediaId);
   const userMediaDeleteQuery = `
     DELETE FROM "user_media"
     WHERE "user_id" = $1 AND "media_id" = $2;

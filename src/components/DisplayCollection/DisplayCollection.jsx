@@ -17,11 +17,9 @@ function DisplayCollection() {
     <section className="media" style={{ alignItems: "flex-end", display : "flex", flexWrap: "wrap" }}>
       {mediaCollection.map((element,index) => {
         return (
-          <section key={index}>
-            {element.columnHeaders === undefined ?
-            <DisplayCollectionItem mediaIn={element} addMedia={false} ></DisplayCollectionItem> :
-            ""}
-          </section>
+            element.columnHeaders === undefined ?
+            <DisplayCollectionItem key={index} mediaIn={element} addMedia={false} ></DisplayCollectionItem> :
+            ""
         )
       })}
       <DisplayCollectionItem mediaIn={"none"} addMedia={true} ></DisplayCollectionItem>

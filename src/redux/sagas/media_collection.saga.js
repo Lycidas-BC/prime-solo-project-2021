@@ -43,7 +43,7 @@ function* deleteMediaItem(action) {
     yield put({ type: 'GET_COLLECTION' });
   }
   catch (error) {
-    console.log('Error in addNewMediaItem:', error);
+    console.log('Error in deleteMediaItem:', error);
   };
 };
 
@@ -57,7 +57,7 @@ function* updateMediaItem(action) {
     yield put({ type: 'GET_COLLECTION' });
   }
   catch (error) {
-    console.log('Error in addNewMediaItem:', error);
+    console.log('Error in updateMediaItem:', error);
   };
 };
 

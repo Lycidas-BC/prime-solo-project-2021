@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { makeStyles } from "@material-ui/core/styles";
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -18,6 +19,7 @@ const useStyles = makeStyles((theme) => ({root: {flexGrow: 1},paper: {padding: t
 function DisplayCollectionItem({mediaIn, addMedia}) {
     const classes = useStyles();
     const history = useHistory();
+    const dispatch = useDispatch();
     const [confirmDelete, setConfirmDelete] = useState(false);
     let backgroundImageUrl = "url(images/frame.jpg)";
 
@@ -43,6 +45,9 @@ function DisplayCollectionItem({mediaIn, addMedia}) {
     // };
     const deleteItem = () => {
       console.log('in deleteItem');
+      console.log("mediaIn.id", mediaIn.id);
+      setConfirmDelete(false);
+      dispatch({ type: 'DELETE_MEDIA_ITEM', payload: {media_id: mediaIn.id} });
       // history.push(`/`);
     };
     const itemDetails = () => {
