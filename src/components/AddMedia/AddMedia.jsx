@@ -21,19 +21,40 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import SearchPage from '../SearchPage/SearchPage';
+import { TrendingUpOutlined } from '@material-ui/icons';
 
 function AddMedia() {
   const [productUrl, setProductUrl] = useState("");
   const [addMovie, setAddMovie] = useState(false);
-  const [displayProduct, setDisplayProduct] = useState(false);
+  const [addFeature, setAddFeature] = useState(false);
+  const [editArt, setEditArt] = useState(true);
+  const [editTitle, setEditTitle] = useState(true);
+  const [editDescription, setEditDescription] = useState(true);
+  const [displayWarning, setDisplayWarning] = useState(false);
   const dispatch = useDispatch();
   const configObject = useSelector(store => store.tmdbConfigReducer);
   const webScrape = useSelector(store => store.webScrapeReducer);
-  const [format, setFormat] = React.useState('DVD');
-  const [boxSet, setBoxSet] = React.useState(false);
+  const [format, setFormat] = useState('DVD');
+  const [boxSet, setBoxSet] = useState(false);
+  const [title, setTitle] = useState("");
   const [coverArt, setCoverArt] = useState("");
   const [description, setDescription] = useState("");
-  const [mediaMovieList, setMediaMovieList] = useState([]);
+  const [newFeature, setNewFeature] = useState({
+    name: "",
+    type: "",
+    description: ""
+  });
+  const [mediaItem, setMediaItem] = useState({
+    item: "",
+    distributor: "",
+    format: "",
+    cover_art: "",
+    description: "",
+    dimensions: "",
+    shelf: "",
+    movieList: [],
+    specialFeatureList: []
+  });
 
   const handleFormatChange = (event) => {
     setFormat(event.target.value);
@@ -57,6 +78,19 @@ function AddMedia() {
     });
   };
 
+  const updateTitle = () => {
+    setEditTitle(false);
+    setMediaItem({...mediaItem, item: title});
+  }
+  const updateCoverArt = () => {
+    setEditArt(false);
+    setMediaItem({...mediaItem, cover_art: coverArt});
+  }
+  const updateDescription = () => {
+    setEditDescription(false);
+    setMediaItem({...mediaItem, description: description});
+  }
+
   const addResultToMedia = (apiObject) => {
     let convertApiObject = {};
     console.log("apiObject", apiObject);
@@ -64,26 +98,62 @@ function AddMedia() {
       convertApiObject = {
         movie: apiObject.title,
         year: apiObject.release_date.substring(0,4),
-        image: `${configObject.images.base_url}${configObject.images.poster_sizes[2]}${apiObject.poster_path}`,
+        cover_art: `${configObject.images.base_url}${configObject.images.poster_sizes[2]}${apiObject.poster_path}`,
         description: apiObject.overview,
-        tmdbId: apiObject.id
+        tmdb_id: apiObject.id,
+        letterboxd_url: "",
+        imdb_url: "",
+        rottentomatoes_url: "",
+        amazon_url: ""
       };
     } else {
       convertApiObject = {
         movie: apiObject.name,
         year: apiObject.first_air_date.substring(0,4),
-        image: `${configObject.images.base_url}${configObject.images.poster_sizes[2]}${apiObject.poster_path}`,
+        cover_art: `${configObject.images.base_url}${configObject.images.poster_sizes[2]}${apiObject.poster_path}`,
         description: apiObject.overview,
-        tmdbId: apiObject.id
+        tmdb_id: apiObject.id,
+        letterboxd_url: "",
+        imdb_url: "",
+        rottentomatoes_url: "",
+        amazon_url: ""
       };
     }
-    setMediaMovieList([...mediaMovieList, convertApiObject]);
-    console.log('mediaMovies', mediaMovieList);
+    setMediaItem({...mediaItem, movieList: [...mediaItem.movieList, convertApiObject]});
+    setAddMovie(false);
   }
-  
+
+  const addFeatureToList = () => {
+    setMediaItem({...mediaItem, specialFeatureList: [...mediaItem.specialFeatureList, newFeature]});
+    setNewFeature({
+      name: "",
+      type: "",
+      description: ""
+    });
+    setAddFeature(false);
+  }
+    
+  const addToCollection = () => {
+    const localFormat = (boxSet ? `${format} box`: `${format}`);
+    setMediaItem({...mediaItem, format: localFormat});
+    console.log("mediaItem", mediaItem);
+    if (mediaItem.item !== "" && mediaItem.movieList.length !== 0) {
+      dispatch({
+        type: 'ADD_MEDIA_ITEM',
+        payload: mediaItem
+      });
+    } else {
+      setDisplayWarning(true);
+    }
+  }
+
   console.log('webScrape', webScrape);
   return (
-    <section style={{margin: "5%"}}>
+    <section style={{margin: "5%"}} onMouseMove={() => setDisplayWarning(false)}>
+      <div style={{color: "red"}}>
+        <Button style={{ width: "150px", height: "55px", marginBottom: "20px" }} variant="contained" color="primary" onClick={addToCollection}>Add to collection</Button>
+        {displayWarning ? "please complete the required fields" : ""}
+      </div>
     <TextField style={{ width: "400px" }} id="product-url" label="productUrl" type="productUrl" variant="outlined" value={productUrl} onChange={(event) => setProductUrl(event.target.value)}/>
     <Button style={{ width: "150px", height: "55px" }} variant="contained" color="primary" onClick={scrape}>Pull data from website</Button>
     {
@@ -169,19 +239,46 @@ function AddMedia() {
           />
           </FormGroup>
         </section>
+        <section className={"title"}>
+          {
+            editTitle ?
+            <div>
+              <h3>Title</h3>
+              <TextField style={{ width: "200px" }} id="title" label="title" type="title" variant="outlined" value={title} onChange={(event) => setTitle(event.target.value)}/>
+              <Button onClick={() => updateTitle()}><DoneIcon /></Button>
+            </div> :
+            <h3>{title} <Button onClick={() => setEditTitle(true)}><EditIcon /></Button></h3>
+          }
+        </section>
         <section className={"coverArt"}>
           <h3>Cover Art</h3>
-          <TextField style={{ width: "200px" }} id="coverArt" label="coverArt" type="coverArt" variant="outlined" value={coverArt} onChange={(event) => setCoverArt(event.target.value)}/>
-          <Button onClick={() => addCoverArt}><AddIcon /></Button>
+          {
+            editArt ?
+            <div>
+              <TextField style={{ width: "200px" }} id="coverArt" label="cover art" type="coverArt" variant="outlined" value={coverArt} onChange={(event) => setCoverArt(event.target.value)}/>
+              <Button onClick={() => updateCoverArt()}><AddIcon /></Button>
+            </div> :
+            <div>
+              <img src={coverArt} alt={`${title} cover`} width="500" height="600"/>
+              <Button onClick={() => setEditArt(true)}><EditIcon /></Button>
+            </div>
+          }
         </section>
         <section>
           <h3>Description</h3>
-          <TextField style={{ width: "400px" }} id="description" label="description" type="description" variant="outlined" value={description} onChange={(event) => setDescription(event.target.value)}/>
+          {
+            editDescription ?
+            <div>
+              <TextField style={{ width: "400px" }} multiline id="description" label="description" type="description" variant="outlined" value={description} onChange={(event) => setDescription(event.target.value)}/>
+              <Button onClick={() => updateDescription()}><DoneIcon /></Button>
+            </div>:
+            <p>{description}<Button onClick={() => setEditDescription(true)}><EditIcon /></Button></p>
+          }
         </section>
         <section>
           <h3>{boxSet ? "Movie List" : "Movie"}</h3>
           <section className="movies" style={{ alignItems: "flex-end", display : "flex", flexWrap: "wrap" }}>
-            {mediaMovieList.map((element,index) => {
+            {mediaItem.movieList.map((element,index) => {
               return (
                 <MovieItem key={index} movieIn={element} addMovieScreen={false} ></MovieItem>
               )
@@ -197,15 +294,29 @@ function AddMedia() {
             <Button style={{ width: "24%", height: "24%" }} onClick={() => setAddMovie(!addMovie)}><MovieItem movieIn={"none"} addMovieScreen={true} addMovieIcon={true}></MovieItem></Button>
           }
         </section>
+        <section className="specialFeatures" >
+          <h3>Special Features</h3>
+            <ul>
+            {mediaItem.specialFeatureList.map((feature,index) => {
+              return (
+                <li>{feature.name !== "" ? <b>{feature.name}: </b> : ""}{feature.type !== "" ? <span>( <i>{feature.type}</i> ) </span> : ""}{feature.description}</li>
+              )
+            })}
+          {
+            addFeature ?
+            <li>
+              <div><Button onClick={() => setAddFeature(!addFeature)}><RemoveIcon /></Button></div>
+              <TextField style={{ width: "200" }} id="specialFeatureName" label="name (optional)" type="specialFeatureName" variant="outlined" value={newFeature.name} onChange={(event) => setNewFeature({...newFeature, name: event.target.value})}/>
+              <TextField style={{ width: "200" }} id="specialFeatureType" label="type (optional)" type="specialFeatureType" variant="outlined" value={newFeature.type} onChange={(event) => setNewFeature({...newFeature, type: event.target.value})}/>
+              <TextField style={{ width: "400px" }} id="specialFeatureDescription" label="description" type="specialFeatureDescription" variant="outlined" value={newFeature.description} onChange={(event) => setNewFeature({...newFeature, description: event.target.value})}/>
+              <Button onClick={() => addFeatureToList()}><DoneIcon /></Button>
+            </li> :
+            <li><Button style={{ width: "24%", height: "24%" }} onClick={() => setAddFeature(!addFeature)}><AddIcon /></Button></li>
+          }
+          </ul>
+        </section>
       </div>
     }
-    {/* <div>
-      <button onClick={() => setAddItemToMedia(!addItemToMedia)}>
-        {addItemToMedia ?
-        <span><AddBoxIcon />Adding Item</span>:
-        <AddBoxIcon />}
-      </button>
-    </div> */}
     </section>
   );
 };

@@ -13,7 +13,7 @@ function MovieItem({movieIn, addMovieScreen, addMovieIcon}) {
 
     if (addMovieScreen) {
       movieIn = {
-        image: "/images/addImage.png"
+        cover_art: "/images/addImage.png"
       }
     }
     let itemStyle = {height: "100%", width: "24%", padding: "20px 10px" };
@@ -30,7 +30,7 @@ function MovieItem({movieIn, addMovieScreen, addMovieIcon}) {
         className={movieIn.movie}
         component="img"
         alt={movieIn.movie}
-        src={movieIn.image}
+        src={movieIn.cover_art}
         title={movieIn.movie}
       />
       <br />

@@ -21,11 +21,10 @@ router.get('/', rejectUnauthenticated, (req, res) => {
   pool
     .query(queryText, [req.user.id, orderBy])
     .then((response) => {
-      console.log([{columnHeaders: response.fields.map(element => {return element.name})}]);
       if (response.rows.length === 0) {
         res.send([{columnHeaders: response.fields.map(element => {return element.name})}]);
       } else {
-        res.send(response.data);
+        res.send(response.rows);
       }
     })
     .catch((err) => {
@@ -86,9 +85,9 @@ router.post('/media', (req, res) => {
   `;
 pool
   .query(mediaInsertQuery, [req.body.item, req.body.distributor, req.body.format, req.body.cover_art, req.body.description, req.body.dimensions, req.body.shelf])
-  .then((response1) => {
+  .then((response) => {
     // update the user_media join table with the user id and newly-created media id
-    const newMediaId = response1.rows[0].id;
+    const newMediaId = response.rows[0].media_id;
     const userMediaInsertQuery = `
       INSERT INTO "user_media" ("user_id", "media_id")
       VALUES ($1, $2);
@@ -96,7 +95,7 @@ pool
   pool
     .query(userMediaInsertQuery, [req.user.id, newMediaId])
     .then(() => {
-      req.status(201).send({newMediaId: newMediaId});
+      res.status(201).send({newMediaId: newMediaId});
     })
     .catch((err) => {
       console.log('POST to media succeeded, but insert to user_media failed: ', err);
@@ -112,7 +111,7 @@ pool
 /**
  * POST media movies
  */
- router.post('/movie/:mediaId', (req, res) => {
+ router.post('/movie/:mediaId', rejectUnauthenticated, (req, res) => {
    const mediaId = req.params.mediaId;
    const newMovieList = req.body.movieList;
    let counter = 0;
@@ -122,33 +121,41 @@ pool
       VALUES ($1, $2, $3, $4, $5, $6)
       ON CONFLICT ("tmdb_id")
       DO NOTHING;
-
-      SELECT "id"
-      FROM "movie"
-      WHERE "tmdb_id" = $2;
     `;
 
     pool
-      .query(movieInsertIfNotExistQuery, [newMovie.name, newMovie.tmdb_id, newMovie.letterboxd_url, newMovie.imdb_url, newMovie.rottentomatoes_url, newMovie.amazon_url])
-      .then((response) => {
-        console.log('response.rows', response.rows);
-        const movieId = response.rows[0].id;
-        const mediaMovieInsertQuery = `
-          INSERT INTO "media_movie" ("movie_id", "media_id", "cover_art", "length")
-          VALUES($1, $2, $3, $4);
+      .query(movieInsertIfNotExistQuery, [newMovie.movie, newMovie.tmdb_id, newMovie.letterboxd_url, newMovie.imdb_url, newMovie.rottentomatoes_url, newMovie.amazon_url])
+      .then(() => {
+        const getMovieIdQuery = `
+          SELECT "id"
+          FROM "movie"
+          WHERE "tmdb_id" = $1;
         `;
         pool
-          .query(mediaMovieInsertQuery, [movieId, mediaId, newMovie.cover_art, newMovie.length])
+          .query(getMovieIdQuery, [newMovie.tmdb_id])
           .then((response) => {
-            counter++;
-            if (counter === newMovieList.length) {
-              res.sendStatus(201);
-            }
+            const movieId = response.rows[0].id;
+            const mediaMovieInsertQuery = `
+              INSERT INTO "media_movie" ("movie_id", "media_id", "cover_art", "length")
+              VALUES($1, $2, $3, $4);
+            `;
+            pool
+              .query(mediaMovieInsertQuery, [movieId, mediaId, newMovie.cover_art, newMovie.length])
+              .then((response) => {
+                counter++;
+                if (counter === newMovieList.length) {
+                  res.sendStatus(201);
+                }
+              })
+              .catch((err) => {
+                console.log("movie_media table insert failed", err);
+                res.sendStatus(500);
+              });
           })
           .catch((err) => {
-            console.log("movie_media table insert failed", err);
+            console.log("failed to get movie id from movie table", err);
             res.sendStatus(500);
-          });
+          })
       })
       .catch((err) => {
         console.log("movie table insert failed", err);
@@ -160,7 +167,7 @@ pool
 /**
  * POST media specialfeatures
  */
- router.post('/specialfeature/:mediaId', (req, res) => {
+ router.post('/specialfeature/:mediaId', rejectUnauthenticated, (req, res) => {
   const mediaId = req.params.mediaId;
   const specialFeatureList = req.body.specialFeatureList;
   let counter = 0;
@@ -174,7 +181,6 @@ pool
    pool
      .query(specialFeatureInsertQuery, [newSpecialFeature.name, newSpecialFeature.type, newSpecialFeature.description])
      .then((response) => {
-       console.log('response.rows', response.rows);
        const specialFeatureId = response.rows[0].id;
        const mediaMovieInsertQuery = `
          INSERT INTO "media_specialfeature" ("media_id", "specialfeature_id")
