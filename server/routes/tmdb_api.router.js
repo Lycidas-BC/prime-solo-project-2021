@@ -90,10 +90,12 @@ router.get('/searchSpecific', (req, res) => {
     let searchText = req.query.q;
     // release year
     let year = req.query.year;
+    // search result page
+    let page = req.query.page;
     // initialize array to grab movies which match name and year
     let matchList = [];
     axios.get(
-        `https://api.themoviedb.org/3/search/${searchType}?api_key=${process.env.TMDB_API_KEY}&query=${searchText}&page=1&include_adult=false`
+        `https://api.themoviedb.org/3/search/${searchType}?api_key=${process.env.TMDB_API_KEY}&query=${searchText}&page=${page}&include_adult=false`
     )
     .then(response => {
         console.log('in searchSpecific API');
@@ -110,7 +112,7 @@ router.get('/searchSpecific', (req, res) => {
             }
         }
         console.log("matchList", matchList);
-        res.status(201).send({tmdb_id: matchList});
+        res.status(201).send({tmdb_id: matchList, total_pages: searchResultObject.total_pages});
     })
     .catch(err => {
         console.log(`error searchSpecific through API`, err);

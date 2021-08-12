@@ -18,64 +18,86 @@ const isValidHttpUrl = (string) => {
   return url.protocol === "http:" || url.protocol === "https:";
 }
 
+// get film length from film url
+const getFilmLength = (productUrl) => {
+  if (isValidHttpUrl(productUrl)) {
+    axios.get(
+      `${productUrl}`
+    )
+    .then(response => {
+      const $ = cheerio.load(response.data);
+      $('.film-meta-list').find('li').each((_idx, el) => {
+        if ($($(el).find('meta')).length > 0) {
+           if ($($(el).find('meta')).attr('itemprop') === "duration"){
+            let length = $(el).text();
+            console.log("length", length);
+            return length;
+          } 
+        }
+      });
+      return "";
+    })
+    .catch(err => {
+      return "";
+    })
+  } else {
+    return "";
+  }
+}
+
 //scrape data from Criterion film page
-const scrapeCriterionFilmData = (siteHtml) => {
+const scrapeCriterionFilmData = (siteHtml, productUrl) => {
   const $ = cheerio.load(siteHtml);
-  const primaryTitle = $('.header__primarytitle').text();
-  const boxArt = $($('.product-box-art').children('img')[0]).attr('src');
-  const productSummary = $($('.product-summary').children('p')[0]).text();
-  const metaList = [];
+  const item = $('.header__primarytitle').text();
+  const cover_art = $($('.product-box-art').children('img')[0]).attr('src');
+  const description = $($('.product-summary').children('p')[0]).text();
+  let year = "";
+  let length = "";
   const featuresList = [];
   $('.film-meta-list').find('li').each((_idx, el) => {
-    // console.log(_idx, 'html', $(el).html().trim());
-    // initialize array to collect data from film-met-list
-    const elementArray = [];
-
-    elementArray.push(_idx);
-    if ($(el).attr('itemtype') !== undefined) {
-      elementArray.push($(el).attr('itemtype'))
-    }
-    if ($($(el).find('span')).length > 0) {
-      elementArray.push($($(el).find('span')).attr('itemprop'));
-      elementArray.push($($(el).find('span')).text().trim());
-    }
     if ($($(el).find('meta')).length > 0) {
-      elementArray.push($($(el).find('meta')).attr('itemprop'));
-      elementArray.push($(el).text());
+      if ($($(el).find('meta')).attr('itemprop') === "datePublished"){
+        year = $(el).text()
+      } else if ($($(el).find('meta')).attr('itemprop') === "duration"){
+        length = $(el).text()
+      } 
     }
-    if ($($(el).find('b')).length > 0) {
-      elementArray.push($($(el).find('b')).html().trim());
-    }
-    if ($(el).children().length === 0) {
-      elementArray.push($(el).html().trim());
-    }
-    metaList.push(elementArray);
   });
   // console.log('ul', $('.product-features-list').find('ul'));
   $('.product-features-list').last().find('li').each((_idx, el) => {
     const featureText = $(el).text();
     featuresList.push(featureText);
   });
-  // console.log('boxArt', boxArt);
+  // console.log('cover_art', cover_art);
   // console.log('metaList', metaList);
   // console.log('featuresList', featuresList);
   const filmScrapeObject = {
-    type: "criterion film",
-    primaryTitle: primaryTitle,
-    productSummary: productSummary,
-    boxArt: boxArt,
-    metaList: metaList,
+    type: "film",
+    distributor: "Criterion Collection",
+    item: item,
+    description: description,
+    cover_art: cover_art,
+    movieList: [{
+      movie: item,
+      year: year,
+      length: length,
+      cover_art: cover_art,
+      description: description,
+      product_url: productUrl
+    }],
     featuresList: featuresList,
   }
   return filmScrapeObject;
 }
 
+  //   setMediaItem({...mediaItem, movieList: webScrape.movieList});
+  //   setMediaItem({...mediaItem, specialFeatureList: webScrape.featuresList});
 //scrape data from Criterion box set page
 const scrapeCriterionSetData = (siteHtml) => {
   const $ = cheerio.load(siteHtml);
-  const primaryTitle = $('.header__primarytitle').text();
-  const boxArt = $($('.product-box-art').children('img')[0]).attr('src');
-  const productSummary = $($('.product-summary').children('p')[0]).text();
+  const item = $('.header__primarytitle').text();
+  const cover_art = $($('.product-box-art').children('img')[0]).attr('src');
+  const description = $($('.product-summary').children('p')[0]).text();
   const movieList = [];
   const metaList = [];
   const featuresList = [];
@@ -114,11 +136,12 @@ const scrapeCriterionSetData = (siteHtml) => {
     const cover_art = $($(el).find('img')).attr('src');
     const description = $($(el).find('.film-set-descrip')).text().trim();
     const product_url = $($(el).parents()).attr('href');
-
+    // const length = getFilmLength(product_url);
 
     movieList.push({
       movie: movie,
       year: year,
+      length: "length",
       cover_art: cover_art,
       description: description,
       product_url: product_url
@@ -126,11 +149,12 @@ const scrapeCriterionSetData = (siteHtml) => {
   });
   
   const setScrapeObject = {
-    type: "criterion set",
-    primaryTitle: primaryTitle,
-    productSummary: productSummary,
+    type: "set",
+    item: item,
+    distributor: "Criterion Collection",
+    description: description,
     movieList: movieList,
-    boxArt: boxArt,
+    cover_art: cover_art,
     metaList: metaList,
     featuresList: featuresList,
   }
@@ -147,7 +171,7 @@ router.get('/scrapeProductPage', (req, res) => {
     .then(response => {
       if (productUrl.toLowerCase().includes('criterion.com')) {
         if (productUrl.toLowerCase().includes('/films/')) {
-          res.status(201).send(scrapeCriterionFilmData(response.data));
+          res.status(201).send(scrapeCriterionFilmData(response.data, productUrl));
         } else if (productUrl.toLowerCase().includes('/boxsets/')) {
           res.status(201).send(scrapeCriterionSetData(response.data));
         } else {
