@@ -19,31 +19,33 @@ const isValidHttpUrl = (string) => {
 }
 
 // get film length from film url
-const getFilmLength = (productUrl) => {
+router.get('/scrapeLength', (req, res) => {
+  const productUrl = String(decodeURIComponent(req.query.productUrl));
   if (isValidHttpUrl(productUrl)) {
     axios.get(
       `${productUrl}`
     )
     .then(response => {
       const $ = cheerio.load(response.data);
+      let length = "length not found"
       $('.film-meta-list').find('li').each((_idx, el) => {
         if ($($(el).find('meta')).length > 0) {
            if ($($(el).find('meta')).attr('itemprop') === "duration"){
-            let length = $(el).text();
+            length = $(el).text();
             console.log("length", length);
-            return length;
           } 
         }
       });
-      return "";
+      res.status(201).send(length);
+
     })
     .catch(err => {
-      return "";
-    })
+      console.log(`error scraping product information from website`, err);
+      res.sendStatus(err);    })
   } else {
-    return "";
+    res.status(400).send('Not a valid HTTP or HTTPS url');
   }
-}
+})
 
 //scrape data from Criterion film page
 const scrapeCriterionFilmData = (siteHtml, productUrl) => {
@@ -90,8 +92,6 @@ const scrapeCriterionFilmData = (siteHtml, productUrl) => {
   return filmScrapeObject;
 }
 
-  //   setMediaItem({...mediaItem, movieList: webScrape.movieList});
-  //   setMediaItem({...mediaItem, specialFeatureList: webScrape.featuresList});
 //scrape data from Criterion box set page
 const scrapeCriterionSetData = (siteHtml) => {
   const $ = cheerio.load(siteHtml);
@@ -136,12 +136,11 @@ const scrapeCriterionSetData = (siteHtml) => {
     const cover_art = $($(el).find('img')).attr('src');
     const description = $($(el).find('.film-set-descrip')).text().trim();
     const product_url = $($(el).parents()).attr('href');
-    // const length = getFilmLength(product_url);
 
     movieList.push({
       movie: movie,
       year: year,
-      length: "length",
+      length: "empty",
       cover_art: cover_art,
       description: description,
       product_url: product_url

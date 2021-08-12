@@ -27,6 +27,8 @@ function* scrapeWebsite(action) {
         total_pages = searchResults.data.total_pages;
         page++;
       }
+      const scrapeLength = yield axios.get(`/web_scraper/scrapeLength/?productUrl=${encodeURIComponent(scrape.data.movieList[index].product_url)}`);
+      scrape.data.movieList[index].length = scrapeLength.data;
     }
     console.log("scrape.data", scrape.data);
     yield put({ type: 'SET_WEB_SCRAPE', payload: scrape.data });

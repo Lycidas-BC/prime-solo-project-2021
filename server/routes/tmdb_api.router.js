@@ -82,7 +82,7 @@ router.get('/search', (req, res) => {
 
 //attempt to find specific tmdb id using name and year
 router.get('/searchSpecific', (req, res) => {
-    console.log('in tmdb searchSpecific', req.query);
+    console.log('in tmdb searchSpecific');
 
     // What type of search? movie, tv, person, multi, keyword
     let searchType = req.query.type;
@@ -98,7 +98,7 @@ router.get('/searchSpecific', (req, res) => {
         `https://api.themoviedb.org/3/search/${searchType}?api_key=${process.env.TMDB_API_KEY}&query=${searchText}&page=${page}&include_adult=false`
     )
     .then(response => {
-        console.log('in searchSpecific API');
+        console.log('searchSpecific API successful');
         let searchResultObject = response.data;
         if (searchType === 'movie' || searchType === 'tv') {
             searchResultObject.results.map((element) => {
@@ -111,7 +111,6 @@ router.get('/searchSpecific', (req, res) => {
                 matchList.push(match.id)
             }
         }
-        console.log("matchList", matchList);
         res.status(201).send({tmdb_id: matchList, total_pages: searchResultObject.total_pages});
     })
     .catch(err => {
