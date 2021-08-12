@@ -35,7 +35,7 @@ CREATE TABLE "media" (
 CREATE TABLE "movie" (
 	"id" serial NOT NULL,
 	"name" varchar(220) NOT NULL,
-	"movie_or_tv" varchar(50),
+	"movie_or_tv" varchar(50) DEFAULT 'movie',,
 	"tmdb_id" integer UNIQUE,
 	"letterboxd_url" varchar(500),
 	"imdb_url" varchar(500),

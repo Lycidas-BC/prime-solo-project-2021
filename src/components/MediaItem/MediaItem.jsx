@@ -188,6 +188,7 @@ function MediaItem() {
 //         }
 //     ]
 // }
+console.log("testestestest");
   return (
     <Grid item style={{height: "100%", width: "100%", padding: "20px 10px" }}>
       {mediaItemReducer === "empty" ? "" :
@@ -195,7 +196,7 @@ function MediaItem() {
         <Paper className={classes.paper}>
             <h2><em>{mediaItemReducer.mediaDetails.item}</em></h2>
         <CardMedia
-        style={{maxHeight: "90%", maxWidth: "90%", margin: "auto"/*, padding: "10% 7% 10% 7%", backgroundImage: "url(images/frame.jpg)", backgroundRepeat: "no-repeat", backgroundSize: "100% 100%" */}}
+        style={{maxHeight: "90%", maxWidth: "90%" }}
         className={"media"}
         component="img"
         alt={mediaItemReducer.mediaDetails.item}

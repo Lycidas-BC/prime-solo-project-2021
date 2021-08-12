@@ -1,111 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { makeStyles } from "@material-ui/core/styles";
 import { useParams } from 'react-router-dom';
-import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
+import { useHistory } from 'react-router-dom';
 import Grid from "@material-ui/core/Grid";
 import CardMedia from '@material-ui/core/CardMedia';
-import Select from '@material-ui/core/Select';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
 import SearchItem from '../SearchItem/SearchItem';
 import './BrowseSearchResults';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1
-  },
-  paper: {
-    padding: theme.spacing(2),
-    width: "50%",
-    textAlign: "left",
-    color: theme.palette.text.secondary,
-    justifyContent: "left",
-    alignItems: "flex-end" 
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-})); // materialUI stuff
-
 function BrowseSearchResults() {
-  const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
   const { type, tmdbId } = useParams();
   const tmdbDetailsReducer = useSelector(store => store.tmdbDetailsReducer);
-  const [role, setRole] = useState("Acting");
-  const freshLoad = tmdbDetailsReducer.type === type;
-  const [triggerRefresh, setTriggerRefresh] = useState(freshLoad);
   const configObject = useSelector(store => store.tmdbConfigReducer);
-  let uniqueRoles = [];
 
   useEffect(() => {
     dispatch({ type: 'API_DETAILS', payload: {tmdbId: tmdbId, searchType: type} });
   }, []);
 
-  if (tmdbDetailsReducer !== "empty" && type === "person") {
-    uniqueRoles = [...new Set(tmdbDetailsReducer.credits.crew.map(item => item.department))];
-    if (tmdbDetailsReducer.credits.cast.length > 0 ) {
-      uniqueRoles.unshift("Acting");
-    }
+  if (type === "person") {
+    history.push(`/search/0/${type}/${tmdbId}`);
   }
-
-  if ( tmdbDetailsReducer.type === type && !triggerRefresh ) {
-    setRole(uniqueRoles[0]);
-    setTriggerRefresh(true);
-  }
+  
   console.log("tmdbDetailsReducer", tmdbDetailsReducer);
   return (
-    <section>{tmdbDetailsReducer === "empty" || !triggerRefresh ? "" :
+    <section>{tmdbDetailsReducer === "empty" ? "" :
     <section>
-    { type === "person" ?
-    <section>
-      <FormControl className={classes.formControl}>
-        <InputLabel id="demo-simple-select-label">Role</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={role}
-          onChange={(event) => setRole(event.target.value)}
-        >
-          {
-            uniqueRoles.map((element,index) => {
-              return (<MenuItem key={index} value={element}>{element}</MenuItem>)
-            })
-          }
-        </Select>
-      </FormControl>
-      <Grid item style={{height: "100%", width: "100%", padding: "20px 10px" }}>
-        {
-          role === "Acting" ? 
-          <div>
-            <Grid container spacing={2} style={{ alignItems: "flex-end" }}>
-              {tmdbDetailsReducer.credits.cast.sort((a, b) => {return b.popularity - a.popularity;}).map((item,index) => {
-                  return (
-                      <SearchItem key={index} responseItem={item} genericSearch={true} manualType={"movie"}></SearchItem>
-                  )
-              })}
-          </Grid>
-          </div>:
-          <div>
-            <Grid container spacing={2} style={{ alignItems: "flex-end" }}>
-              {tmdbDetailsReducer.credits.crew.filter((object) => object.department === role).sort((a, b) => {return b.popularity - a.popularity;}).map((item,index) => {
-                  return (
-                      <SearchItem key={index} responseItem={item} genericSearch={true} manualType={"movie"}></SearchItem>
-                  )
-              })}
-          </Grid>
-          </div>
-        }
-      </Grid>
-    </section> :
-    type === "movie" ? 
+    { type === "movie" ? 
     <section>
       <Grid item style={{height: "100%", width: "100%", padding: "20px 10px" }}>
         <h1>{tmdbDetailsReducer.title} ({tmdbDetailsReducer.release_date.substring(0,4)})</h1>
@@ -118,7 +39,8 @@ function BrowseSearchResults() {
           title={tmdbDetailsReducer.title}
         />
         <p><b>Length:</b> {tmdbDetailsReducer.runtime} mins</p>
-        <p>{tmdbDetailsReducer.overview}</p>
+        <p><b>Overview: </b>{tmdbDetailsReducer.overview}</p>
+        <p><b>IMDB page:</b> <a href={`https://www.imdb.com/title/${tmdbDetailsReducer.imdb_id}`}>{`https://www.imdb.com/title/${tmdbDetailsReducer.imdb_id}`}</a></p>
         <h2>Cast:</h2>
         <div>
           <Grid container spacing={2} style={{ alignItems: "flex-end" }}>

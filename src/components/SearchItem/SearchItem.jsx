@@ -19,9 +19,14 @@ function SearchItem({responseItem, addResultToMedia, genericSearch, manualType, 
     const itemType = (responseItem.media_type ? responseItem.media_type : manualType);
     const configObject = useSelector(store => store.tmdbConfigReducer);
 
-    const getDetails = (type) => {
-      console.log('in getDetails', type, responseItem.id);
-      history.push(`/search/${type}/${responseItem.id}`);
+    const getDetails = (typeIn) => {
+      console.log('in getDetails', typeIn, responseItem.id);
+      dispatch({ type: 'SET_TMDB_DETAILS', payload: "empty" });
+      if (typeIn === "person"){
+        history.push(`/search/0/${typeIn}/${responseItem.id}`);
+      } else {
+        history.push(`/search/1/${typeIn}/${responseItem.id}`);
+      }
     };
     
     return (
