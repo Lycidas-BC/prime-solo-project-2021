@@ -62,22 +62,33 @@ router.get('/', rejectUnauthenticated, (req, res) => {
 });
 
 /**
- * is movie in media collection?
+ * is any movie from the list in user media collection?
  */
  router.get('/searchCollection/:tmdbId', rejectUnauthenticated, (req, res) => {
   // GET route code here
   console.log("search collection for movie");
+  const tmdbIdList = decodeURIComponent(req.params.tmdbId).split(",");
 
-  const queryText = `
-    SELECT "media"."id" AS "media_id"
+  let queryText = `
+    SELECT "media"."id" AS "media_id", "media"."item", "media"."distributor", "media"."product_page", "media"."format", "media"."cover_art", "media"."description", "media"."dimensions", "media"."shelf", "movie"."tmdb_id"
     FROM "media_movie"
     JOIN "movie" ON "movie"."id" = "media_movie"."movie_id"
     JOIN "media" ON "media"."id" = "media_movie"."media_id"
     JOIN "user_media" ON "media"."id" = "user_media"."media_id"
-    WHERE "movie"."tmdb_id" = $1 AND "user_media"."user_id" = $2;
+    WHERE "user_media"."user_id" = $1 AND
+    (
   `;
+  for (const index in tmdbIdList) {
+    queryText += `"movie"."tmdb_id" = $${Number(index)+2}`;
+    if (Number(index)+1 < tmdbIdList.length) {
+      queryText += ` OR
+      `;
+    }
+  }
+  queryText += `);`;
+  const queryParams = [req.user.id].concat(tmdbIdList);
   pool
-    .query(queryText, [req.params.tmdbId, req.user.id])
+    .query(queryText, queryParams)
     .then((response) => {
       if (response.rows.length === 0) {
         res.send([{columnHeaders: response.fields.map(element => {return element.name})}]);

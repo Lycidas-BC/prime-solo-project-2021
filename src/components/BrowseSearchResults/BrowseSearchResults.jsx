@@ -13,9 +13,11 @@ function BrowseSearchResults() {
   const { type, tmdbId } = useParams();
   const tmdbDetailsReducer = useSelector(store => store.tmdbDetailsReducer);
   const configObject = useSelector(store => store.tmdbConfigReducer);
+  const itemInCollection = useSelector(store => store.itemInCollection);
 
   useEffect(() => {
     dispatch({ type: 'API_DETAILS', payload: {tmdbId: tmdbId, searchType: type} });
+    dispatch({ type: 'SEARCH_COLLECTION', payload: {tmdbId: tmdbId} });
   }, []);
 
   if (type === "person") {
@@ -23,6 +25,7 @@ function BrowseSearchResults() {
   }
   
   console.log("tmdbDetailsReducer", tmdbDetailsReducer);
+  console.log("itemInCollection", itemInCollection);
   return (
     <section>{tmdbDetailsReducer === "empty" ? "" :
     <section>
@@ -41,27 +44,27 @@ function BrowseSearchResults() {
         <p><b>Length:</b> {tmdbDetailsReducer.runtime} mins</p>
         <p><b>Overview: </b>{tmdbDetailsReducer.overview}</p>
         <p><b>IMDB page:</b> <a href={`https://www.imdb.com/title/${tmdbDetailsReducer.imdb_id}`}>{`https://www.imdb.com/title/${tmdbDetailsReducer.imdb_id}`}</a></p>
-        <h2>Cast:</h2>
-        <div>
-          <Grid container spacing={2} style={{ alignItems: "flex-end" }}>
-            {tmdbDetailsReducer.credits.cast.map((item,index) => {
-                return (
-                    <SearchItem key={index} responseItem={item} genericSearch={true} manualType={"person"} role={item.character}></SearchItem>
-                )
-            })}
-        </Grid>
-        </div>
-        <h2>Crew:</h2>
-        <div>
-          <Grid container spacing={2} style={{ alignItems: "flex-end" }}>
-            {tmdbDetailsReducer.credits.crew.map((item,index) => {
-                return (
-                    <SearchItem key={index} responseItem={item} genericSearch={true} manualType={"person"} role={item.job}></SearchItem>
-                )
-            })}
-        </Grid>
-        </div>
       </Grid>
+      <div style={{clear: "left"}}>
+        <h2>Cast:</h2>
+        <Grid container spacing={2} style={{ alignItems: "flex-end" }}>
+          {tmdbDetailsReducer.credits.cast.map((item,index) => {
+              return (
+                  <SearchItem key={index} responseItem={item} genericSearch={true} manualType={"person"} role={item.character}></SearchItem>
+              )
+          })}
+      </Grid>
+      </div>
+      <h2>Crew:</h2>
+      <div>
+        <Grid container spacing={2} style={{ alignItems: "flex-end" }}>
+          {tmdbDetailsReducer.credits.crew.map((item,index) => {
+              return (
+                  <SearchItem key={index} responseItem={item} genericSearch={true} manualType={"person"} role={item.job}></SearchItem>
+              )
+          })}
+      </Grid>
+      </div>
     </section> :
     ""}
     </section>}

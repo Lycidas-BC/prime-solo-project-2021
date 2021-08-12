@@ -27,10 +27,23 @@ router.get('/details/:tmdbId', (req, res) => {
         `https://api.themoviedb.org/3/${searchType}/${tmdbId}?api_key=${process.env.TMDB_API_KEY}&language=en-US&append_to_response=credits`
     )
     .then(response => {
-        console.log('GET details from API successful', response.data);
+        console.log('GET details from API successful');
         let details = response.data;
         details.type = searchType;
-        res.send(response.data);
+        if (searchType === "person") {
+            let tmdbIdList = [];
+            const castList = details.credits.cast.map((element)=> {return element.id});
+            const crewList = details.credits.crew.map((element)=> {return element.id});
+            if (castList.length !== 0 && crewList.length !== 0) {
+                tmdbIdList = tmdbIdList.concat(castList);
+                tmdbIdList = tmdbIdList.concat(crewList);
+                let uniqueTmdbIds = [...new Set(tmdbIdList)].join(",");
+                details.tmdbIdList = uniqueTmdbIds;
+            }
+        } else {
+            details.tmdbIdList = `${tmdbId}`;
+        }
+        res.send(details);
     })
     .catch(err => {
         console.log(`error getting details from API`, err);

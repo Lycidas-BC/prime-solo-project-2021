@@ -35,11 +35,11 @@ function* getMediaItemDetails(action) {
     console.log('Error in getMediaItemDetails:', error);
   };
 };
-///searchCollection/:tmdbId
+///searchCollection/:tmdbId - not sure if I still need this
 function* searchMediaCollection(action) {
   try {
-    yield axios.get(`/media_collection/searchCollection/${action.payload.tmdbId}`);
-    yield put({ type: 'ITEM_IN_COLLECTION' });
+    const mediaIdList = yield axios.get(`/media_collection/searchCollection/${action.payload.tmdbId}`);
+    yield put({ type: 'ITEM_IN_COLLECTION', payload: mediaIdList.data });
   }
   catch (error) {
     console.log('Error in searchMediaCollection:', error);

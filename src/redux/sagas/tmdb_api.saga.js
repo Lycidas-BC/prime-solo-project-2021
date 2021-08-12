@@ -14,9 +14,11 @@ function* getTmdbConfiguration() {
 
 function* getTmdbDetails(action) {
   try {
-    const tmdbDetails = yield axios.get(`/api/tmdb/details/${action.payload.tmdbId}/?searchType=${encodeURIComponent(action.payload.searchType)}`);
-    console.log("tmdbDetails:", tmdbDetails);
-    yield put({ type: 'SET_TMDB_DETAILS', payload: tmdbDetails.data });
+    const tmdbResponse = yield axios.get(`/api/tmdb/details/${action.payload.tmdbId}/?searchType=${encodeURIComponent(action.payload.searchType)}`);
+    let tmdbDetails = tmdbResponse.data;
+    const mediaIdList = yield axios.get(`/media_collection/searchCollection/${encodeURIComponent(tmdbResponse.data.tmdbIdList)}`);
+    tmdbDetails.mediaList = mediaIdList.data;
+    yield put({ type: 'SET_TMDB_DETAILS', payload: tmdbDetails });
   }
   catch (error) {
     console.log('Error in getTmdbDetails:', error);

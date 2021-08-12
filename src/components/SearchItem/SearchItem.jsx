@@ -66,7 +66,7 @@ function SearchItem({responseItem, addResultToMedia, genericSearch, manualType, 
       </Grid> : 
       <Grid item style={{height: "100%", width: "24%", padding: "20px 10px" }}>
           <Paper className={classes.paper}>
-              <h2><em>{responseItem.name}</em> <div>{ manualType === "" ? `(${responseItem.known_for_department})` : `(${role})` }</div></h2>
+              <h2><em>{responseItem.name}</em> <div>{ manualType === "" ? `(${responseItem.known_for_department})` : role === "" ? "" :`(${role})` }</div></h2>
             <CardMedia
               style={{maxHeight: "80%", maxWidth: "80%", margin: "auto", padding: "10% 7% 10% 7%"}}
               className={responseItem.name}
