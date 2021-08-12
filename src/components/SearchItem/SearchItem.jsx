@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -12,27 +12,19 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 
 const useStyles = makeStyles((theme) => ({root: {flexGrow: 1},paper: {padding: theme.spacing(2), textAlign: "center", color: theme.palette.text.secondary, justifyContent: "center", alignItems: "flex-end" }})); // materialUI stuff
 
-function SearchItem({responseItem, addResultToMedia, genericSearch, manualType}) {
+function SearchItem({responseItem, addResultToMedia, genericSearch, manualType, role}) {
     const classes = useStyles();
+    const dispatch = useDispatch();
     const history = useHistory();
     const itemType = (responseItem.media_type ? responseItem.media_type : manualType);
     const configObject = useSelector(store => store.tmdbConfigReducer);
 
     const getDetails = (type) => {
       console.log('in getDetails', type, responseItem.id);
+      dispatch({ type: 'SET_MEDIA_ITEM_DETAILS', payload: "empty" });
       history.push(`/search/${type}/${responseItem.id}`);
     };
-  //   {
-  //     "original_language": "en",
-  //     "original_title": "Suspicion",
-  //     "poster_path": "/kuv64byEbl4idStScfqxw78lhed.jpg",
-  //     "overview": "Wealthy, sheltered Lina McLaidlaw is swept off her feet by charming ne'er-do-well Johnnie Aysgarth. Though warned that Johnnie is little more than a fortune hunter, Lina marries him anyway and remains loyal to her irresponsible husband as he plows his way from one disreputable business scheme to another. Gradually Lina comes to the conclusion that Johnnie intends to kill her in order to collect her inheritance. The suspicion seems confirmed when Johnnie's business partner dies under mysterious circumstances.",
-  //     "release_date": "1941-11-14",
-  //     "title": "Suspicion",
-  //     "id": 11462,
-  //     "backdrop_path": "/v3uvuJF0mK2Na8CakyKq3GkmG5K.jpg",
-  // }
-    console.log("responseItem", responseItem);
+    
     return (
       <>{ configObject === "empty" ? "" : <>
       {itemType === "movie" ?
@@ -70,7 +62,7 @@ function SearchItem({responseItem, addResultToMedia, genericSearch, manualType})
       </Grid> : 
       <Grid item style={{height: "100%", width: "24%", padding: "20px 10px" }}>
           <Paper className={classes.paper}>
-              <h2><em>{responseItem.name}</em> ({responseItem.known_for_department})</h2>
+              <h2><em>{responseItem.name}</em> <div>{ manualType === "" ? `(${responseItem.known_for_department})` : `(${role})` }</div></h2>
             <CardMedia
               style={{maxHeight: "80%", maxWidth: "80%", margin: "auto", padding: "10% 7% 10% 7%"}}
               className={responseItem.name}

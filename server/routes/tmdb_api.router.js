@@ -24,10 +24,12 @@ router.get('/details/:tmdbId', (req, res) => {
     console.log('GET details from TMDB', tmdbId, searchType);
 
     axios.get(
-        `https://api.themoviedb.org/3/${searchType}/${tmdbId}?api_key=${process.env.TMDB_API_KEY}&language=en-US&append_to_response=${searchType==="movie" ? "credits,release_dates" : "credits"}`
+        `https://api.themoviedb.org/3/${searchType}/${tmdbId}?api_key=${process.env.TMDB_API_KEY}&language=en-US&append_to_response=credits`
     )
     .then(response => {
         console.log('GET details from API successful', response.data);
+        let details = response.data;
+        details.type = searchType;
         res.send(response.data);
     })
     .catch(err => {
