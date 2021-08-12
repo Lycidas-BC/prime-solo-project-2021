@@ -23,6 +23,7 @@ import SearchPage from '../SearchPage/SearchPage';
 import AddMedia from '../AddMedia/AddMedia';
 import MediaItem from '../MediaItem/MediaItem';
 import DisplayCollection from '../DisplayCollection/DisplayCollection';
+import BrowseSearchResults from '../BrowseSearchResults/BrowseSearchResults';
 
 import './App.css';
 
@@ -55,11 +56,20 @@ function App() {
           <Route
             // shows SearchPage at all times (logged in or not)
             exact
-            path="/search"
+            path="/search/:type/:tmdbId"
           >
-            <SearchPage />
+            <BrowseSearchResults />
           </Route>
 
+          {/* Visiting localhost:3000/search will show the search page. */}
+          <Route
+            // shows SearchPage at all times (logged in or not)
+            exact
+            path="/search"
+          >
+            <SearchPage typeList={['multi', 'movie', 'tv', 'person']} genericSearch={true}/>
+          </Route>
+          
           <Route
             // shows MediaItem (logged in or not)
             exact

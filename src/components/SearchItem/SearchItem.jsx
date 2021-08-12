@@ -1,5 +1,6 @@
 import React from 'react';
 import { makeStyles } from "@material-ui/core/styles";
+import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
@@ -11,51 +12,78 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 
 const useStyles = makeStyles((theme) => ({root: {flexGrow: 1},paper: {padding: theme.spacing(2), textAlign: "center", color: theme.palette.text.secondary, justifyContent: "center", alignItems: "flex-end" }})); // materialUI stuff
 
-function SearchItem({responseItem, addResultToMedia, getDetails}) {
+function SearchItem({responseItem, addResultToMedia, genericSearch, manualType}) {
     const classes = useStyles();
-    const itemType = responseItem.media_type;
+    const history = useHistory();
+    const itemType = (responseItem.media_type ? responseItem.media_type : manualType);
     const configObject = useSelector(store => store.tmdbConfigReducer);
 
-
-    console.log("searchItem", responseItem);
+    const getDetails = (type) => {
+      console.log('in getDetails', type, responseItem.id);
+      history.push(`/search/${type}/${responseItem.id}`);
+    };
+  //   {
+  //     "original_language": "en",
+  //     "original_title": "Suspicion",
+  //     "poster_path": "/kuv64byEbl4idStScfqxw78lhed.jpg",
+  //     "overview": "Wealthy, sheltered Lina McLaidlaw is swept off her feet by charming ne'er-do-well Johnnie Aysgarth. Though warned that Johnnie is little more than a fortune hunter, Lina marries him anyway and remains loyal to her irresponsible husband as he plows his way from one disreputable business scheme to another. Gradually Lina comes to the conclusion that Johnnie intends to kill her in order to collect her inheritance. The suspicion seems confirmed when Johnnie's business partner dies under mysterious circumstances.",
+  //     "release_date": "1941-11-14",
+  //     "title": "Suspicion",
+  //     "id": 11462,
+  //     "backdrop_path": "/v3uvuJF0mK2Na8CakyKq3GkmG5K.jpg",
+  // }
+    console.log("responseItem", responseItem);
     return (
-      <>
-      {itemType === "movie"?
+      <>{ configObject === "empty" ? "" : <>
+      {itemType === "movie" ?
         <Grid item style={{height: "100%", width: "24%", padding: "20px 10px" }}>
           <Paper className={classes.paper}>
-              <Button onClick={() => addResultToMedia(responseItem)}><AddIcon /></Button>
+              {genericSearch? "" : <Button onClick={() => addResultToMedia(responseItem)}><AddIcon /></Button>}
               <h2><em>{responseItem.title}</em> ({responseItem.release_date}) </h2>
             <CardMedia
-              style={{maxHeight: "80%", maxWidth: "80%", margin: "auto", padding: "10% 7% 10% 7%", backgroundImage: "url(images/frame.jpg)", backgroundRepeat: "no-repeat", backgroundSize: "100% 100%" }}
+              style={{maxHeight: "80%", maxWidth: "80%", margin: "auto", padding: "10% 7% 10% 7%" }}
               className={responseItem.title}
               component="img"
               alt={responseItem.title}
-              src={`${configObject.images.base_url}${configObject.images.poster_sizes[2]}${responseItem.poster_path}`}
+              src={responseItem.poster_path === null ? "images/noImage.jpeg" : `${configObject.images.base_url}${configObject.images.poster_sizes[2]}${responseItem.poster_path}`}
               title={responseItem.title}
+              onDoubleClick={() => getDetails("movie")}
             />
-            <br />
-            <p>{responseItem.overview}</p>
-            <Button onClick={() => getDetails(responseItem)}><MoreHorizIcon /></Button>
+            <Button onClick={() => getDetails("movie")}><MoreHorizIcon /></Button>
           </Paper>
-        </Grid> :
+        </Grid> : itemType === "tv" ?
         <Grid item style={{height: "100%", width: "24%", padding: "20px 10px" }}>
           <Paper className={classes.paper}>
-              <Button onClick={() => addResultToMedia(responseItem)}><AddIcon /></Button>
+          {genericSearch ? "" : <Button onClick={() => addResultToMedia(responseItem)}><AddIcon /></Button>}
               <h2><em>{responseItem.name}</em> ({responseItem.first_air_date})</h2>
             <CardMedia
-              style={{maxHeight: "80%", maxWidth: "80%", margin: "auto", padding: "10% 7% 10% 7%", backgroundImage: "url(images/frame.jpg)", backgroundRepeat: "no-repeat", backgroundSize: "100% 100%" }}
+              style={{maxHeight: "80%", maxWidth: "80%", margin: "auto", padding: "10% 7% 10% 7%" }}
               className={responseItem.name}
               component="img"
               alt={responseItem.name}
-              src={`${configObject.images.base_url}${configObject.images.poster_sizes[2]}${responseItem.poster_path}`}
+              src={responseItem.poster_path === null ? "images/noImage.jpeg" : `${configObject.images.base_url}${configObject.images.poster_sizes[2]}${responseItem.poster_path}`}
               title={responseItem.name}
+              onDoubleClick={() => getDetails("tv")}
             />
-          <br />
-          <p>{responseItem.overview}</p>
-          <Button onClick={() => getDetails(responseItem)}><MoreHorizIcon /></Button>
+          <Button onClick={() => getDetails("tv")}><MoreHorizIcon /></Button>
+        </Paper>
+      </Grid> : 
+      <Grid item style={{height: "100%", width: "24%", padding: "20px 10px" }}>
+          <Paper className={classes.paper}>
+              <h2><em>{responseItem.name}</em> ({responseItem.known_for_department})</h2>
+            <CardMedia
+              style={{maxHeight: "80%", maxWidth: "80%", margin: "auto", padding: "10% 7% 10% 7%"}}
+              className={responseItem.name}
+              component="img"
+              alt={responseItem.name}
+              src={responseItem.profile_path === null ? "images/noImage.jpeg" :`${configObject.images.base_url}${configObject.images.poster_sizes[2]}${responseItem.profile_path}`}
+              title={responseItem.name}
+              onDoubleClick={() => getDetails("person")}
+            />
+          <Button onClick={() => getDetails("person")}><MoreHorizIcon /></Button>
         </Paper>
       </Grid>
-      }
+      }</>}
       </>
     );
 };

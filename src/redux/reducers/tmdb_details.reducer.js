@@ -1,11 +1,11 @@
 // Used to store api search results
-const tmdbConfigReducer = (state = "empty", action) => {
+const tmdbDetailsReducer = (state = "empty", action) => {
   switch (action.type) {
-      case 'SET_TMDB_CONFIG':
+      case 'SET_TMDB_DETAILS':
           return action.payload;
       default:
           return state;
   }
 }
   
-export default tmdbConfigReducer;
+export default tmdbDetailsReducer;

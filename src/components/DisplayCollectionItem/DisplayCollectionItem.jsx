@@ -59,7 +59,7 @@ function DisplayCollectionItem({mediaIn, addMedia}) {
     return (
         <Grid item style={{height: "100%", width: "24%", padding: "20px 10px" }}>
           <Paper className={classes.paper}>
-              <h2><em>{mediaIn.item}:</em> {mediaIn.distributor}, {mediaIn.format}, {mediaIn.shelf}</h2>
+              {/* <h2><em>{mediaIn.item}:</em> {mediaIn.distributor}, {mediaIn.format}, {mediaIn.shelf}</h2> */}
             <CardMedia
               style={{maxHeight: "80%", maxWidth: "80%", margin: "auto", padding: "10% 7% 10% 7%", backgroundImage: backgroundImageUrl, backgroundRepeat: "no-repeat", backgroundSize: "100% 100%" }}
               className={mediaIn.item}
@@ -67,9 +67,10 @@ function DisplayCollectionItem({mediaIn, addMedia}) {
               alt={mediaIn.item}
               src={mediaIn.cover_art}
               title={mediaIn.item}
+              onClick={() => {addMedia ? addItem() : itemDetails()}}
             />
             <br />
-            <p>{mediaIn.description}</p>
+            {/* <p>{mediaIn.description}</p> */}
             {addMedia ? 
               <div><Button  onClick={() => addItem()}><AddIcon></AddIcon></Button></div> : 
               <div>

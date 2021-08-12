@@ -18,20 +18,20 @@ router.get('/configuration', (req, res) => {
     })
 })
 
-router.get('/movieDetails/:tmdbId', (req, res) => {
+router.get('/details/:tmdbId', (req, res) => {
     const tmdbId = req.params.tmdbId;
-    const tvOrMovie = req.query.tvOrMovie;
-    console.log('GET movie from TMDB', tmdbId);
+    const searchType = (req.query.searchType ? req.query.searchType : "movie");
+    console.log('GET details from TMDB', tmdbId, searchType);
 
     axios.get(
-        `https://api.themoviedb.org/3/${tvOrMovie}/${tmdbId}?api_key=${process.env.TMDB_API_KEY}&language=en-US&append_to_response=${tvOrMovie==="movie" ? "credits,release_dates" : "credits"}`
+        `https://api.themoviedb.org/3/${searchType}/${tmdbId}?api_key=${process.env.TMDB_API_KEY}&language=en-US&append_to_response=${searchType==="movie" ? "credits,release_dates" : "credits"}`
     )
     .then(response => {
-        console.log('GET movie details from API successful', response.data);
+        console.log('GET details from API successful', response.data);
         res.send(response.data);
     })
     .catch(err => {
-        console.log(`error getting movie details from API`, err);
+        console.log(`error getting details from API`, err);
         res.sendStatus(err);
     })
 })

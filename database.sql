@@ -35,6 +35,7 @@ CREATE TABLE "media" (
 CREATE TABLE "movie" (
 	"id" serial NOT NULL,
 	"name" varchar(220) NOT NULL,
+	"movie_or_tv" varchar(50),
 	"tmdb_id" integer UNIQUE,
 	"letterboxd_url" varchar(500),
 	"imdb_url" varchar(500),
@@ -69,9 +70,7 @@ CREATE TABLE "framegrab" (
 
 CREATE TABLE "specialfeature" (
 	"id" serial NOT NULL,
-	"name" varchar(100),
-	"type" varchar(50),
-	"description" varchar(255),
+	"description" varchar(500),
 	CONSTRAINT "specialfeature_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE

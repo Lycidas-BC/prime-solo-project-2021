@@ -14,12 +14,35 @@ function* getMediaCollection() {
 
 function* getMediaItemDetails(action) {
   try {
-    const mediaItemDetails = yield axios.get(`/media_collection/media_details/${action.payload.mediaId}`);
-    console.log("mediaItemDetails:", mediaItemDetails);
-    yield put({ type: 'SET_MEDIA_ITEM_DETAILS', payload: mediaItemDetails.data });
+    let mediaItemDetails = {};
+    const apiMovieData = [];
+    const mediaDetails = yield axios.get(`/media_collection/${action.payload.mediaId}`);
+    mediaItemDetails.mediaDetails = mediaDetails.data[0];
+    const sqlMovieData = yield axios.get(`/media_collection/media_movies/${action.payload.mediaId}`);
+    for (const movie of sqlMovieData.data) {
+      const apiResponse = yield axios.get(`/api/tmdb/movieDetails/${encodeURIComponent(movie.tmdb_id)}/?tvOrMovie=${encodeURIComponent(movie.tv_or_movie)}`);
+      apiMovieData.push(apiResponse.data);
+    }
+    mediaItemDetails.sqlMovieData = sqlMovieData.data;
+    mediaItemDetails.apiMovieData = apiMovieData;
+    const mediaSpecialFeatures = yield axios.get(`/media_collection/media_specialfeatures/${action.payload.mediaId}`);
+    mediaItemDetails.mediaSpecialFeatures = mediaSpecialFeatures.data;
+    //also grab notes
+
+    yield put({ type: 'SET_MEDIA_ITEM_DETAILS', payload: mediaItemDetails });
   }
   catch (error) {
     console.log('Error in getMediaItemDetails:', error);
+  };
+};
+///searchCollection/:tmdbId
+function* searchMediaCollection(action) {
+  try {
+    yield axios.get(`/media_collection/searchCollection/${action.payload.tmdbId}`);
+    yield put({ type: 'ITEM_IN_COLLECTION' });
+  }
+  catch (error) {
+    console.log('Error in searchMediaCollection:', error);
   };
 };
 
@@ -63,6 +86,7 @@ function* updateMediaItem(action) {
 
   function* mediaCollectionSaga() {
     yield takeEvery('GET_COLLECTION', getMediaCollection);
+    yield takeEvery('SEARCH_COLLECTION', searchMediaCollection);
     yield takeEvery('ADD_MEDIA_ITEM', addNewMediaItem);
     yield takeEvery('UPDATE_MEDIA_ITEM', updateMediaItem);
     yield takeEvery('DELETE_MEDIA_ITEM', deleteMediaItem);

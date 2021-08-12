@@ -32,17 +32,18 @@ const useStyles = makeStyles((theme) => ({
         },
   }));
 
-const searchTypeList = [
-    //{type: 'multi'},
-    {type: 'movie'},
-    {type: 'tv'},
-    //{type: 'person'},
-    //{type: 'keyword'}
-];
+  //supported types for typeList
+// const typeList = [
+    //'multi'
+    //'movie'
+    //'tv'
+    //'person'
+    //'keyword'
+// ];
 
 
 
-function SearchPage({addResultToMedia}) {
+function SearchPage({addResultToMedia, typeList, genericSearch}) {
     const classes = useStyles();
     const dispatch = useDispatch();
     const [searchTerm, setSearchTerm] = useState('');
@@ -85,9 +86,6 @@ function SearchPage({addResultToMedia}) {
         });
     };
  
-    const getDetails = (item) => {
-        console.log('in getDetails', item);
-    }
     console.log('searchObject:', searchObject);
     console.log('searchType:', searchType);
     console.log('searchTerm:', searchTerm);
@@ -97,9 +95,9 @@ function SearchPage({addResultToMedia}) {
             <FormControl component="fieldset">
                 <FormLabel component="legend">Search type</FormLabel>
                 <RadioGroup row aria-label="searchType" name="searchType1" value={searchType} onChange={handleChange}>
-                    {searchTypeList.map((element, index) => {
+                    {typeList.map((element, index) => {
                         return (
-                            <FormControlLabel key={index} value={element.type} control={<Radio />} label={element.type} />
+                            <FormControlLabel key={index} value={element} control={<Radio />} label={element} />
                         )
                     })}
                 </RadioGroup>
@@ -108,7 +106,7 @@ function SearchPage({addResultToMedia}) {
             <Grid container spacing={2} style={{ alignItems: "flex-end" }}>
                 {searchObject.results.map((responseItem,index) => {
                     return (
-                        <SearchItem key={index} responseItem={responseItem} addResultToMedia={addResultToMedia} getDetails={getDetails}></SearchItem>
+                        <SearchItem key={index} responseItem={responseItem} addResultToMedia={addResultToMedia} genericSearch={genericSearch}></SearchItem>
                     )
                 })}
             </Grid>

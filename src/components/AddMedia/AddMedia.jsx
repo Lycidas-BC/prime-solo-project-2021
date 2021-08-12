@@ -39,11 +39,7 @@ function AddMedia() {
   const [title, setTitle] = useState("");
   const [coverArt, setCoverArt] = useState("");
   const [description, setDescription] = useState("");
-  const [newFeature, setNewFeature] = useState({
-    name: "",
-    type: "",
-    description: ""
-  });
+  const [newFeature, setNewFeature] = useState("");
   const [mediaItem, setMediaItem] = useState({
     item: "",
     distributor: "",
@@ -125,11 +121,7 @@ function AddMedia() {
 
   const addFeatureToList = () => {
     setMediaItem({...mediaItem, specialFeatureList: [...mediaItem.specialFeatureList, newFeature]});
-    setNewFeature({
-      name: "",
-      type: "",
-      description: ""
-    });
+    setNewFeature("");
     setAddFeature(false);
   }
     
@@ -289,7 +281,7 @@ function AddMedia() {
             addMovie ?
             <div>
             <div><Button onClick={() => setAddMovie(!addMovie)}><RemoveIcon /></Button></div>
-            <SearchPage addResultToMedia={addResultToMedia}></SearchPage>
+            <SearchPage addResultToMedia={addResultToMedia} typeList={['movie', 'tv']} genericSearch={false}></SearchPage>
             </div> :
             <Button style={{ width: "24%", height: "24%" }} onClick={() => setAddMovie(!addMovie)}><MovieItem movieIn={"none"} addMovieScreen={true} addMovieIcon={true}></MovieItem></Button>
           }
@@ -299,16 +291,14 @@ function AddMedia() {
             <ul>
             {mediaItem.specialFeatureList.map((feature,index) => {
               return (
-                <li>{feature.name !== "" ? <b>{feature.name}: </b> : ""}{feature.type !== "" ? <span>( <i>{feature.type}</i> ) </span> : ""}{feature.description}</li>
+                <li>{feature}</li>
               )
             })}
           {
             addFeature ?
             <li>
               <div><Button onClick={() => setAddFeature(!addFeature)}><RemoveIcon /></Button></div>
-              <TextField style={{ width: "200" }} id="specialFeatureName" label="name (optional)" type="specialFeatureName" variant="outlined" value={newFeature.name} onChange={(event) => setNewFeature({...newFeature, name: event.target.value})}/>
-              <TextField style={{ width: "200" }} id="specialFeatureType" label="type (optional)" type="specialFeatureType" variant="outlined" value={newFeature.type} onChange={(event) => setNewFeature({...newFeature, type: event.target.value})}/>
-              <TextField style={{ width: "400px" }} id="specialFeatureDescription" label="description" type="specialFeatureDescription" variant="outlined" value={newFeature.description} onChange={(event) => setNewFeature({...newFeature, description: event.target.value})}/>
+              <TextField style={{ width: "400px" }} id="specialFeatureDescription" label="description" type="specialFeatureDescription" variant="outlined" value={newFeature} onChange={(event) => setNewFeature(event.target.value)}/>
               <Button onClick={() => addFeatureToList()}><DoneIcon /></Button>
             </li> :
             <li><Button style={{ width: "24%", height: "24%" }} onClick={() => setAddFeature(!addFeature)}><AddIcon /></Button></li>

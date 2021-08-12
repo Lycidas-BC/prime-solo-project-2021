@@ -34,23 +34,132 @@ router.get('/', rejectUnauthenticated, (req, res) => {
 });
 
 /**
+ * GET specific media item
+ */
+ router.get('/:mediaId', rejectUnauthenticated, (req, res) => {
+  // GET route code here
+  console.log("in GET media item");
+
+  const queryText = `
+    SELECT "media"."id", "media"."item", "media"."distributor", "media"."product_page", "media"."format", "media"."cover_art", "media"."description", "media"."dimensions", "media"."shelf"
+    FROM "media"
+    JOIN "user_media" ON "media"."id" = "user_media"."media_id"
+    WHERE "media"."id" = $1;
+  `;
+  pool
+    .query(queryText, [req.params.mediaId])
+    .then((response) => {
+      if (response.rows.length === 0) {
+        res.send([{columnHeaders: response.fields.map(element => {return element.name})}]);
+      } else {
+        res.send(response.rows);
+      }
+    })
+    .catch((err) => {
+      console.log('GET media item failed: ', err);
+      res.sendStatus(500);
+    });
+});
+
+/**
+ * is movie in media collection?
+ */
+ router.get('/searchCollection/:tmdbId', rejectUnauthenticated, (req, res) => {
+  // GET route code here
+  console.log("search collection for movie");
+
+  const queryText = `
+    SELECT "media"."id" AS "media_id"
+    FROM "media_movie"
+    JOIN "movie" ON "movie"."id" = "media_movie"."movie_id"
+    JOIN "media" ON "media"."id" = "media_movie"."media_id"
+    JOIN "user_media" ON "media"."id" = "user_media"."media_id"
+    WHERE "movie"."tmdb_id" = $1 AND "user_media"."user_id" = $2;
+  `;
+  pool
+    .query(queryText, [req.params.tmdbId, req.user.id])
+    .then((response) => {
+      if (response.rows.length === 0) {
+        res.send([{columnHeaders: response.fields.map(element => {return element.name})}]);
+      } else {
+        res.send(response.rows);
+      }
+    })
+    .catch((err) => {
+      console.log('search collection for movie failed: ', err);
+      res.sendStatus(500);
+    });
+});
+
+/**
  * GET media item details
  */
- router.get('/media_details/:mediaId', rejectUnauthenticated, (req, res) => {
+ router.get('/media_movies/:mediaId', rejectUnauthenticated, (req, res) => {
   // GET route code here
-  console.log("in GET media item details");
+  console.log("in GET media_movies");
   const mediaId = req.params.mediaId;
 
   const queryText = `
-    SELECT "media"."id" AS "media_id", "media"."item", "media"."distributor", "media"."format", "media"."cover_art", "media"."description", "media"."dimensions", "media"."shelf"
-    FROM "media"
-    WHERE "media"."id" = $1;
-    
-    SELECT "movie"."id" AS "movie_id", "movie"."name", "movie"."tmdb_id"
+    SELECT "movie"."id" AS "movie_id", "movie"."name", "movie"."tmdb_id", "movie"."movie_or_tv"
     FROM "media_movie"
     JOIN "movie" ON "movie"."id" = "media_movie"."movie_id"
     WHERE "media_movie"."media_id" = $1;
-    
+  `;
+  pool
+    .query(queryText, [mediaId])
+    .then((response) => {
+      console.log(response.rows);
+      if (response.rows.length === 0) {
+        res.send([{columnHeaders: response.fields.map(element => {return element.name})}]);
+      } else {
+        res.send(response.rows);
+      }
+    })
+    .catch((err) => {
+      console.log('GET media_movies failed: ', err);
+      res.sendStatus(500);
+    });
+});
+
+/**
+ * GET media item details
+ */
+ router.get('/media_specialfeatures/:mediaId', rejectUnauthenticated, (req, res) => {
+  // GET route code here
+  console.log("in GET media_specialfeatures");
+  const mediaId = req.params.mediaId;
+
+  const queryText = `
+    SELECT "specialfeature"."description"
+    FROM "specialfeature"
+    JOIN "media_specialfeature" ON "specialfeature"."id" = "media_specialfeature"."specialfeature_id"
+    WHERE "media_specialfeature"."media_id" = $1;
+  `;
+  pool
+    .query(queryText, [mediaId])
+    .then((response) => {
+      console.log(response.rows);
+      if (response.rows.length === 0) {
+        res.send([{columnHeaders: response.fields.map(element => {return element.name})}]);
+      } else {
+        res.send(response.rows);
+      }
+    })
+    .catch((err) => {
+      console.log('GET media_specialfeatures failed: ', err);
+      res.sendStatus(500);
+    });
+});
+
+/**
+ * GET media item details
+ */
+ router.get('/media_movie_notes/:mediaId', rejectUnauthenticated, (req, res) => {
+  // GET route code here
+  console.log("in GET media_movie_notes");
+  const mediaId = req.params.mediaId;
+
+  const queryText = `
     SELECT "media_movie_note"."media_movie_id" ,"media_movie_note"."seen", "note"."note", "note"."date", "access"."type"
     FROM "media_movie_note"
     JOIN "note" ON "note"."id" = "media_movie_note"."note_id"
@@ -68,7 +177,7 @@ router.get('/', rejectUnauthenticated, (req, res) => {
       }
     })
     .catch((err) => {
-      console.log('GET media item details failed: ', err);
+      console.log('GET media_movie_notes failed: ', err);
       res.sendStatus(500);
     });
 });
@@ -173,13 +282,13 @@ pool
   let counter = 0;
   for (const newSpecialFeature of specialFeatureList) {
    const specialFeatureInsertQuery = `
-     INSERT INTO "specialfeature" ("name", "type", "description")
-     VALUES ($1, $2, $3)
+     INSERT INTO "specialfeature" ("description")
+     VALUES ($1)
      RETURNING "id";
    `;
 
    pool
-     .query(specialFeatureInsertQuery, [newSpecialFeature.name, newSpecialFeature.type, newSpecialFeature.description])
+     .query(specialFeatureInsertQuery, [newSpecialFeature])
      .then((response) => {
        const specialFeatureId = response.rows[0].id;
        const mediaMovieInsertQuery = `
