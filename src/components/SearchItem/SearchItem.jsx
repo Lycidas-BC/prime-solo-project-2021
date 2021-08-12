@@ -21,7 +21,6 @@ function SearchItem({responseItem, addResultToMedia, genericSearch, manualType, 
 
     const getDetails = (type) => {
       console.log('in getDetails', type, responseItem.id);
-      dispatch({ type: 'SET_MEDIA_ITEM_DETAILS', payload: "empty" });
       history.push(`/search/${type}/${responseItem.id}`);
     };
     

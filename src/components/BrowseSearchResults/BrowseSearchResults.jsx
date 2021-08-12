@@ -60,7 +60,7 @@ function BrowseSearchResults() {
     setRole(uniqueRoles[0]);
     setTriggerRefresh(true);
   }
-
+  console.log("tmdbDetailsReducer", tmdbDetailsReducer);
   return (
     <section>{tmdbDetailsReducer === "empty" || !triggerRefresh ? "" :
     <section>
