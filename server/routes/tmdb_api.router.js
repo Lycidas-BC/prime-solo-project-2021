@@ -72,10 +72,48 @@ router.get('/search', (req, res) => {
                 element.media_type = searchType
             });
         }
-        res.send(response.data);
+        res.status(201).send(searchResultObject);
     })
     .catch(err => {
         console.log(`error performing ${searchType} search through API`, err);
+        res.sendStatus(err);
+    })
+})
+
+//attempt to find specific tmdb id using name and year
+router.get('/searchSpecific', (req, res) => {
+    console.log('in tmdb searchSpecific', req.query);
+
+    // What type of search? movie, tv, person, multi, keyword
+    let searchType = req.query.type;
+    // name of movie I'm trying to find
+    let searchText = req.query.q;
+    // release year
+    let year = req.query.year;
+    // initialize array to grab movies which match name and year
+    let matchList = [];
+    axios.get(
+        `https://api.themoviedb.org/3/search/${searchType}?api_key=${process.env.TMDB_API_KEY}&query=${searchText}&page=1&include_adult=false`
+    )
+    .then(response => {
+        console.log('in searchSpecific API');
+        let searchResultObject = response.data;
+        if (searchType === 'movie' || searchType === 'tv') {
+            searchResultObject.results.map((element) => {
+                element.media_type = searchType
+            });
+            let matches = searchResultObject.results.filter((element) => {
+                return element.release_date.indexOf(year) > -1;
+            });
+            for (const match of matches) {
+                matchList.push(match.id)
+            }
+        }
+        console.log("matchList", matchList);
+        res.status(201).send({tmdb_id: matchList});
+    })
+    .catch(err => {
+        console.log(`error searchSpecific through API`, err);
         res.sendStatus(err);
     })
 })

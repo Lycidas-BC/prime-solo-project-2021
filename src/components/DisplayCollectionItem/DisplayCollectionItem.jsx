@@ -80,6 +80,7 @@ function DisplayCollectionItem({mediaIn, addMedia}) {
                 {
                   confirmDelete ?
                   <div>
+                    <div>Delete from collection?</div>
                     <Button onClick={() => setConfirmDelete(!confirmDelete)}><CancelIcon></CancelIcon></Button>
                     <Button onClick={() => deleteItem()}><DoneIcon></DoneIcon></Button>
                   </div> :

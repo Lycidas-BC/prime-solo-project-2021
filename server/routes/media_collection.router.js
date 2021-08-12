@@ -196,7 +196,7 @@ router.get('/', rejectUnauthenticated, (req, res) => {
 /**
  * POST new item to media collection
  */
-router.post('/media', (req, res) => {
+router.post('/media', rejectUnauthenticated, (req, res) => {
   // add media into media table, returning the id of the newly created item
   const mediaInsertQuery = `
     INSERT INTO "media" ("item", "distributor", "format", "cover_art", "description", "dimensions", "shelf")

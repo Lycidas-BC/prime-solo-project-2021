@@ -34,6 +34,7 @@ function AddMedia() {
   const dispatch = useDispatch();
   const configObject = useSelector(store => store.tmdbConfigReducer);
   const webScrape = useSelector(store => store.webScrapeReducer);
+  const [webScrapeInit, setWebScrapeInit] = useState(false);
   const [format, setFormat] = useState('DVD');
   const [boxSet, setBoxSet] = useState(false);
   const [title, setTitle] = useState("");
@@ -72,6 +73,7 @@ function AddMedia() {
       type: 'SCRAPE_WEBSITE',
       payload: {productUrl: productUrl}
     });
+    setWebScrapeInit(true);
   };
 
   const updateTitle = () => {
@@ -97,10 +99,7 @@ function AddMedia() {
         cover_art: `${configObject.images.base_url}${configObject.images.poster_sizes[2]}${apiObject.poster_path}`,
         description: apiObject.overview,
         tmdb_id: apiObject.id,
-        letterboxd_url: "",
-        imdb_url: "",
-        rottentomatoes_url: "",
-        amazon_url: ""
+        product_url: ""
       };
     } else {
       convertApiObject = {
@@ -109,10 +108,7 @@ function AddMedia() {
         cover_art: `${configObject.images.base_url}${configObject.images.poster_sizes[2]}${apiObject.poster_path}`,
         description: apiObject.overview,
         tmdb_id: apiObject.id,
-        letterboxd_url: "",
-        imdb_url: "",
-        rottentomatoes_url: "",
-        amazon_url: ""
+        product_url: ""
       };
     }
     setMediaItem({...mediaItem, movieList: [...mediaItem.movieList, convertApiObject]});
@@ -124,6 +120,17 @@ function AddMedia() {
     setNewFeature("");
     setAddFeature(false);
   }
+
+  // if (setWebScrapeInit && webScrape !== "empty") {
+  //   setMediaItem({...mediaItem, item: webScrape.primaryTitle});
+  //   const distributor = webScrape.type.substring(0, webScrape.type.indexOf(' '));
+  //   setMediaItem({...mediaItem, distributor: distributor});
+  //   setMediaItem({...mediaItem, cover_art: webScrape.boxArt});
+  //   setMediaItem({...mediaItem, description: webScrape.productSummary});
+  //   setMediaItem({...mediaItem, movieList: webScrape.movieList});
+  //   setMediaItem({...mediaItem, specialFeatureList: webScrape.featuresList});
+  //   setWebScrapeInit(false);
+  // }
     
   const addToCollection = () => {
     const localFormat = (boxSet ? `${format} box`: `${format}`);
@@ -150,7 +157,7 @@ function AddMedia() {
     <Button style={{ width: "150px", height: "55px" }} variant="contained" color="primary" onClick={scrape}>Pull data from website</Button>
     {
       // check if we have a webscrape object
-      webScrape !== "blank" ? 
+      webScrape !== "empty" ? 
         // identify type of webscrape object and render accordingly
         webScrape.type === "criterion set" ? 
           // object is a Criterion box set
@@ -204,15 +211,16 @@ function AddMedia() {
           </div> :
         // object is neither a criterion box set nor a criterion film
         <div></div> :
-      //object is blank
+      //object is empty
       <div>
         <h2 className={"primaryTitle"}></h2>
         <section className={"format"}>
           <FormControl component="fieldset">
             <FormLabel component="legend">Format</FormLabel>
             <RadioGroup aria-label="format" name="format" value={format} onChange={handleFormatChange} row>
-              <FormControlLabel value="DVD" control={<Radio />} label="DVD" />
+              <FormControlLabel value="4K UHD" control={<Radio />} label="4K UHD" />
               <FormControlLabel value="Blu-ray" control={<Radio />} label="Blu-ray" />
+              <FormControlLabel value="DVD" control={<Radio />} label="DVD" />
               <FormControlLabel value="VHS" control={<Radio />} label="VHS" />
               <FormControlLabel value="Other" control={<Radio />} label="Other" />
             </RadioGroup>

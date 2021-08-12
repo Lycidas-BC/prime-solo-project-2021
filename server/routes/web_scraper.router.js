@@ -111,24 +111,20 @@ const scrapeCriterionSetData = (siteHtml) => {
   $('.film-setlist').last().find('li').each((_idx, el) => {
     const movie = $($(el).find('.film-set-title')).text();
     const year = $($(el).find('.film-set-year')).text();
-    const image = $($(el).find('img')).attr('src');
+    const cover_art = $($(el).find('img')).attr('src');
     const description = $($(el).find('.film-set-descrip')).text().trim();
-    const url = $($(el).parents()).attr('href');
+    const product_url = $($(el).parents()).attr('href');
 
 
     movieList.push({
       movie: movie,
       year: year,
-      image: image,
+      cover_art: cover_art,
       description: description,
-      url: url
+      product_url: product_url
     });
   });
   
-  // console.log('boxArt', boxArt);
-  // console.log('metaList', metaList);
-  // console.log('featuresList', featuresList);
-  // console.log('movieList', movieList);
   const setScrapeObject = {
     type: "criterion set",
     primaryTitle: primaryTitle,

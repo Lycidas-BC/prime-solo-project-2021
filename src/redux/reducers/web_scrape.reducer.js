@@ -1,8 +1,8 @@
 // Used to store api search results
-const webScrapeReducer = (state = "blank", action) => {
+const webScrapeReducer = (state = "empty", action) => {
   switch (action.type) {
       case 'SET_WEB_SCRAPE':
-          return action.payload.data;
+          return action.payload;
       default:
           return state;
   }
