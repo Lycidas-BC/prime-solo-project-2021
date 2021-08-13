@@ -13,22 +13,27 @@ function Nav() {
   };
 
   if (user.id != null) {
-    loginLinkData.path = '/user';
-    loginLinkData.text = 'Home';
+    loginLinkData.path = '/collection';
+    loginLinkData.text = 'My Collection';
   }
 
   return (
     <div className="nav">
       <Link to="/home">
-        <h2 className="nav-title">Prime Solo Project</h2>
+        <h2 className="nav-title">CineFiles</h2>
       </Link>
       <div>
         <Link className="navLink" to={loginLinkData.path}>
           {loginLinkData.text}
         </Link>
-
+        <Link className="navLink" to="/search">
+          Search
+        </Link>
         {user.id && (
           <>
+            <Link className="navLink" to="/add_media">
+              Add Media
+            </Link>
             <Link className="navLink" to="/info">
               Info Page
             </Link>

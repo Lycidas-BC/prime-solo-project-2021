@@ -5,6 +5,8 @@ import { useHistory } from 'react-router-dom';
 import Grid from "@material-ui/core/Grid";
 import CardMedia from '@material-ui/core/CardMedia';
 import SearchItem from '../SearchItem/SearchItem';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import CancelIcon from '@material-ui/icons/Cancel';
 import './BrowseSearchResults';
 
 function BrowseSearchResults() {
@@ -24,6 +26,10 @@ function BrowseSearchResults() {
     history.push(`/search/0/${type}/${tmdbId}`);
   }
   
+  const mediaDetailsScreen = (mediaId) => {
+    history.push(`/media_details/${mediaId}`);
+  }
+
   console.log("tmdbDetailsReducer", tmdbDetailsReducer);
   console.log("itemInCollection", itemInCollection);
   return (
@@ -44,6 +50,26 @@ function BrowseSearchResults() {
         <p><b>Length:</b> {tmdbDetailsReducer.runtime} mins</p>
         <p><b>Overview: </b>{tmdbDetailsReducer.overview}</p>
         <p><b>IMDB page:</b> <a href={`https://www.imdb.com/title/${tmdbDetailsReducer.imdb_id}`}>{`https://www.imdb.com/title/${tmdbDetailsReducer.imdb_id}`}</a></p>
+        {itemInCollection[0].item === undefined ?
+          <p>
+            <b style={{paddingRight: "5px"}}>In your collection?</b>
+            <CancelIcon />
+          </p> :
+          <div>
+            <b style={{paddingRight: "5px"}}>In your collection?</b>
+            <CheckCircleIcon />
+            <div>
+              <ul>
+                {
+                  itemInCollection.map((item, index) => {
+                    return (
+                      <li key={index}>{item.item}, ({item.format}, {item.distributor}) <button onClick={() => mediaDetailsScreen(item.media_id)}>See details</button></li>
+                    )
+                  })
+                }
+              </ul>
+            </div>
+          </div>}
       </Grid>
       <div style={{clear: "left"}}>
         <h2>Cast:</h2>

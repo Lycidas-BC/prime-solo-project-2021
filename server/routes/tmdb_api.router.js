@@ -29,7 +29,6 @@ router.get('/details/:tmdbId', (req, res) => {
     .then(response => {
         console.log('GET details from API successful');
         let details = response.data;
-        console.log("details", details);
         details.type = searchType;
         if (searchType === "person") {
             let tmdbIdList = [];

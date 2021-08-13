@@ -5,6 +5,8 @@ import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import CancelIcon from '@material-ui/icons/Cancel';
 import Grid from "@material-ui/core/Grid";
 import CardMedia from '@material-ui/core/CardMedia';
 import Select from '@material-ui/core/Select';
@@ -80,6 +82,12 @@ function BrowsePersonResults() {
     setRole(uniqueRoles[0]);
     setTriggerRefresh(true);
   }
+
+
+  const mediaDetailsScreen = (mediaId) => {
+    history.push(`/media_details/${mediaId}`);
+  }
+  
   console.log("tmdbDetailsReducer", tmdbDetailsReducer);
   return (
     <section>{tmdbDetailsReducer === "empty" || !triggerRefresh ? "" :
@@ -98,6 +106,26 @@ function BrowsePersonResults() {
         />
         <p><b>Bio: </b>{tmdbDetailsReducer.biography}</p>
         <p><b>IMDB page:</b> <a href={`https://www.imdb.com/name/${tmdbDetailsReducer.imdb_id}`}>{`https://www.imdb.com/name/${tmdbDetailsReducer.imdb_id}`}</a></p>
+        {tmdbDetailsReducer.mediaList.length === 0 ?
+          <div>
+            <b style={{paddingRight: "5px"}}>Movies in your collection?</b>
+            <CancelIcon />
+          </div> :
+          <div>
+            <b style={{paddingRight: "5px"}}>Movies in your collection?</b>
+            <CheckCircleIcon />
+            <div>
+              <ul>
+                {
+                  tmdbDetailsReducer.mediaList.map((item, index) => {
+                    return (
+                      <li key={index}>{item.item}, ({item.format}, {item.distributor}) <button onClick={() => mediaDetailsScreen(item.media_id)}>See details</button></li>
+                    )
+                  })
+                }
+              </ul>
+            </div>
+          </div>}
       <FormControl className={classes.formControl}>
         <InputLabel id="demo-simple-select-label">Role</InputLabel>
         <Select

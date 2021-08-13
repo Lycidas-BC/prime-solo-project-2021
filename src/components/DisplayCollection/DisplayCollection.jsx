@@ -15,6 +15,7 @@ function DisplayCollection() {
   console.log('mediaCollection', mediaCollection);
   return (
     <section className="media" style={{ alignItems: "flex-end", display : "flex", flexWrap: "wrap" }}>
+      <DisplayCollectionItem mediaIn={"none"} addMedia={true} ></DisplayCollectionItem>
       {mediaCollection.map((element,index) => {
         return (
             element.columnHeaders === undefined ?
@@ -22,7 +23,6 @@ function DisplayCollection() {
             ""
         )
       })}
-      <DisplayCollectionItem mediaIn={"none"} addMedia={true} ></DisplayCollectionItem>
     </section>
   );
 };
