@@ -111,7 +111,7 @@ router.get('/', rejectUnauthenticated, (req, res) => {
   const mediaId = req.params.mediaId;
 
   const queryText = `
-    SELECT "movie"."id" AS "movie_id", "movie"."name", "movie"."tmdb_id", "movie"."movie_or_tv"
+    SELECT "movie"."id" AS "movie_id", "movie"."name", "movie"."tmdb_id", "media_movie"."description", "media_movie"."length", "movie"."tv_show", "movie"."product_url"
     FROM "media_movie"
     JOIN "movie" ON "movie"."id" = "media_movie"."movie_id"
     WHERE "media_movie"."media_id" = $1;
@@ -236,15 +236,16 @@ pool
    const newMovieList = req.body.movieList;
    let counter = 0;
    for (const newMovie of newMovieList) {
+     console.log("newMovie", newMovie);
     const movieInsertIfNotExistQuery = `
-      INSERT INTO "movie" ("name", "tmdb_id", "letterboxd_url", "imdb_url", "rottentomatoes_url", "amazon_url")
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO "movie" ("name", "tmdb_id", "product_url", "tv_show")
+      VALUES ($1, $2, $3, $4)
       ON CONFLICT ("tmdb_id")
       DO NOTHING;
     `;
-
+    
     pool
-      .query(movieInsertIfNotExistQuery, [newMovie.movie, newMovie.tmdb_id, newMovie.letterboxd_url, newMovie.imdb_url, newMovie.rottentomatoes_url, newMovie.amazon_url])
+      .query(movieInsertIfNotExistQuery, [newMovie.movie, newMovie.tmdb_id, newMovie.product_url, ( newMovie.tv_show ? newMovie.tv_show : false) ])
       .then(() => {
         const getMovieIdQuery = `
           SELECT "id"
@@ -256,11 +257,11 @@ pool
           .then((response) => {
             const movieId = response.rows[0].id;
             const mediaMovieInsertQuery = `
-              INSERT INTO "media_movie" ("movie_id", "media_id", "cover_art", "length")
-              VALUES($1, $2, $3, $4);
+              INSERT INTO "media_movie" ("movie_id", "media_id", "cover_art", "length", "description")
+              VALUES($1, $2, $3, $4, $5);
             `;
             pool
-              .query(mediaMovieInsertQuery, [movieId, mediaId, newMovie.cover_art, newMovie.length])
+              .query(mediaMovieInsertQuery, [movieId, mediaId, newMovie.cover_art, newMovie.length, newMovie.description])
               .then((response) => {
                 counter++;
                 if (counter === newMovieList.length) {
@@ -289,9 +290,9 @@ pool
  */
  router.post('/specialfeature/:mediaId', rejectUnauthenticated, (req, res) => {
   const mediaId = req.params.mediaId;
-  const specialFeatureList = req.body.specialFeatureList;
+  const featuresList = req.body.featuresList;
   let counter = 0;
-  for (const newSpecialFeature of specialFeatureList) {
+  for (const newSpecialFeature of featuresList) {
    const specialFeatureInsertQuery = `
      INSERT INTO "specialfeature" ("description")
      VALUES ($1)
@@ -310,7 +311,7 @@ pool
          .query(mediaMovieInsertQuery, [mediaId, specialFeatureId])
          .then((response) => {
            counter++;
-           if (counter === specialFeatureList.length) {
+           if (counter === featuresList.length) {
              res.sendStatus(201);
            }
          })

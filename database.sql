@@ -35,7 +35,7 @@ CREATE TABLE "media" (
 CREATE TABLE "movie" (
 	"id" serial NOT NULL,
 	"name" varchar(220) NOT NULL,
-	"movie_or_tv" varchar(50) DEFAULT 'movie',
+	"tv_show" BOOLEAN DEFAULT 'false',
 	"tmdb_id" integer UNIQUE,
 	"product_url" varchar(2000),
 	CONSTRAINT "movie_pk" PRIMARY KEY ("id")
@@ -49,6 +49,7 @@ CREATE TABLE "media_movie" (
 	"movie_id" integer NOT NULL,
 	"media_id" integer NOT NULL,
 	"cover_art" varchar(2000),
+	"description" varchar(5000),
 	"length" integer,
 	CONSTRAINT "media_movie_pk" PRIMARY KEY ("id")
 ) WITH (

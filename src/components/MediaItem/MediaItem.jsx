@@ -14,13 +14,13 @@ function MediaItem() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { mediaId } = useParams();
-  const mediaItemReducer = useSelector(store => store.mediaItemReducer);
+  const mediaItemDetailsReducer = useSelector(store => store.mediaItemDetailsReducer);
 
   useEffect(() => {
     dispatch({ type: 'GET_MEDIA_ITEM_DETAILS', payload: {mediaId: mediaId} });
   }, []);
 
-  console.log("mediaItemReducer", mediaItemReducer);
+  console.log("mediaItemDetailsReducer", mediaItemDetailsReducer);
 //   [
 //     {
 //         "id": 1,
@@ -188,24 +188,23 @@ function MediaItem() {
 //         }
 //     ]
 // }
-console.log("testestestest");
   return (
     <Grid item style={{height: "100%", width: "100%", padding: "20px 10px" }}>
-      {mediaItemReducer === "empty" ? "" :
+      {mediaItemDetailsReducer === "empty" ? "" :
       <section>
         <Paper className={classes.paper}>
-            <h2><em>{mediaItemReducer.mediaDetails.item}</em></h2>
+            <h2><em>{mediaItemDetailsReducer.mediaDetails.item}</em></h2>
         <CardMedia
         style={{maxHeight: "90%", maxWidth: "90%" }}
         className={"media"}
         component="img"
-        alt={mediaItemReducer.mediaDetails.item}
-        src={`${mediaItemReducer.mediaDetails.cover_art}`}
-        title={mediaItemReducer.mediaDetails.item}
+        alt={mediaItemDetailsReducer.mediaDetails.item}
+        src={`${mediaItemDetailsReducer.mediaDetails.cover_art}`}
+        title={mediaItemDetailsReducer.mediaDetails.item}
             />
             <br />
         </Paper>
-        <p>{mediaItemReducer.mediaDetails.description}</p>
+        <p>{mediaItemDetailsReducer.mediaDetails.description}</p>
       </section>
 
       }

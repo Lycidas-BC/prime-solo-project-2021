@@ -7,7 +7,7 @@ import tmdbDetailsReducer from './tmdb_details.reducer';
 import tmdbStreamingOptionsReducer from './tmdb_streaming_options.reducer';
 import mediaItem from './media_item.reducer';
 import mediaCollectionReducer from './media_collection.reducer';
-import mediaItemDetailsReducer from './media_item.reducer';
+import mediaItemDetailsReducer from './media_item_details.reducer';
 import itemInCollection from './item_in_collection.reducer';
 
 // rootReducer is the primary reducer for our entire project
