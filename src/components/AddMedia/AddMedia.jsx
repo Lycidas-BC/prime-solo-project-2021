@@ -29,32 +29,25 @@ function AddMedia() {
   const [addFeature, setAddFeature] = useState(false);
   const [editArt, setEditArt] = useState(true);
   const [editTitle, setEditTitle] = useState(true);
+  const [editDistributor, setEditDistributor] = useState(true);
+  const [editDimensions, setEditDimensions] = useState(true);
+  const [editShelf, setEditShelf] = useState(true);
   const [editDescription, setEditDescription] = useState(true);
   const [displayWarning, setDisplayWarning] = useState(false);
   const dispatch = useDispatch();
   const configObject = useSelector(store => store.tmdbConfigReducer);
-  const webScrape = useSelector(store => store.webScrapeReducer);
-  const [webScrapeInit, setWebScrapeInit] = useState(false);
-  const [format, setFormat] = useState('DVD');
-  const [boxSet, setBoxSet] = useState(false);
+  const mediaItem = useSelector(store => store.mediaItem);
   const [title, setTitle] = useState("");
+  const [distributor, setDistributor] = useState("");
   const [coverArt, setCoverArt] = useState("");
   const [description, setDescription] = useState("");
   const [newFeature, setNewFeature] = useState("");
-  const [mediaItem, setMediaItem] = useState({
-    item: "",
-    distributor: "",
-    format: "",
-    cover_art: "",
-    description: "",
-    dimensions: "",
-    shelf: "",
-    movieList: [],
-    specialFeatureList: []
-  });
 
   const handleFormatChange = (event) => {
-    setFormat(event.target.value);
+    dispatch({
+      type: 'SET_FORMAT',
+      payload: event.target.value
+    });
   };
 
   // box set urls for testing
@@ -73,20 +66,93 @@ function AddMedia() {
       type: 'SCRAPE_WEBSITE',
       payload: {productUrl: productUrl}
     });
-    setWebScrapeInit(true);
+    setAddMovie(false);
+    setAddFeature(false);
+    setEditArt(false);
+    setEditTitle(false);
+    setEditDistributor(false);
+    setEditDimensions(false);
+    setEditShelf(false);
+    setEditDescription(false);
   };
+
+
+  const handleEditTitle = () => {
+    setTitle(mediaItem.item);
+    setEditTitle(true);
+  }
 
   const updateTitle = () => {
     setEditTitle(false);
-    setMediaItem({...mediaItem, item: title});
+    dispatch({
+      type: 'SET_ITEM',
+      payload: title
+    });
   }
+
+  const handleEditDistributor = () => {
+    setDistributor(mediaItem.distributor);
+    setEditDistributor(true);
+  }
+
+  const updateDistributor = () => {
+    setEditDistributor(false);
+    dispatch({
+      type: 'SET_DISTRIBUTOR',
+      payload: distributor
+    });
+  }
+
+  const handleEditDimensions = () => {
+    setDimensions(mediaItem.dimensions);
+    setEditDimensions(true);
+  }
+
+  const updateDimensions = () => {
+    setEditDimensions(false);
+    dispatch({
+      type: 'SET_DIMENSIONS',
+      payload: dimensions
+    });
+  }
+
+  const handleEditShelf = () => {
+    setShelf(mediaItem.shelf);
+    setEditShelf(true);
+  }
+
+  const updateShelf = () => {
+    setEditShelf(false);
+    dispatch({
+      type: 'SET_SHELF',
+      payload: shelf
+    });
+  }
+
+  const handleEditCoverArt = () => {
+    setCoverArt(mediaItem.cover_art);
+    setEditCoverArt(true);
+  }
+
   const updateCoverArt = () => {
     setEditArt(false);
-    setMediaItem({...mediaItem, cover_art: coverArt});
+    dispatch({
+      type: 'SET_COVER_ART',
+      payload: coverArt
+    });
   }
+
+  const handleEditDescription = () => {
+    setDescription(mediaItem.description);
+    setEditDescription(true);
+  }
+
   const updateDescription = () => {
     setEditDescription(false);
-    setMediaItem({...mediaItem, description: description});
+    dispatch({
+      type: 'SET_DESCRIPTION',
+      payload: description
+    });
   }
 
   const addResultToMedia = (apiObject) => {
@@ -96,6 +162,7 @@ function AddMedia() {
       convertApiObject = {
         movie: apiObject.title,
         year: apiObject.release_date.substring(0,4),
+        length: "",
         cover_art: `${configObject.images.base_url}${configObject.images.poster_sizes[2]}${apiObject.poster_path}`,
         description: apiObject.overview,
         tmdb_id: apiObject.id,
@@ -105,36 +172,30 @@ function AddMedia() {
       convertApiObject = {
         movie: apiObject.name,
         year: apiObject.first_air_date.substring(0,4),
+        length: "",
         cover_art: `${configObject.images.base_url}${configObject.images.poster_sizes[2]}${apiObject.poster_path}`,
         description: apiObject.overview,
         tmdb_id: apiObject.id,
         product_url: ""
       };
     }
-    setMediaItem({...mediaItem, movieList: [...mediaItem.movieList, convertApiObject]});
+    dispatch({
+      type: 'ADD_TO_MOVIELIST',
+      payload: convertApiObject
+    });
     setAddMovie(false);
   }
 
   const addFeatureToList = () => {
-    setMediaItem({...mediaItem, specialFeatureList: [...mediaItem.specialFeatureList, newFeature]});
+    dispatch({
+      type: 'ADD_TO_FEATURESLIST',
+      payload: newFeature
+    });
     setNewFeature("");
     setAddFeature(false);
   }
-
-  // if (setWebScrapeInit && webScrape !== "empty") {
-  //   setMediaItem({...mediaItem, item: webScrape.primaryTitle});
-  //   const distributor = webScrape.type.substring(0, webScrape.type.indexOf(' '));
-  //   setMediaItem({...mediaItem, distributor: distributor});
-  //   setMediaItem({...mediaItem, cover_art: webScrape.boxArt});
-  //   setMediaItem({...mediaItem, description: webScrape.productSummary});
-  //   setMediaItem({...mediaItem, movieList: webScrape.movieList});
-  //   setMediaItem({...mediaItem, specialFeatureList: webScrape.featuresList});
-  //   setWebScrapeInit(false);
-  // }
     
   const addToCollection = () => {
-    const localFormat = (boxSet ? `${format} box`: `${format}`);
-    setMediaItem({...mediaItem, format: localFormat});
     console.log("mediaItem", mediaItem);
     if (mediaItem.item !== "" && mediaItem.movieList.length !== 0) {
       dispatch({
@@ -146,7 +207,7 @@ function AddMedia() {
     }
   }
 
-  console.log('webScrape', webScrape);
+  console.log('mediaItem', mediaItem);
   return (
     <section style={{margin: "5%"}} onMouseMove={() => setDisplayWarning(false)}>
       <div style={{color: "red"}}>
@@ -155,89 +216,19 @@ function AddMedia() {
       </div>
     <TextField style={{ width: "400px" }} id="product-url" label="productUrl" type="productUrl" variant="outlined" value={productUrl} onChange={(event) => setProductUrl(event.target.value)}/>
     <Button style={{ width: "150px", height: "55px" }} variant="contained" color="primary" onClick={scrape}>Pull data from website</Button>
-    {
-      // check if we have a webscrape object
-      webScrape !== "empty" ? 
-        // identify type of webscrape object and render accordingly
-        webScrape.type === "criterion set" ? 
-          // object is a Criterion box set
-          <div>
-            <h2 className={"primaryTitle"}>{webScrape.primaryTitle}</h2>
-            <section className={"coverArt"}>
-              <img src={webScrape.boxArt} alt={webScrape.primaryTitle} width="500" height="600"></img>
-            </section>
-            <section>
-              <p>{webScrape.productSummary}</p>
-            </section>
-            <section className="movies" style={{ alignItems: "flex-end", display : "flex", flexWrap: "wrap" }}>
-              {webScrape.movieList.map((element,index) => {
-                return (
-                  <MovieItem key={index} movieIn={element} addMovieScreen={false} ></MovieItem>
-                )
-              })}
-              <MovieItem movieIn={"none"} addMovieScreen={true} ></MovieItem>
-            </section>
-            <section className={"specialFeatures"}>
-              <h3>Special Features</h3>
-              <ul>
-                {webScrape.featuresList.map((element, index) => {
-                  return (
-                    <li key={index}>{element}</li>
-                  )
-                })}
-              </ul>
-            </section>
-          </div> :
-          webScrape.type === "criterion film" ? 
-          // object is a Criterion film
-          <div>
-            <h2 className={"primaryTitle"}>{webScrape.primaryTitle}</h2>
-            <section className={"coverArt"}>
-              <img src={webScrape.boxArt} alt={webScrape.primaryTitle} width="500" height="600"></img>
-            </section>
-            <section>
-              <p>{webScrape.productSummary}</p>
-            </section>
-            <section className={"specialFeatures"}>
-              <h3>Special Features</h3>
-              <ul>
-                {webScrape.featuresList.map((element, index) => {
-                  return (
-                    <li key={index}>{element}</li>
-                  )
-                })}
-              </ul>
-            </section>
-          </div> :
-        // object is neither a criterion box set nor a criterion film
-        <div></div> :
-      //object is empty
       <div>
         <h2 className={"primaryTitle"}></h2>
         <section className={"format"}>
           <FormControl component="fieldset">
             <FormLabel component="legend">Format</FormLabel>
-            <RadioGroup aria-label="format" name="format" value={format} onChange={handleFormatChange} row>
-              <FormControlLabel value="4K UHD" control={<Radio />} label="4K UHD" />
+            <RadioGroup aria-label="format" name="format" value={mediaItem.format} onChange={handleFormatChange} row>
               <FormControlLabel value="Blu-ray" control={<Radio />} label="Blu-ray" />
+              <FormControlLabel value="4K UHD" control={<Radio />} label="4K UHD" />
               <FormControlLabel value="DVD" control={<Radio />} label="DVD" />
               <FormControlLabel value="VHS" control={<Radio />} label="VHS" />
               <FormControlLabel value="Other" control={<Radio />} label="Other" />
             </RadioGroup>
           </FormControl>
-          <FormGroup row>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={boxSet}
-                onChange={() => setBoxSet(!boxSet)}
-                name="boxSet"
-                color="primary"
-              />
-            }
-            label="Box Set"
-          />
-          </FormGroup>
         </section>
         <section className={"title"}>
           {
@@ -247,7 +238,7 @@ function AddMedia() {
               <TextField style={{ width: "200px" }} id="title" label="title" type="title" variant="outlined" value={title} onChange={(event) => setTitle(event.target.value)}/>
               <Button onClick={() => updateTitle()}><DoneIcon /></Button>
             </div> :
-            <h3>{title} <Button onClick={() => setEditTitle(true)}><EditIcon /></Button></h3>
+            <h3>{mediaItem.item} <Button onClick={() => handleEditTitle()}><EditIcon /></Button></h3>
           }
         </section>
         <section className={"coverArt"}>
@@ -259,8 +250,8 @@ function AddMedia() {
               <Button onClick={() => updateCoverArt()}><AddIcon /></Button>
             </div> :
             <div>
-              <img src={coverArt} alt={`${title} cover`} width="500" height="600"/>
-              <Button onClick={() => setEditArt(true)}><EditIcon /></Button>
+              <img src={mediaItem.cover_art} alt={`${mediaItem.item} cover`} width="500" height="600"/>
+              <Button onClick={() => handleEditCoverArt()}><EditIcon /></Button>
             </div>
           }
         </section>
@@ -272,11 +263,11 @@ function AddMedia() {
               <TextField style={{ width: "400px" }} multiline id="description" label="description" type="description" variant="outlined" value={description} onChange={(event) => setDescription(event.target.value)}/>
               <Button onClick={() => updateDescription()}><DoneIcon /></Button>
             </div>:
-            <p>{description}<Button onClick={() => setEditDescription(true)}><EditIcon /></Button></p>
+            <p>{mediaItem.description}<Button onClick={() => handleEditDescription()}><EditIcon /></Button></p>
           }
         </section>
         <section>
-          <h3>{boxSet ? "Movie List" : "Movie"}</h3>
+          <h3>Movie List</h3>
           <section className="movies" style={{ alignItems: "flex-end", display : "flex", flexWrap: "wrap" }}>
             {mediaItem.movieList.map((element,index) => {
               return (
@@ -297,9 +288,9 @@ function AddMedia() {
         <section className="specialFeatures" >
           <h3>Special Features</h3>
             <ul>
-            {mediaItem.specialFeatureList.map((feature,index) => {
+            {mediaItem.featuresList.map((feature,index) => {
               return (
-                <li>{feature}</li>
+                <li key={index}>{feature}</li>
               )
             })}
           {
@@ -314,7 +305,6 @@ function AddMedia() {
           </ul>
         </section>
       </div>
-    }
     </section>
   );
 };

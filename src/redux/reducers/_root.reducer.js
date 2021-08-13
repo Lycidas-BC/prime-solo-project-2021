@@ -5,9 +5,9 @@ import tmdbSearchReducer from './tmdb_search.reducer';
 import tmdbConfigReducer from './tmdb_config.reducer';
 import tmdbDetailsReducer from './tmdb_details.reducer';
 import tmdbStreamingOptionsReducer from './tmdb_streaming_options.reducer';
-import webScrapeReducer from './web_scrape.reducer';
+import mediaItem from './media_item.reducer';
 import mediaCollectionReducer from './media_collection.reducer';
-import mediaItemReducer from './media_item.reducer';
+import mediaItemDetailsReducer from './media_item.reducer';
 import itemInCollection from './item_in_collection.reducer';
 
 // rootReducer is the primary reducer for our entire project
@@ -23,9 +23,9 @@ const rootReducer = combineReducers({
   tmdbConfigReducer, // tmdb config
   tmdbDetailsReducer, //tmdb details
   tmdbStreamingOptionsReducer, //tmdb movie streaming options
-  webScrapeReducer, //web scrape reducer
+  mediaItem, //web scrape reducer
   mediaCollectionReducer, //media collection reducer
-  mediaItemReducer, //media item reducer
+  mediaItemDetailsReducer, //media item reducer
   itemInCollection, //item in collection reducer
 });
 

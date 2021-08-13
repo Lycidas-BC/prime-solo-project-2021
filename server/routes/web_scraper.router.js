@@ -27,15 +27,17 @@ router.get('/scrapeLength', (req, res) => {
     )
     .then(response => {
       const $ = cheerio.load(response.data);
-      let length = "length not found"
+      let length = -1;
       $('.film-meta-list').find('li').each((_idx, el) => {
         if ($($(el).find('meta')).length > 0) {
            if ($($(el).find('meta')).attr('itemprop') === "duration"){
             length = $(el).text();
+            length = length.substring(0,length.indexOf(" "));
             console.log("length", length);
           } 
         }
       });
+      console.log(length);
       res.status(201).send(length);
 
     })
@@ -54,14 +56,15 @@ const scrapeCriterionFilmData = (siteHtml, productUrl) => {
   const cover_art = $($('.product-box-art').children('img')[0]).attr('src');
   const description = $($('.product-summary').children('p')[0]).text();
   let year = "";
-  let length = "";
+  let length = -1;
   const featuresList = [];
   $('.film-meta-list').find('li').each((_idx, el) => {
     if ($($(el).find('meta')).length > 0) {
       if ($($(el).find('meta')).attr('itemprop') === "datePublished"){
-        year = $(el).text()
+        year = $(el).text();
       } else if ($($(el).find('meta')).attr('itemprop') === "duration"){
-        length = $(el).text()
+        length = $(el).text();
+        length = length.substring(0,length.indexOf(" "));
       } 
     }
   });
@@ -76,6 +79,9 @@ const scrapeCriterionFilmData = (siteHtml, productUrl) => {
   const filmScrapeObject = {
     type: "film",
     distributor: "Criterion Collection",
+    format: "Blu-ray",
+    dimensions: "",
+    shelf: "",
     item: item,
     description: description,
     cover_art: cover_art,
@@ -140,7 +146,7 @@ const scrapeCriterionSetData = (siteHtml) => {
     movieList.push({
       movie: movie,
       year: year,
-      length: "empty",
+      length: -1,
       cover_art: cover_art,
       description: description,
       product_url: product_url
@@ -151,6 +157,9 @@ const scrapeCriterionSetData = (siteHtml) => {
     type: "set",
     item: item,
     distributor: "Criterion Collection",
+    format: "Blu-ray",
+    dimensions: "",
+    shelf: "",
     description: description,
     movieList: movieList,
     cover_art: cover_art,
