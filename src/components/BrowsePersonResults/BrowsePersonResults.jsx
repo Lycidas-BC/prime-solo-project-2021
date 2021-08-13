@@ -42,6 +42,8 @@ function BrowsePersonResults() {
   const { type, tmdbId } = useParams();
   const tmdbDetailsReducer = useSelector(store => store.tmdbDetailsReducer);
   const [role, setRole] = useState("Acting");
+  // show all movies, only movies in your collection, only movies not in your collection
+  const [show, setShow] = useState("all");
   const freshLoad = tmdbDetailsReducer.type === type;
   const [triggerRefresh, setTriggerRefresh] = useState(freshLoad);
   const configObject = useSelector(store => store.tmdbConfigReducer);
@@ -53,6 +55,18 @@ function BrowsePersonResults() {
 
   if (type !== "person") {
     history.push(`/search/1/${type}/${tmdbId}`);
+  }
+
+  const filterShownItems = (movieIn) => {
+    if (show === "inCollection" && tmdbDetailsReducer.mediaList) {
+      let idList = [].concat.apply([], tmdbDetailsReducer.mediaList.map(element => element.tmdb_id_list));
+      return idList.indexOf(movieIn.id) >= 0;
+    } else if (show === "notInCollection"  && tmdbDetailsReducer.mediaList) {
+      let idList = [].concat.apply([], tmdbDetailsReducer.mediaList.map(element => element.tmdb_id_list));
+      return idList.indexOf(movieIn.id) < 0;
+    } else {
+      return true;
+    }
   }
 
   if (tmdbDetailsReducer !== "empty" && type === "person" ) {
@@ -99,13 +113,26 @@ function BrowsePersonResults() {
           }
         </Select>
       </FormControl>
+      <FormControl className={classes.formControl}>
+        <InputLabel id="demo-simple-select-label">Role</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={show}
+          onChange={(event) => setShow(event.target.value)}
+        >
+          <MenuItem value={"all"}>Show all movies</MenuItem>
+          <MenuItem value={"inCollection"}>Show movies in my collection</MenuItem>
+          <MenuItem value={"notInCollection"}>Show movies <b style={{paddingLeft: "2px", paddingRight: "2px"}}> not </b> in my collection</MenuItem>
+        </Select>
+      </FormControl>
       </Grid>
       <Grid item style={{height: "100%", width: "100%", padding: "20px 10px" }}>
         {
           role === "Acting" ? 
           <div>
             <Grid container spacing={2} style={{ alignItems: "flex-end" }}>
-              {tmdbDetailsReducer.credits.cast.sort((a, b) => {return b.popularity - a.popularity;}).map((item,index) => {
+              {tmdbDetailsReducer.credits.cast.filter( (element) => filterShownItems(element) ).sort((a, b) => {return b.popularity - a.popularity;}).map((item,index) => {
                   return (
                       <SearchItem key={index} responseItem={item} genericSearch={true} manualType={"movie"}></SearchItem>
                   )
@@ -114,7 +141,7 @@ function BrowsePersonResults() {
           </div>:
           <div>
             <Grid container spacing={2} style={{ alignItems: "flex-end" }}>
-              {tmdbDetailsReducer.credits.crew.filter((object) => object.department === role).sort((a, b) => {return b.popularity - a.popularity;}).map((item,index) => {
+              {tmdbDetailsReducer.credits.crew.filter((object) => object.department === role).filter( (element) => filterShownItems(element) ).sort((a, b) => {return b.popularity - a.popularity;}).map((item,index) => {
                   return (
                       <SearchItem key={index} responseItem={item} genericSearch={true} manualType={"movie"}></SearchItem>
                   )

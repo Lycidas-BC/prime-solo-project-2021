@@ -66,11 +66,11 @@ router.get('/', rejectUnauthenticated, (req, res) => {
  */
  router.get('/searchCollection/:tmdbId', rejectUnauthenticated, (req, res) => {
   // GET route code here
-  console.log("search collection for movie", decodeURIComponent(req.params.tmdbId).split(","));
+  console.log("search collection for movie");
   const tmdbIdList = decodeURIComponent(req.params.tmdbId).split(",");
-
+  
   let queryText = `
-    SELECT "media"."id" AS "media_id", "media"."item", "media"."distributor", "media"."product_page", "media"."format", "media"."cover_art", "media"."description", "media"."dimensions", "media"."shelf", "movie"."tmdb_id"
+    SELECT "media"."id" AS "media_id", "media"."item", "media"."distributor", "media"."product_page", "media"."format", "media"."cover_art", "media"."description", "media"."dimensions", "media"."shelf", array_agg("movie"."tmdb_id") AS tmdb_id_list
     FROM "media_movie"
     JOIN "movie" ON "movie"."id" = "media_movie"."movie_id"
     JOIN "media" ON "media"."id" = "media_movie"."media_id"
@@ -85,7 +85,8 @@ router.get('/', rejectUnauthenticated, (req, res) => {
       `;
     }
   }
-  queryText += `);`;
+  queryText += `)
+  GROUP BY "media"."id";`;
   const queryParams = [req.user.id].concat(tmdbIdList);
   pool
     .query(queryText, queryParams)
