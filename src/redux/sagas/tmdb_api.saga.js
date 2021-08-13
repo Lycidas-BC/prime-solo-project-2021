@@ -16,6 +16,7 @@ function* getTmdbDetails(action) {
   try {
     const tmdbResponse = yield axios.get(`/api/tmdb/details/${action.payload.tmdbId}/?searchType=${encodeURIComponent(action.payload.searchType)}`);
     let tmdbDetails = tmdbResponse.data;
+    console.log(tmdbDetails);
     const mediaIdList = yield axios.get(`/media_collection/searchCollection/${encodeURIComponent(tmdbResponse.data.tmdbIdList)}`);
     tmdbDetails.mediaList = mediaIdList.data;
     yield put({ type: 'SET_TMDB_DETAILS', payload: tmdbDetails });

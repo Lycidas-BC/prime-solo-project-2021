@@ -29,12 +29,13 @@ router.get('/details/:tmdbId', (req, res) => {
     .then(response => {
         console.log('GET details from API successful');
         let details = response.data;
+        console.log("details", details);
         details.type = searchType;
         if (searchType === "person") {
             let tmdbIdList = [];
             const castList = details.credits.cast.map((element)=> {return element.id});
             const crewList = details.credits.crew.map((element)=> {return element.id});
-            if (castList.length !== 0 && crewList.length !== 0) {
+            if (castList.length !== 0 || crewList.length !== 0) {
                 tmdbIdList = tmdbIdList.concat(castList);
                 tmdbIdList = tmdbIdList.concat(crewList);
                 let uniqueTmdbIds = [...new Set(tmdbIdList)].join(",");

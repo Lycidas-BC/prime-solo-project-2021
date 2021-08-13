@@ -66,7 +66,7 @@ router.get('/', rejectUnauthenticated, (req, res) => {
  */
  router.get('/searchCollection/:tmdbId', rejectUnauthenticated, (req, res) => {
   // GET route code here
-  console.log("search collection for movie");
+  console.log("search collection for movie", decodeURIComponent(req.params.tmdbId).split(","));
   const tmdbIdList = decodeURIComponent(req.params.tmdbId).split(",");
 
   let queryText = `
