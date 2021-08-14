@@ -72,6 +72,8 @@ router.get('/search', (req, res) => {
                 element.media_type = searchType
             });
         }
+        console.log('in search API', searchResultObject);
+
         res.status(201).send(searchResultObject);
     })
     .catch(err => {
@@ -94,24 +96,33 @@ router.get('/searchSpecific', (req, res) => {
     let page = req.query.page;
     // initialize array to grab movies which match name and year
     let matchList = [];
+    let mediaTypeList = [];
+
     axios.get(
-        `https://api.themoviedb.org/3/search/${searchType}?api_key=${process.env.TMDB_API_KEY}&query=${searchText}&page=${page}&include_adult=false`
+        `https://api.themoviedb.org/3/search/${encodeURIComponent(searchType)}?api_key=${process.env.TMDB_API_KEY}&query=${encodeURIComponent(searchText)}&page=${encodeURIComponent(page)}&include_adult=false`
     )
     .then(response => {
         console.log('searchSpecific API successful');
         let searchResultObject = response.data;
         if (searchType === 'movie' || searchType === 'tv') {
-            searchResultObject.results.map((element) => {
+            searchResultObject.results.map((element, index) => {
                 element.media_type = searchType
             });
+        }
+        if (searchType === 'movie' || searchType === 'tv' || searchType === 'multi') {
             let matches = searchResultObject.results.filter((element) => {
-                return element.release_date.indexOf(year) > -1;
+                if (element && element.release_date){
+                    return element.release_date.indexOf(year) > -1;
+                } else if (element && element.first_air_date){
+                    return element.first_air_date.indexOf(year) > -1;
+                }
             });
             for (const match of matches) {
-                matchList.push(match.id)
+                matchList.push(match.id);
+                mediaTypeList.push(match.media_type);
             }
         }
-        res.status(201).send({tmdb_id: matchList, total_pages: searchResultObject.total_pages});
+        res.status(201).send({tmdb_id: matchList, total_pages: searchResultObject.total_pages, mediaTypeList: mediaTypeList});
     })
     .catch(err => {
         console.log(`error searchSpecific through API`, err);

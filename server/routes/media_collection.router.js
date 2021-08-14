@@ -237,32 +237,42 @@ pool
    const newMovieList = req.body.movieList;
    let counter = 0;
    for (const newMovie of newMovieList) {
-     console.log("newMovie", newMovie);
+    const tmdbId = (Array.isArray(newMovie.tmdb_id) ? newMovie.tmdb_id[0] : Number.isInteger(newMovie.tmdb_id) ? newMovie.tmdb_id: null);
+    console.log("newMovie", newMovie);
     const movieInsertIfNotExistQuery = `
-      INSERT INTO "movie" ("name", "tmdb_id", "product_url", "tv_show")
-      VALUES ($1, $2, $3, $4)
-      ON CONFLICT ("tmdb_id")
+      INSERT INTO "movie" ("name", "tmdb_id", "content_type")
+      VALUES ($1, $2, $3)
+      ON CONFLICT ("tmdb_id") WHERE NOT NULL
       DO NOTHING;
     `;
     
     pool
-      .query(movieInsertIfNotExistQuery, [newMovie.movie, newMovie.tmdb_id, newMovie.product_url, ( newMovie.tv_show ? newMovie.tv_show : false) ])
+      .query(movieInsertIfNotExistQuery, [newMovie.movie, tmdbId, newMovie.media_type])
       .then(() => {
-        const getMovieIdQuery = `
-          SELECT "id"
-          FROM "movie"
-          WHERE "tmdb_id" = $1;
-        `;
+        let getMovieIdQuery = "";
+        if (tmdbId != null){
+          getMovieIdQuery = `
+            SELECT "id"
+            FROM "movie"
+            WHERE "tmdb_id" = $1;
+          `;
+        } else {
+          getMovieIdQuery = `
+            SELECT "id"
+            FROM "movie"
+            WHERE "tmdb_id" IS NULL AND "name" = $1;
+          `;
+        }
         pool
-          .query(getMovieIdQuery, [newMovie.tmdb_id])
+          .query(getMovieIdQuery, [(tmdbId ? tmdbId : newMovie.movie)])
           .then((response) => {
             const movieId = response.rows[0].id;
             const mediaMovieInsertQuery = `
-              INSERT INTO "media_movie" ("movie_id", "media_id", "cover_art", "length", "description")
-              VALUES($1, $2, $3, $4, $5);
+              INSERT INTO "media_movie" ("movie_id", "media_id", "cover_art", "length", "description", "product_url")
+              VALUES($1, $2, $3, $4, $5, $6);
             `;
             pool
-              .query(mediaMovieInsertQuery, [movieId, mediaId, newMovie.cover_art, newMovie.length, newMovie.description])
+              .query(mediaMovieInsertQuery, [movieId, mediaId, newMovie.cover_art, newMovie.length, newMovie.description, newMovie.product_url])
               .then((response) => {
                 counter++;
                 if (counter === newMovieList.length) {

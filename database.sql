@@ -35,14 +35,17 @@ CREATE TABLE "media" (
 CREATE TABLE "movie" (
 	"id" serial NOT NULL,
 	"name" varchar(220) NOT NULL,
-	"tv_show" BOOLEAN DEFAULT 'false',
-	"tmdb_id" integer UNIQUE,
-	"product_url" varchar(2000),
+	"content_type" varchar(10) DEFAULT 'movie',
+	"tmdb_id" integer,
 	CONSTRAINT "movie_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
 );
 
+-- require tmdb_id to be unique, but allow multiple nulls
+CREATE UNIQUE INDEX "tmdb_id_unique_index"
+  ON "movie"("tmdb_id")
+  WHERE "tmdb_id" IS NOT NULL;
 
 CREATE TABLE "media_movie" (
 	"id" serial NOT NULL,
@@ -51,6 +54,7 @@ CREATE TABLE "media_movie" (
 	"cover_art" varchar(2000),
 	"description" varchar(5000),
 	"length" integer,
+	"product_url" varchar(2000),
 	CONSTRAINT "media_movie_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -60,6 +64,7 @@ CREATE TABLE "media_movie" (
 CREATE TABLE "framegrab" (
 	"id" serial NOT NULL,
 	"path" varchar(2000) NOT NULL,
+	"timestamp_seconds" integer,
 	CONSTRAINT "framegrab_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE

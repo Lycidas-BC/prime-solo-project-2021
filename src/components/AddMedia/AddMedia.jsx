@@ -34,6 +34,8 @@ function AddMedia() {
   const [editShelf, setEditShelf] = useState(true);
   const [editDescription, setEditDescription] = useState(true);
   const [displayWarning, setDisplayWarning] = useState(false);
+  const [displayScrapeProgress, setDisplayScrapeProgress] = useState(false);
+
   const dispatch = useDispatch();
   const configObject = useSelector(store => store.tmdbConfigReducer);
   const mediaItem = useSelector(store => store.mediaItem);
@@ -66,6 +68,7 @@ function AddMedia() {
       type: 'SCRAPE_WEBSITE',
       payload: {productUrl: productUrl}
     });
+    setDisplayScrapeProgress(true);
     setAddMovie(false);
     setAddFeature(false);
     setEditArt(false);
@@ -166,7 +169,8 @@ function AddMedia() {
         cover_art: `${configObject.images.base_url}${configObject.images.poster_sizes[2]}${apiObject.poster_path}`,
         description: apiObject.overview,
         tmdb_id: apiObject.id,
-        product_url: ""
+        product_url: "",
+        media_type: "movie"
       };
     } else {
       convertApiObject = {
@@ -176,7 +180,8 @@ function AddMedia() {
         cover_art: `${configObject.images.base_url}${configObject.images.poster_sizes[2]}${apiObject.poster_path}`,
         description: apiObject.overview,
         tmdb_id: apiObject.id,
-        product_url: ""
+        product_url: "",
+        media_type: "tv"
       };
     }
     dispatch({
@@ -197,7 +202,7 @@ function AddMedia() {
     
   const addToCollection = () => {
     console.log("mediaItem", mediaItem);
-    if (mediaItem.item !== "" && mediaItem.movieList.length !== 0) {
+    if (mediaItem.item !== "" && mediaItem.movieList.length !== 0 && (!displayScrapeProgress || mediaItem.progress === "COMPLETE")) {
       dispatch({
         type: 'ADD_MEDIA_ITEM',
         payload: mediaItem
@@ -216,6 +221,12 @@ function AddMedia() {
       </div>
     <TextField style={{ width: "400px" }} id="product-url" label="productUrl" type="productUrl" variant="outlined" value={productUrl} onChange={(event) => setProductUrl(event.target.value)}/>
     <Button style={{ width: "150px", height: "55px" }} variant="contained" color="primary" onClick={scrape}>Pull data from website</Button>
+    {
+    displayScrapeProgress ? 
+      (mediaItem.progress === "COMPLETE" ?
+        <div>{mediaItem.progress}</div> :
+      <div>Retrieving data. Please wait...</div>): ""
+    }
       <div>
         <h2 className={"primaryTitle"}></h2>
         <section className={"format"}>

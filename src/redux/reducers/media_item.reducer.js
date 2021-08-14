@@ -7,7 +7,8 @@ let blankMediaItemObject = {
   dimensions: "",
   shelf: "",
   movieList: [],
-  featuresList: []
+  featuresList: [],
+  progress: "N/A"
 }
 
 const mediaItem = (state = blankMediaItemObject, action) => {

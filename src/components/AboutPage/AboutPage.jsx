@@ -10,6 +10,7 @@ function AboutPage() {
       <div>
         <ul>
           <li>TMDB API<img style={{maxHeight: "13px", paddingLeft: "15px"}} src={`https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg`}/></li>
+          <li>Cheerio</li>
           <li>Passport</li>
           <li>React</li>
           <li>Redux</li>
@@ -19,7 +20,6 @@ function AboutPage() {
           <li>Axios</li>
           <li>Material-UI</li>
           <li>Saga</li>
-          <li>Cheerio</li>
           {/* <li>DVDBeaver</li> */}
         </ul>
       </div>
