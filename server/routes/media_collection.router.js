@@ -112,7 +112,7 @@ router.get('/', rejectUnauthenticated, (req, res) => {
   const mediaId = req.params.mediaId;
 
   const queryText = `
-    SELECT "movie"."id" AS "movie_id", "movie"."name", "movie"."tmdb_id", "media_movie"."description", "media_movie"."length", "movie"."tv_show", "movie"."product_url"
+    SELECT "movie"."id" AS "movie_id", "movie"."name", "movie"."tmdb_id", "media_movie"."description", "media_movie"."length", "movie"."content_type" as "media_type", "media_movie"."product_url"
     FROM "media_movie"
     JOIN "movie" ON "movie"."id" = "media_movie"."movie_id"
     WHERE "media_movie"."media_id" = $1;

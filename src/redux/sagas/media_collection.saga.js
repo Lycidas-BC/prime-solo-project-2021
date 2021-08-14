@@ -20,7 +20,7 @@ function* getMediaItemDetails(action) {
     mediaItemDetails.mediaDetails = mediaDetails.data[0];
     const sqlMovieData = yield axios.get(`/media_collection/media_movies/${action.payload.mediaId}`);
     for (const movie of sqlMovieData.data) {
-      const apiResponse = yield axios.get(`/api/tmdb/details/${encodeURIComponent(movie.tmdb_id)}/?searchType=${encodeURIComponent(movie.tv_show ? "tv" : "movie")}`);
+      const apiResponse = yield axios.get(`/api/tmdb/details/${encodeURIComponent(movie.tmdb_id)}/?searchType=${encodeURIComponent(movie.media_type)}`);
       apiMovieData.push(apiResponse.data);
     }
     mediaItemDetails.sqlMovieData = sqlMovieData.data;

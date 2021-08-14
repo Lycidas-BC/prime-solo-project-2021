@@ -61,7 +61,7 @@ function DisplayCollectionItem({mediaIn, addMedia}) {
           <Paper className={classes.paper}>
               {/* <h2><em>{mediaIn.item}:</em> {mediaIn.distributor}, {mediaIn.format}, {mediaIn.shelf}</h2> */}
             <CardMedia
-              style={{maxHeight: "80%", maxWidth: "80%", margin: "auto", padding: "10% 7% 10% 7%", backgroundImage: backgroundImageUrl, backgroundRepeat: "no-repeat", backgroundSize: "100% 100%" }}
+              style={{maxHeight: "90%", maxWidth: "90%", margin: "auto", padding: "5% 3% 0% 3%"}}
               className={mediaIn.item}
               component="img"
               alt={mediaIn.item}
