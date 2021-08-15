@@ -68,9 +68,8 @@ router.get('/', rejectUnauthenticated, (req, res) => {
   // GET route code here
   console.log("search collection for movie");
   const tmdbIdList = decodeURIComponent(req.params.tmdbId).split(",");
-  
   let queryText = `
-    SELECT "media"."id" AS "media_id", "media"."item", "media"."distributor", "media"."product_page", "media"."format", "media"."cover_art", "media"."description", "media"."dimensions", "media"."shelf", array_agg("movie"."tmdb_id") AS tmdb_id_list
+    SELECT "media"."id" AS "media_id", array_agg("media_movie"."id") AS "media_movie_id", "media"."item", "media"."distributor", "media"."product_page", "media"."format", "media"."cover_art", "media"."description", "media"."dimensions", "media"."shelf", array_agg("movie"."tmdb_id") AS tmdb_id_list
     FROM "media_movie"
     JOIN "movie" ON "movie"."id" = "media_movie"."movie_id"
     JOIN "media" ON "media"."id" = "media_movie"."media_id"
@@ -99,6 +98,38 @@ router.get('/', rejectUnauthenticated, (req, res) => {
     })
     .catch((err) => {
       console.log('search collection for movie failed: ', err);
+      res.sendStatus(500);
+    });
+});
+
+/**
+ * GET framegrabs associated with movie
+ */
+ router.get('/framegrabs/:tmdb_id', rejectUnauthenticated, (req, res) => {
+  // GET route code here
+  console.log("in GET media item", req.params.tmdb_id);
+
+  const queryText = `
+    SELECT "media_movie"."id" AS "media_movie_id", "media_movie"."media_id" AS "media_id", "movie"."name", "movie"."content_type", "movie"."tmdb_id", array_agg("framegrab"."path" || ' ' || "framegrab"."timestamp_seconds") AS "framegrab_list", "media_movie"."cover_art" AS "media_movie_cover_art", "media_movie"."length", "media_movie"."description", "media"."item", "media"."distributor", "media"."product_page", "media"."format", "media"."cover_art" AS "media_cover_art", "media"."description", "media"."dimensions", "media"."shelf"
+    FROM "media_movie_framegrab"
+    FULL JOIN "media_movie" ON "media_movie"."id" = "media_movie_framegrab"."media_movie_id"
+    FULL JOIN "framegrab" ON "framegrab"."id" = "media_movie_framegrab"."framegrab_id"
+    JOIN "movie" ON "movie"."id" = "media_movie"."movie_id"
+    JOIN "media" ON "media"."id" = "media_movie"."media_id"
+    WHERE "movie"."tmdb_id" = $1
+    GROUP BY "media_movie"."id", "movie"."name", "movie"."content_type", "movie"."tmdb_id", "media_movie"."cover_art", "media_movie"."length", "media_movie"."description", "media_movie"."media_id", "media"."item", "media"."distributor", "media"."product_page", "media"."format", "media"."cover_art", "media"."description", "media"."dimensions", "media"."shelf";
+  `;
+  pool
+    .query(queryText, [req.params.tmdb_id])
+    .then((response) => {
+      if (response.rows.length === 0) {
+        res.status(201).send("empty");
+      } else {
+        res.send(response.rows);
+      }
+    })
+    .catch((err) => {
+      console.log('GET media item failed: ', err);
       res.sendStatus(500);
     });
 });
@@ -362,6 +393,43 @@ pool
       console.log("DELETE failed", err);
       res.sendStatus(500);
     });
+});
+
+/**
+ * POST framegrab to database
+ */
+ router.post('/framegrab/:movie_media_id', rejectUnauthenticated, (req, res) => {
+  console.log("/framegrab/:movie_media_id", req.body, req.params.movie_media_id);
+
+  // add media into media table, returning the id of the newly created item
+  const framegrabInsertQuery = `
+    INSERT INTO "framegrab" ("path", "timestamp_seconds")
+    VALUES ($1, $2)
+    RETURNING "id" AS "framegrab_id";
+  `;
+pool
+  .query(framegrabInsertQuery, [req.body.path, req.body.timestamp])
+  .then((response) => {
+    // update the user_media join table with the user id and newly-created media id
+    const newFramegrabId = response.rows[0].framegrab_id;
+    const mediaMovieFramegrabInsertQuery = `
+      INSERT INTO "media_movie_framegrab" ("media_movie_id", "framegrab_id")
+      VALUES ($1, $2);
+    `;
+  pool
+    .query(mediaMovieFramegrabInsertQuery, [req.params.movie_media_id, newFramegrabId])
+    .then(() => {
+      res.sendStatus(201);
+    })
+    .catch((err) => {
+      console.log('POST framegrab succeeded, but insert to media_movie_framegrab failed: ', err);
+      res.sendStatus(500);
+    });
+  })
+  .catch((err) => {
+    console.log('POST framegrab failed: ', err);
+    res.sendStatus(500);
+  });
 });
 
 module.exports = router;

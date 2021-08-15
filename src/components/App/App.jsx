@@ -25,6 +25,7 @@ import MediaItem from '../MediaItem/MediaItem';
 import DisplayCollection from '../DisplayCollection/DisplayCollection';
 import BrowseSearchResults from '../BrowseSearchResults/BrowseSearchResults';
 import BrowsePersonResults from '../BrowsePersonResults/BrowsePersonResults';
+import FramegrabsAndComparisons from '../FramegrabsAndComparisons/FramegrabsAndComparisons';
 import './App.css';
 
 function App() {
@@ -68,6 +69,15 @@ function App() {
             path="/search/0/:type/:tmdbId"
           >
             <BrowsePersonResults />
+          </Route>
+
+          {/* Visiting localhost:3000/search will show the search page. */}
+          <Route
+            // shows FramegrabsAndComparisons at all times (logged in or not)
+            exact
+            path="/compareVersions/:tmdbId"
+          >
+            <FramegrabsAndComparisons />
           </Route>
 
           {/* Visiting localhost:3000/search will show the search page. */}

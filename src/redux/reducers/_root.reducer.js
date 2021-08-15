@@ -9,6 +9,7 @@ import mediaItem from './media_item.reducer';
 import mediaCollectionReducer from './media_collection.reducer';
 import mediaItemDetailsReducer from './media_item_details.reducer';
 import itemInCollection from './item_in_collection.reducer';
+import movieFramegrabs from './movie_framegrab.reducer';
 
 // rootReducer is the primary reducer for our entire project
 // It bundles up all of the other reducers so our project can use them.
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
   mediaCollectionReducer, //media collection reducer
   mediaItemDetailsReducer, //media item reducer
   itemInCollection, //item in collection reducer
+  movieFramegrabs, //movie framegrabs reducer
 });
 
 export default rootReducer;

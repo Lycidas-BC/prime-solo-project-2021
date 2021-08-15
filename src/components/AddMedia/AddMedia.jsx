@@ -286,7 +286,7 @@ function AddMedia() {
         </section>
         <section style={{clear: "both"}}>
           <h3>Movie List</h3>
-          <section className="movies" style={{ alignItems: "flex-end", display : "flex", flexWrap: "wrap" }}>
+          <section className="movies" style={{ alignItems: "flex-start", display : "flex", flexWrap: "wrap" }}>
             {mediaItem.movieList.map((element,index) => {
               return (
                 <MovieItem key={index} movieIn={element} addMovieScreen={false} ></MovieItem>
@@ -299,7 +299,12 @@ function AddMedia() {
             <div><Button onClick={() => setAddMovie(!addMovie)}><RemoveIcon /></Button></div>
             <SearchPage addResultToMedia={addResultToMedia} typeList={['movie', 'tv']} genericSearch={false}></SearchPage>
             </div> :
-            <Button style={{ width: "24%", height: "24%" }} onClick={() => setAddMovie(!addMovie)}><MovieItem movieIn={"none"} addMovieScreen={true} addMovieIcon={true}></MovieItem></Button>
+            <section>
+              <Button onClick={() => setAddMovie(!addMovie)}><AddIcon /></Button>
+              <div style={{ width: "24%", height: "24%" }}  onDoubleClick={() => setAddMovie(!addMovie)} >
+                <MovieItem movieIn={"none"} addMovieScreen={true} addMovieIcon={true}></MovieItem>
+              </div>
+            </section>
           }
         </section>
         <section className="specialFeatures" >

@@ -6,7 +6,6 @@ import AddIcon from '@material-ui/icons/Add';
 import CancelIcon from '@material-ui/icons/Cancel';
 import DeleteIcon from '@material-ui/icons/Delete';
 import DoneIcon from '@material-ui/icons/Done';
-import EditIcon from '@material-ui/icons/Edit';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Button from "@material-ui/core/Button";
@@ -41,16 +40,12 @@ function DisplayCollectionItem({mediaIn, addMedia}) {
       console.log('in addItem');
       history.push(`/add_media`);
     };
-    // const editItem = () => {
-    //   console.log('in editItem');
-    //   history.push(`/`);
-    // };
+    
     const deleteItem = () => {
       console.log('in deleteItem');
       console.log("mediaIn.id", mediaIn.id);
       setConfirmDelete(false);
       dispatch({ type: 'DELETE_MEDIA_ITEM', payload: {media_id: mediaIn.id} });
-      // history.push(`/`);
     };
     const itemDetails = () => {
       console.log('in itemDetails');
@@ -76,7 +71,6 @@ function DisplayCollectionItem({mediaIn, addMedia}) {
             {addMedia ? 
               <div><Button  onClick={() => addItem()}><AddIcon></AddIcon></Button></div> : 
               <div>
-                {/* <Button onClick={() => editItem()}><EditIcon></EditIcon></Button> */}
                 <Button onClick={() => setConfirmDelete(!confirmDelete)}><DeleteIcon></DeleteIcon></Button>
                 <Button onClick={() => itemDetails()}><MoreHorizIcon></MoreHorizIcon></Button>
                 <Button onClick={() => setShowDetails(!showDetails)}><ExpandMoreIcon /></Button>

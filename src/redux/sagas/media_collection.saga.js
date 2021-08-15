@@ -38,7 +38,7 @@ function* getMediaItemDetails(action) {
     console.log('Error in getMediaItemDetails:', error);
   };
 };
-///searchCollection/:tmdbId - not sure if I still need this
+// /searchCollection/:tmdbId
 function* searchMediaCollection(action) {
   try {
     const mediaIdList = yield axios.get(`/media_collection/searchCollection/${action.payload.tmdbId}`);
@@ -87,6 +87,31 @@ function* updateMediaItem(action) {
   };
 };
 
+// '/framegrabs/:tmdb_id'
+function* getMovieFramegrabs(action) {
+  try {
+    const framegrabs = yield axios.get(`/media_collection/framegrabs/${action.payload.tmdb_id}`);
+    yield put({ type: 'SET_FRAMEGRABS', payload: framegrabs.data });
+  }
+  catch (error) {
+    console.log('Error in getMovieFramegrabs:', error);
+  };
+};
+// /framegrab/:movie_media_id
+
+// '/framegrabs/:tmdb_id'
+function* addMovieFramegrab(action) {
+  try {
+    console.log("addMovieFramegrab", action.payload );
+    yield axios.post(`/media_collection/framegrab/${action.payload.media_movie_id}`, action.payload);
+    yield put({ type: 'GET_MOVIE_FRAMEGRABS', payload: action.payload });
+  }
+  catch (error) {
+    console.log('Error in addMovieFramegrabs:', error);
+  };
+};
+
+
   function* mediaCollectionSaga() {
     yield takeEvery('GET_COLLECTION', getMediaCollection);
     yield takeEvery('SEARCH_COLLECTION', searchMediaCollection);
@@ -94,6 +119,8 @@ function* updateMediaItem(action) {
     yield takeEvery('UPDATE_MEDIA_ITEM', updateMediaItem);
     yield takeEvery('DELETE_MEDIA_ITEM', deleteMediaItem);
     yield takeEvery('GET_MEDIA_ITEM_DETAILS', getMediaItemDetails);
+    yield takeEvery('GET_MOVIE_FRAMEGRABS', getMovieFramegrabs);
+    yield takeEvery('ADD_MOVIE_FRAMEGRAB', addMovieFramegrab);
   };
 
   export default mediaCollectionSaga;
