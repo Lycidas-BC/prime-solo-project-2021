@@ -10,7 +10,7 @@ router.get('/', rejectUnauthenticated, (req, res) => {
   // GET route code here
   console.log("in GET collection");
   const orderBy = req.query.orderBy || req.query.orderBy === "" ? req.query.orderBy : '"media"."id"';
-console.log(req.query.orderBy, orderBy);
+  
   const queryText = `
     SELECT "media"."id", "media"."item", "media"."distributor", "media"."product_page", "media"."format", "media"."cover_art", "media"."description", "media"."dimensions", "media"."shelf"
     FROM "media"
@@ -21,7 +21,6 @@ console.log(req.query.orderBy, orderBy);
   pool
     .query(queryText, [req.user.id])
     .then((response) => {
-      console.log(response.rows);
       if (response.rows.length === 0) {
         res.send([{columnHeaders: response.fields.map(element => {return element.name})}]);
       } else {
@@ -239,7 +238,6 @@ pool
    let counter = 0;
    for (const newMovie of newMovieList) {
     const tmdbId = (Array.isArray(newMovie.tmdb_id) ? newMovie.tmdb_id[0] : Number.isInteger(newMovie.tmdb_id) ? newMovie.tmdb_id: null);
-    console.log("newMovie", newMovie);
     const movieInsertIfNotExistQuery = `
       INSERT INTO "movie" ("name", "tmdb_id", "content_type")
       VALUES ($1, $2, $3)

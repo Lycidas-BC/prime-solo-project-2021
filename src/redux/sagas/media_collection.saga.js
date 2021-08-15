@@ -3,7 +3,11 @@ import { put, takeEvery } from 'redux-saga/effects';
 
 function* getMediaCollection(action) {
   try {
-    const mediaCollection = yield axios.get(`/media_collection/?orderBy=${encodeURIComponent(action.payload.order)}`);
+    let orderBy = '"media"."id"';
+    if (action.payload) {
+      orderBy = action.payload.order;
+    }
+    const mediaCollection = yield axios.get(`/media_collection/?orderBy=${encodeURIComponent(orderBy)}`);
     console.log("mediaCollection:", mediaCollection);
     yield put({ type: 'SET_COLLECTION', payload: mediaCollection.data });
   }
