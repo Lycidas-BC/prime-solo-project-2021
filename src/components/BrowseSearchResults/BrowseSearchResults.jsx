@@ -2,16 +2,43 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
 import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
 import CardMedia from '@material-ui/core/CardMedia';
 import SearchItem from '../SearchItem/SearchItem';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import Select from '@material-ui/core/Select';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+
 import './BrowseSearchResults';
 
+//material-ui functions
+const useStyles = makeStyles((theme) => ({
+  button: {
+    display: 'block',
+    marginTop: theme.spacing(2),
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  root: {
+      width: 500,
+      },
+}));
+
 function BrowseSearchResults() {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
+  const [carousel, setCarousel] = useState(0);
+  const [show, setShow] = useState("cast");
   const { type, tmdbId } = useParams();
   const tmdbDetailsReducer = useSelector(store => store.tmdbDetailsReducer);
   const configObject = useSelector(store => store.tmdbConfigReducer);
@@ -40,7 +67,7 @@ function BrowseSearchResults() {
       <Grid item style={{height: "100%", width: "100%", padding: "20px 10px" }}>
         <h1>{tmdbDetailsReducer.title} ({tmdbDetailsReducer.release_date.substring(0,4)})</h1>
         <CardMedia
-          style={{maxHeight: "25%", maxWidth: "25%", padding: "0% 3% 0% 0%", float: "left" }}
+          style={{maxHeight: "20%", maxWidth: "20%", padding: "0% 3% 0% 0%", float: "left" }}
           className={"moviePoster"}
           component="img"
           alt={tmdbDetailsReducer.title}
@@ -70,27 +97,54 @@ function BrowseSearchResults() {
               </ul>
             </div>
           </div>}
+          <FormControl className={classes.formControl}>
+              <InputLabel id="demo-simple-select-label">Show</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={show}
+                onChange={(event) => {setShow(event.target.value); setCarousel(0);}}
+              >
+                <MenuItem value={"cast"}>Cast</MenuItem>
+                <MenuItem value={"crew"}>Crew</MenuItem>
+              </Select>
+            </FormControl>
       </Grid>
-      <div style={{clear: "left"}}>
+      { show === "cast" ?
+      <div>
+        <div>
+          <Button disabled={carousel === 0} label="previous" onClick={() => setCarousel(carousel-1)} ><ArrowBackIosIcon /></Button>
+          <Button disabled={(carousel+1) * 4 >= tmdbDetailsReducer.credits.cast.length} label="next" onClick={() => setCarousel(carousel+1)} ><ArrowForwardIosIcon /></Button>
+        </div>
         <h2>Cast:</h2>
         <Grid container spacing={2} style={{ alignItems: "flex-end" }}>
-          {tmdbDetailsReducer.credits.cast.map((item,index) => {
+          {tmdbDetailsReducer.credits.cast.filter((element, index) => {
+            return (index >= carousel*4 && index < (carousel+1)*4)
+          }).map((item,index) => {
               return (
                   <SearchItem key={index} responseItem={item} genericSearch={true} manualType={"person"} role={item.character}></SearchItem>
               )
           })}
       </Grid>
-      </div>
-      <h2>Crew:</h2>
+      </div> :
       <div>
+        <div>
+          <Button disabled={carousel === 0} label="previous" onClick={() => setCarousel(carousel-1)} ><ArrowBackIosIcon /></Button>
+          <Button disabled={(carousel+1) * 4 >= tmdbDetailsReducer.credits.crew.length} label="next" onClick={() => setCarousel(carousel+1)} ><ArrowForwardIosIcon /></Button>
+        </div>
+        <h2>Crew:</h2>
         <Grid container spacing={2} style={{ alignItems: "flex-end" }}>
-          {tmdbDetailsReducer.credits.crew.map((item,index) => {
+          {tmdbDetailsReducer.credits.crew.filter((element, index) => {
+            return (index >= carousel*4 && index < (carousel+1)*4)
+          }).map((item,index) => {
               return (
                   <SearchItem key={index} responseItem={item} genericSearch={true} manualType={"person"} role={item.job}></SearchItem>
               )
           })}
       </Grid>
       </div>
+          }
+
     </section> :
     ""}
     </section>}

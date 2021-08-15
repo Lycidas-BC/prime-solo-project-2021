@@ -18,6 +18,7 @@ function* scrapeWebsite(action) {
       const searchType = (scrape.data.movieList[index].description.match(/television/i) ? "multi" : "movie");
       // if there's a ":" in the item name, exclude what's after
       const searchTerm = scrape.data.movieList[index].movie.substring(0, scrape.data.movieList[index].movie.indexOf(':') === -1 ? scrape.data.movieList[index].movie.length : scrape.data.movieList[index].movie.indexOf(':'));
+      console.log(`Movie ${index} out of ${scrape.data.movieList.length}.`);
       while (page <= total_pages && !endWhileLoopNow ) {
         const searchResults = yield axios.get(`/api/tmdb/searchSpecific/?type=${encodeURIComponent(searchType)}&q=${encodeURIComponent(searchTerm)}&year=${encodeURIComponent(scrape.data.movieList[index].year)}&page=${encodeURIComponent(page)}`);
         if (searchResults.data.tmdb_id.length === 1){

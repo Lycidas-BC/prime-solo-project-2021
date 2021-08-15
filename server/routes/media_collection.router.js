@@ -9,18 +9,19 @@ const { rejectUnauthenticated } = require('../modules/authentication-middleware'
 router.get('/', rejectUnauthenticated, (req, res) => {
   // GET route code here
   console.log("in GET collection");
-  const orderBy = req.query.orderBy || req.query.orderBy === "" ? `"media"."${req.query.orderBy}"` : '"media"."id"';
-
+  const orderBy = req.query.orderBy || req.query.orderBy === "" ? req.query.orderBy : '"media"."id"';
+console.log(req.query.orderBy, orderBy);
   const queryText = `
     SELECT "media"."id", "media"."item", "media"."distributor", "media"."product_page", "media"."format", "media"."cover_art", "media"."description", "media"."dimensions", "media"."shelf"
     FROM "media"
     JOIN "user_media" ON "media"."id" = "user_media"."media_id"
     WHERE "user_media"."user_id" = $1
-    ORDER BY $2;
+    ORDER BY ${orderBy};
   `;
   pool
-    .query(queryText, [req.user.id, orderBy])
+    .query(queryText, [req.user.id])
     .then((response) => {
+      console.log(response.rows);
       if (response.rows.length === 0) {
         res.send([{columnHeaders: response.fields.map(element => {return element.name})}]);
       } else {
@@ -112,7 +113,7 @@ router.get('/', rejectUnauthenticated, (req, res) => {
   const mediaId = req.params.mediaId;
 
   const queryText = `
-    SELECT "movie"."id" AS "movie_id", "movie"."name", "movie"."tmdb_id", "media_movie"."description", "media_movie"."length", "movie"."content_type" as "media_type", "media_movie"."product_url"
+    SELECT "movie"."id" AS "movie_id", "movie"."name", "movie"."tmdb_id", "media_movie"."description", "media_movie"."length", "media_movie"."cover_art", "movie"."content_type" as "media_type", "media_movie"."product_url"
     FROM "media_movie"
     JOIN "movie" ON "movie"."id" = "media_movie"."movie_id"
     WHERE "media_movie"."media_id" = $1;

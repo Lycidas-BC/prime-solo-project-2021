@@ -8,7 +8,7 @@ let blankMediaItemObject = {
   shelf: "",
   movieList: [],
   featuresList: [],
-  progress: "N/A"
+  progress: "Initiating data retrieval"
 }
 
 const mediaItem = (state = blankMediaItemObject, action) => {

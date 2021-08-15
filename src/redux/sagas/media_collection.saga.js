@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { put, takeEvery } from 'redux-saga/effects';
 
-function* getMediaCollection() {
+function* getMediaCollection(action) {
   try {
-    const mediaCollection = yield axios.get(`/media_collection`);
+    const mediaCollection = yield axios.get(`/media_collection/?orderBy=${encodeURIComponent(action.payload.order)}`);
     console.log("mediaCollection:", mediaCollection);
     yield put({ type: 'SET_COLLECTION', payload: mediaCollection.data });
   }
