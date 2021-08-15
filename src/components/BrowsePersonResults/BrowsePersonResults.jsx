@@ -49,6 +49,7 @@ function BrowsePersonResults() {
   // show all movies, only movies in your collection, only movies not in your collection
   const [carousel, setCarousel] = useState(0);
   const [show, setShow] = useState("all");
+  const [pagination, setPagination] = useState(4);
   const freshLoad = tmdbDetailsReducer.type === type;
   const [triggerRefresh, setTriggerRefresh] = useState(freshLoad);
   const configObject = useSelector(store => store.tmdbConfigReducer);
@@ -145,7 +146,7 @@ function BrowsePersonResults() {
         </Select>
       </FormControl>
       <FormControl className={classes.formControl}>
-        <InputLabel id="demo-simple-select-label">Role</InputLabel>
+        <InputLabel id="demo-simple-select-label">In Collection</InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
@@ -157,6 +158,20 @@ function BrowsePersonResults() {
           <MenuItem value={"notInCollection"}>Show movies <b style={{paddingLeft: "2px", paddingRight: "2px"}}> not </b> in my collection</MenuItem>
         </Select>
       </FormControl>
+      <FormControl className={classes.formControl}>
+        <InputLabel id="demo-simple-select-label">Results per page</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={pagination}
+          onChange={(event) => {setPagination(event.target.value); setCarousel(0);}}
+        >
+          <MenuItem value={4}>4</MenuItem>
+          <MenuItem value={8}>8</MenuItem>
+          <MenuItem value={32}>32</MenuItem>
+          <MenuItem value={100}>100</MenuItem>
+        </Select>
+      </FormControl>
       </Grid>
       <Grid item style={{height: "100%", width: "100%", padding: "20px 10px" }}>
         {
@@ -164,13 +179,13 @@ function BrowsePersonResults() {
           <div>
             <div>
               <Button disabled={carousel === 0} label="previous" onClick={() => setCarousel(carousel-1)} ><ArrowBackIosIcon /></Button>
-              <Button disabled={(carousel+1) * 4 >= tmdbDetailsReducer.credits.cast.filter((element) => filterShownItems(element)).length} label="next" onClick={() => setCarousel(carousel+1)} ><ArrowForwardIosIcon /></Button>
+              <Button disabled={(carousel+1) * pagination >= tmdbDetailsReducer.credits.cast.filter((element) => filterShownItems(element)).length} label="next" onClick={() => setCarousel(carousel+1)} ><ArrowForwardIosIcon /></Button>
             </div>
             <Grid container spacing={2} style={{ alignItems: "flex-end" }}>
               {tmdbDetailsReducer.credits.cast.filter((element) => {
                 return filterShownItems(element)
               }).sort((a, b) => {return b.popularity - a.popularity;}).filter((element, index) => {
-                return (index >= carousel*4 && index < (carousel+1)*4)
+                return (index >= carousel*pagination && index < (carousel+1)*pagination)
               }).map((item,index) => {
                   return (
                       <SearchItem key={index} responseItem={item} genericSearch={true} manualType={"movie"}></SearchItem>
@@ -181,7 +196,7 @@ function BrowsePersonResults() {
           <div>
             <div>
               <Button disabled={carousel === 0} label="previous" onClick={() => setCarousel(carousel-1)} ><ArrowBackIosIcon /></Button>
-              <Button disabled={(carousel+1) * 4 >= tmdbDetailsReducer.credits.crew.filter((object) => object.department === role).filter( (element) => filterShownItems(element)).length} label="next" onClick={() => setCarousel(carousel+1)} ><ArrowForwardIosIcon /></Button>
+              <Button disabled={(carousel+1) * pagination >= tmdbDetailsReducer.credits.crew.filter((object) => object.department === role).filter( (element) => filterShownItems(element)).length} label="next" onClick={() => setCarousel(carousel+1)} ><ArrowForwardIosIcon /></Button>
             </div>
             <Grid container spacing={2} style={{ alignItems: "flex-end" }}>
               {tmdbDetailsReducer.credits.crew.filter((object) => {
@@ -189,7 +204,7 @@ function BrowsePersonResults() {
               }).filter((element) => {
                 return filterShownItems(element)
               }).sort((a, b) => {return b.popularity - a.popularity;}).filter((element, index) => {
-                return (index >= carousel*4 && index < (carousel+1)*4)
+                return (index >= carousel*pagination && index < (carousel+1)*pagination)
               }).map((item,index) => {
                   return (
                       <SearchItem key={index} responseItem={item} genericSearch={true} manualType={"movie"}></SearchItem>
