@@ -71,7 +71,7 @@ function DisplayCollection() {
         </FormControl>
         <Button onClick={updateOrder}><SortByAlphaTwoToneIcon /></Button>
       </section>
-      <section className="media" style={{ alignItems: "flex-end", display : "flex", flexWrap: "wrap" }}>
+      <section className="media" style={{ alignItems: "flex-start", display : "flex", flexWrap: "wrap" }}>
         <DisplayCollectionItem mediaIn={"none"} addMedia={true} ></DisplayCollectionItem>
         {mediaCollection.map((element,index) => {
           return (

@@ -110,13 +110,13 @@ function BrowsePersonResults() {
         />
         <p><b>Bio: </b>{tmdbDetailsReducer.biography}</p>
         <p><b>IMDB page:</b> <a href={`https://www.imdb.com/name/${tmdbDetailsReducer.imdb_id}`}>{`https://www.imdb.com/name/${tmdbDetailsReducer.imdb_id}`}</a></p>
-        {tmdbDetailsReducer.mediaList.length === 0 ?
+        {tmdbDetailsReducer.mediaList.length === 0 || tmdbDetailsReducer.mediaList[0].columnHeaders !== undefined ?
           <div>
-            <b style={{paddingRight: "5px"}}>Movies in your collection?</b>
+            <b style={{paddingRight: "5px"}}>Found in your collection?</b>
             <CancelIcon />
           </div> :
           <div>
-            <b style={{paddingRight: "5px"}}>Movies in your collection?</b>
+            <b style={{paddingRight: "5px"}}>Found in your collection?</b>
             <CheckCircleIcon />
             <div>
               <ul>

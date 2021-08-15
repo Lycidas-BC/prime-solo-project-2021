@@ -21,9 +21,11 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import SearchPage from '../SearchPage/SearchPage';
+import { useHistory } from 'react-router-dom';
 import { TrendingUpOutlined } from '@material-ui/icons';
 
 function AddMedia() {
+  const history = useHistory();
   const [productUrl, setProductUrl] = useState("");
   const [addMovie, setAddMovie] = useState(false);
   const [addFeature, setAddFeature] = useState(false);
@@ -35,7 +37,6 @@ function AddMedia() {
   const [editDescription, setEditDescription] = useState(true);
   const [displayWarning, setDisplayWarning] = useState(false);
   const [displayScrapeProgress, setDisplayScrapeProgress] = useState(false);
-
   const dispatch = useDispatch();
   const configObject = useSelector(store => store.tmdbConfigReducer);
   const mediaItem = useSelector(store => store.mediaItem);
@@ -134,7 +135,7 @@ function AddMedia() {
 
   const handleEditCoverArt = () => {
     setCoverArt(mediaItem.cover_art);
-    setEditCoverArt(true);
+    setEditArt(true);
   }
 
   const updateCoverArt = () => {
@@ -207,6 +208,7 @@ function AddMedia() {
         type: 'ADD_MEDIA_ITEM',
         payload: mediaItem
       });
+      history.push(`/collection`);
     } else {
       setDisplayWarning(true);
     }
@@ -219,16 +221,17 @@ function AddMedia() {
         <Button style={{ width: "150px", height: "55px", marginBottom: "20px" }} variant="contained" color="primary" onClick={addToCollection}>Add to collection</Button>
         {displayWarning ? "please complete the required fields" : ""}
       </div>
-    <TextField style={{ width: "400px" }} id="product-url" label="productUrl" type="productUrl" variant="outlined" value={productUrl} onChange={(event) => setProductUrl(event.target.value)}/>
-    <Button style={{ width: "150px", height: "55px" }} variant="contained" color="primary" onClick={scrape}>Pull data from website</Button>
-    {
-    displayScrapeProgress ? 
-      (mediaItem.progress === "COMPLETE" ?
-        <div>{mediaItem.progress}</div> :
-      <div>Retrieving data. Please wait...</div>): ""
-    }
+    <section>
+      <TextField style={{ width: "400px" }} id="product-url" label="productUrl" type="productUrl" variant="outlined" value={productUrl} onChange={(event) => setProductUrl(event.target.value)}/>
+      <Button style={{ width: "150px", height: "55px" }} variant="contained" color="primary" onClick={scrape}>Pull data from website</Button>
+      {
+      displayScrapeProgress ?
+        (mediaItem.progress === "COMPLETE" ?
+          <span style={{marginLeft: "20px", color: "green"}}>{mediaItem.progress}</span> :
+        <span style={{marginLeft: "20px", color: "red"}}>Retrieving data. Please wait...</span>): ""
+      }
+    </section>
       <div>
-        <h2 className={"primaryTitle"}></h2>
         <section className={"format"}>
           <FormControl component="fieldset">
             <FormLabel component="legend">Format</FormLabel>
@@ -241,6 +244,24 @@ function AddMedia() {
             </RadioGroup>
           </FormControl>
         </section>
+
+        <section className={"coverArt"}>
+          <h3>Cover Art</h3>
+          {
+            editArt ?
+            <div>
+              <TextField style={{ width: "200px" }} id="coverArt" label="cover art" type="coverArt" variant="outlined" value={coverArt} onChange={(event) => setCoverArt(event.target.value)}/>
+              <Button onClick={() => updateCoverArt()}><DoneIcon /></Button>
+            </div> :
+            <div style={{float: "left", width: "25%", marginRight: "10px"}}>
+              <div style={{display: "inline"}}>
+                <img src={mediaItem.cover_art} alt={`${mediaItem.item} cover`} />
+                <Button onClick={() => handleEditCoverArt()}><EditIcon />Edit Cover Art?</Button>
+
+              </div>
+            </div>
+          }
+        </section>
         <section className={"title"}>
           {
             editTitle ?
@@ -250,20 +271,6 @@ function AddMedia() {
               <Button onClick={() => updateTitle()}><DoneIcon /></Button>
             </div> :
             <h3>{mediaItem.item} <Button onClick={() => handleEditTitle()}><EditIcon /></Button></h3>
-          }
-        </section>
-        <section className={"coverArt"}>
-          <h3>Cover Art</h3>
-          {
-            editArt ?
-            <div>
-              <TextField style={{ width: "200px" }} id="coverArt" label="cover art" type="coverArt" variant="outlined" value={coverArt} onChange={(event) => setCoverArt(event.target.value)}/>
-              <Button onClick={() => updateCoverArt()}><AddIcon /></Button>
-            </div> :
-            <div>
-              <img src={mediaItem.cover_art} alt={`${mediaItem.item} cover`} width="500" height="600"/>
-              <Button onClick={() => handleEditCoverArt()}><EditIcon /></Button>
-            </div>
           }
         </section>
         <section>
@@ -277,7 +284,7 @@ function AddMedia() {
             <p>{mediaItem.description}<Button onClick={() => handleEditDescription()}><EditIcon /></Button></p>
           }
         </section>
-        <section>
+        <section style={{clear: "both"}}>
           <h3>Movie List</h3>
           <section className="movies" style={{ alignItems: "flex-end", display : "flex", flexWrap: "wrap" }}>
             {mediaItem.movieList.map((element,index) => {
@@ -285,7 +292,6 @@ function AddMedia() {
                 <MovieItem key={index} movieIn={element} addMovieScreen={false} ></MovieItem>
               )
             })}
-            
           </section>
           {
             addMovie ?

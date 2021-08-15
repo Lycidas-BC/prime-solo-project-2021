@@ -50,11 +50,11 @@ function MediaMovieItem({movieIn}) {
       title={movieIn.name}
     />
     <br />
+    <Button onClick={getMovieDetails}><MoreHorizIcon /></Button>
     <Button onClick={() => setShowDetails(!showDetails)}><ExpandMoreIcon /></Button>
     {showDetails ? 
       <section>
         <p><em>({movieIn.length} minutes)</em> {movieIn.description}</p>
-        <Button onClick={getMovieDetails}><MoreHorizIcon /></Button>
       </section> : ""}
         {/* <br />
         {

@@ -78,6 +78,7 @@ const scrapeCriterionFilmData = (siteHtml, productUrl) => {
   // console.log('featuresList', featuresList);
   const filmScrapeObject = {
     type: "film",
+    product_url: productUrl,
     distributor: "Criterion Collection",
     format: "Blu-ray",
     dimensions: "",
@@ -99,7 +100,7 @@ const scrapeCriterionFilmData = (siteHtml, productUrl) => {
 }
 
 //scrape data from Criterion box set page
-const scrapeCriterionSetData = (siteHtml) => {
+const scrapeCriterionSetData = (siteHtml, productUrl) => {
   const $ = cheerio.load(siteHtml);
   const item = $('.header__primarytitle').text();
   const cover_art = $($('.product-box-art').children('img')[0]).attr('src');
@@ -157,6 +158,7 @@ const scrapeCriterionSetData = (siteHtml) => {
     type: "set",
     item: item,
     distributor: "Criterion Collection",
+    product_url: productUrl,
     format: "Blu-ray",
     dimensions: "",
     shelf: "",
@@ -181,7 +183,7 @@ router.get('/scrapeProductPage', (req, res) => {
         if (productUrl.toLowerCase().includes('/films/')) {
           res.status(201).send(scrapeCriterionFilmData(response.data, productUrl));
         } else if (productUrl.toLowerCase().includes('/boxsets/')) {
-          res.status(201).send(scrapeCriterionSetData(response.data));
+          res.status(201).send(scrapeCriterionSetData(response.data, productUrl));
         } else {
           res.status(400).send("Send me that link and I'll try to figure out why it didn't work");
         }

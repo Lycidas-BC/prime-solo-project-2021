@@ -52,7 +52,7 @@ router.get('/details/:tmdbId', (req, res) => {
 })
 
 router.get('/search', (req, res) => {
-    console.log('in tmdb search', req.query);
+    console.log('in tmdb search');
 
     // What type of search? movie, tv, person, multi, keyword
     let searchType = req.query.type;
@@ -72,7 +72,6 @@ router.get('/search', (req, res) => {
                 element.media_type = searchType
             });
         }
-        console.log('in search API', searchResultObject);
 
         res.status(201).send(searchResultObject);
     })

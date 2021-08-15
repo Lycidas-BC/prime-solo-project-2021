@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,6 +9,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import './SearchItem';
 import AddIcon from '@material-ui/icons/Add';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const useStyles = makeStyles((theme) => ({root: {flexGrow: 1},paper: {padding: theme.spacing(2), textAlign: "center", color: theme.palette.text.secondary, justifyContent: "center", alignItems: "flex-end" }})); // materialUI stuff
 
@@ -18,6 +19,7 @@ function SearchItem({responseItem, addResultToMedia, genericSearch, manualType, 
     const history = useHistory();
     const itemType = (responseItem.media_type ? responseItem.media_type : manualType);
     const configObject = useSelector(store => store.tmdbConfigReducer);
+    const [showDetails, setShowDetails] = useState(false);
 
     const getDetails = (typeIn) => {
       console.log('in getDetails', typeIn, responseItem.id);
@@ -46,6 +48,11 @@ function SearchItem({responseItem, addResultToMedia, genericSearch, manualType, 
               onDoubleClick={() => getDetails("movie")}
             />
             <Button onClick={() => getDetails("movie")}><MoreHorizIcon /></Button>
+            <Button onClick={() => setShowDetails(!showDetails)}><ExpandMoreIcon /></Button>
+            {showDetails ? 
+              <section>
+                <p>{responseItem.overview}</p>
+              </section> : ""}
           </Paper>
         </Grid> : itemType === "tv" ?
         <Grid item style={{height: "100%", width: "24%", padding: "20px 10px" }}>
@@ -62,6 +69,12 @@ function SearchItem({responseItem, addResultToMedia, genericSearch, manualType, 
               onDoubleClick={() => getDetails("tv")}
             />
           <Button onClick={() => getDetails("tv")}><MoreHorizIcon /></Button>
+          <br />
+          <Button onClick={() => setShowDetails(!showDetails)}><ExpandMoreIcon /></Button>
+          {showDetails ? 
+            <section>
+              <p>{responseItem.overview}</p>
+            </section> : ""}
         </Paper>
       </Grid> : 
       <Grid item style={{height: "100%", width: "24%", padding: "20px 10px" }}>

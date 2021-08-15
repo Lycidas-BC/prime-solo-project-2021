@@ -46,6 +46,7 @@ function MediaItem() {
             <br />
         </Paper>
         <h2><em>{mediaItemDetailsReducer.mediaDetails.item}</em></h2>
+        <p><a href={`${mediaItemDetailsReducer.mediaDetails.product_page}`}><b>Product page</b></a></p>
         <p>{mediaItemDetailsReducer.mediaDetails.description}</p>
         <FormControl className={classes.formControl}>
           <InputLabel id="demo-simple-select-label">Results per page</InputLabel>
@@ -74,8 +75,8 @@ function MediaItem() {
         </div>
         <h2>SpecialFeatures</h2>
         <ul>
-          {mediaItemDetailsReducer.mediaSpecialFeatures.map(element => {
-            return <li>{element.description}</li>
+          {mediaItemDetailsReducer.mediaSpecialFeatures.map((element, index) => {
+            return <li key={index}>{element.description}</li>
           })}
         </ul>
       </section>

@@ -7,6 +7,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import DeleteIcon from '@material-ui/icons/Delete';
 import DoneIcon from '@material-ui/icons/Done';
 import EditIcon from '@material-ui/icons/Edit';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
@@ -21,6 +22,7 @@ function DisplayCollectionItem({mediaIn, addMedia}) {
     const history = useHistory();
     const dispatch = useDispatch();
     const [confirmDelete, setConfirmDelete] = useState(false);
+    const [showDetails, setShowDetails] = useState(false);
     let backgroundImageUrl = "url(images/frame.jpg)";
 
 
@@ -77,6 +79,7 @@ function DisplayCollectionItem({mediaIn, addMedia}) {
                 {/* <Button onClick={() => editItem()}><EditIcon></EditIcon></Button> */}
                 <Button onClick={() => setConfirmDelete(!confirmDelete)}><DeleteIcon></DeleteIcon></Button>
                 <Button onClick={() => itemDetails()}><MoreHorizIcon></MoreHorizIcon></Button>
+                <Button onClick={() => setShowDetails(!showDetails)}><ExpandMoreIcon /></Button>
                 {
                   confirmDelete ?
                   <div>
@@ -86,6 +89,10 @@ function DisplayCollectionItem({mediaIn, addMedia}) {
                   </div> :
                   <></>
                 }
+                {showDetails ? 
+                  <section>
+                    <p>{mediaIn.description}</p>
+                  </section> : ""}
               </div>
             }
           </Paper>

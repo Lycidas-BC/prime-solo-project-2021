@@ -38,7 +38,7 @@ router.get('/', rejectUnauthenticated, (req, res) => {
  */
  router.get('/:mediaId', rejectUnauthenticated, (req, res) => {
   // GET route code here
-  console.log("in GET media item");
+  console.log("in GET media item", req.params.mediaId);
 
   const queryText = `
     SELECT "media"."id", "media"."item", "media"."distributor", "media"."product_page", "media"."format", "media"."cover_art", "media"."description", "media"."dimensions", "media"."shelf"
@@ -120,7 +120,6 @@ router.get('/', rejectUnauthenticated, (req, res) => {
   pool
     .query(queryText, [mediaId])
     .then((response) => {
-      console.log(response.rows);
       if (response.rows.length === 0) {
         res.send([{columnHeaders: response.fields.map(element => {return element.name})}]);
       } else {
@@ -150,7 +149,6 @@ router.get('/', rejectUnauthenticated, (req, res) => {
   pool
     .query(queryText, [mediaId])
     .then((response) => {
-      console.log(response.rows);
       if (response.rows.length === 0) {
         res.send([{columnHeaders: response.fields.map(element => {return element.name})}]);
       } else {
@@ -198,14 +196,15 @@ router.get('/', rejectUnauthenticated, (req, res) => {
  * POST new item to media collection
  */
 router.post('/media', rejectUnauthenticated, (req, res) => {
+  console.log("router.post", req.body);
   // add media into media table, returning the id of the newly created item
   const mediaInsertQuery = `
-    INSERT INTO "media" ("item", "distributor", "format", "cover_art", "description", "dimensions", "shelf")
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    INSERT INTO "media" ("item", "distributor", "format", "cover_art", "description", "dimensions", "shelf", "product_page")
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     RETURNING "id" AS "media_id";
   `;
 pool
-  .query(mediaInsertQuery, [req.body.item, req.body.distributor, req.body.format, req.body.cover_art, req.body.description, req.body.dimensions, req.body.shelf])
+  .query(mediaInsertQuery, [req.body.item, req.body.distributor, req.body.format, req.body.cover_art, req.body.description, req.body.dimensions, req.body.shelf, req.body.product_url])
   .then((response) => {
     // update the user_media join table with the user id and newly-created media id
     const newMediaId = response.rows[0].media_id;
