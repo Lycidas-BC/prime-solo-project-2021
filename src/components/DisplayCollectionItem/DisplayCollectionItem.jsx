@@ -22,7 +22,6 @@ function DisplayCollectionItem({mediaIn, addMedia}) {
     const dispatch = useDispatch();
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [showDetails, setShowDetails] = useState(false);
-    let backgroundImageUrl = "url(images/frame.jpg)";
 
 
     if (addMedia) {
@@ -33,7 +32,6 @@ function DisplayCollectionItem({mediaIn, addMedia}) {
         shelf: "shelf",
         cover_art: "/images/addImage.png"
       }
-      backgroundImageUrl = "";
     }
 
     const addItem = () => {

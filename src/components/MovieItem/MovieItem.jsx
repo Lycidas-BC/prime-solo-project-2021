@@ -31,7 +31,7 @@ function MovieItem({movieIn, addMovieScreen, addMovieIcon}) {
       <Paper className={classes.paper}>
           {addMovieScreen ? "" : <h2><em>{movieIn.movie}</em> ({movieIn.year})</h2>}
       <CardMedia
-      style={{maxHeight: "80%", maxWidth: "80%", margin: "auto", padding: "10% 7% 10% 7%", backgroundImage: "url(images/frame.jpg)", backgroundRepeat: "no-repeat", backgroundSize: "100% 100%" }}
+      style={{maxHeight: "95%", maxWidth: "95%", margin: "auto", padding: "5% 3% 5% 3%" }}
       className={movieIn.movie}
       component="img"
       alt={movieIn.movie}
