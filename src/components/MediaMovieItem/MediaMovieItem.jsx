@@ -7,6 +7,7 @@ import Grid from "@material-ui/core/Grid";
 import CardMedia from '@material-ui/core/CardMedia';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import AddIcon from '@material-ui/icons/Add';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -45,6 +46,7 @@ function MediaMovieItem({movieIn}) {
       style={{maxHeight: "95%", maxWidth: "95%", margin: "auto"}}
       className={movieIn.name}
       component="img"
+      onDoubleClick={getMovieDetails}
       alt={movieIn.name}
       src={movieIn.cover_art}
       title={movieIn.name}
@@ -54,28 +56,8 @@ function MediaMovieItem({movieIn}) {
     <Button onClick={() => setShowDetails(!showDetails)}><ExpandMoreIcon /></Button>
     {showDetails ? 
       <section>
-        <p><em>({movieIn.length} minutes)</em> {movieIn.description}</p>
+        <p><em>({movieIn.length} minutes, <a href={`${movieIn.product_url}`}>website</a>)</em> {movieIn.description}</p>
       </section> : ""}
-        {/* <br />
-        {
-          addMovieScreen ?
-          <Button
-          style={{ width: "90%" }}
-          variant="contained"
-          color="primary"
-          onClick={() => addMovie()}
-        >
-          Add movie
-        </Button> :
-        <Button
-          style={{ width: "90%" }}
-          variant="contained"
-          color="primary"
-          onClick={() => movieDetails()}
-        >
-          See movie details
-        </Button>
-        } */}
       </Paper>
     </Grid>
   );

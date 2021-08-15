@@ -91,7 +91,7 @@ function DisplayCollectionItem({mediaIn, addMedia}) {
                 }
                 {showDetails ? 
                   <section>
-                    <p>{mediaIn.description}</p>
+                    <p>({mediaIn.format}, <a href={`${mediaIn.product_page}`}>website</a>) {mediaIn.description}</p>
                   </section> : ""}
               </div>
             }
