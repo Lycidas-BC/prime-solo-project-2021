@@ -20,7 +20,7 @@ function AboutPage() {
           <li>Axios</li>
           <li>Material-UI</li>
           <li>Saga</li>
-          {/* <li>DVDBeaver</li> */}
+          <li>Framegrabs for Ran from <a href="http://www.dvdbeaver.com/">DVDBeaver</a></li>
         </ul>
       </div>
     </div>

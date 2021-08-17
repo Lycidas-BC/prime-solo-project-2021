@@ -88,7 +88,8 @@ function BrowseSearchResults() {
   }
 
   const uploadFramegrab = (media_movie_id) => {
-    let timestamp = framegrabHours * 60 * 60 + framegrabMinutes * 60 + framegrabSeconds;
+    let timestamp = Number(framegrabHours) * 60 * 60 + Number(framegrabMinutes) * 60 + Number(framegrabSeconds);
+    console.log("timestamp", timestamp, framegrabHours, framegrabMinutes, framegrabSeconds);
     console.log("uploadFramegrab", framegrabUrl, timestamp, media_movie_id);
     dispatch({ type: 'ADD_MOVIE_FRAMEGRAB', payload: {media_movie_id: media_movie_id, path: framegrabUrl, timestamp: timestamp, tmdb_id: framegrabReducer[0].tmdb_id}});
   }
@@ -219,9 +220,9 @@ function BrowseSearchResults() {
                   <TextField style={{ width: "300px", marginBottom: "10px" }} id={`framegrab_url_${index}`} label="url" variant="outlined" value={framegrabUrl} onChange={(event) => setFramegrabUrl(event.target.value)}/>
                 </div>
                 <div>
-                  <TextField style={{ width: "100px" }} id={`framegrab_timestamp_h_${index}`} label="hours" variant="outlined" value={framegrabHours} onChange={(event) => setFramegrabHours(event.target.value)}/>
-                  <TextField style={{ width: "100px" }} id={`framegrab_timestamp_m_${index}`} label="minutes" variant="outlined" value={framegrabMinutes} onChange={(event) => setFramegrabMinutes(event.target.value)}/>
-                  <TextField style={{ width: "100px" }} id={`framegrab_timestamp_s_${index}`} label="seconds" variant="outlined" value={framegrabSeconds} onChange={(event) => setFramegrabSeconds(event.target.value)}/>
+                  <TextField style={{ width: "100px" }} id={`framegrab_timestamp_h_${index}`} label="hours" variant="outlined" value={framegrabHours} onChange={(event) => setFramegrabHours(Number(event.target.value))}/>
+                  <TextField style={{ width: "100px" }} id={`framegrab_timestamp_m_${index}`} label="minutes" variant="outlined" value={framegrabMinutes} onChange={(event) => setFramegrabMinutes(Number(event.target.value))}/>
+                  <TextField style={{ width: "100px" }} id={`framegrab_timestamp_s_${index}`} label="seconds" variant="outlined" value={framegrabSeconds} onChange={(event) => setFramegrabSeconds(Number(event.target.value))}/>
                 </div>
               </section> :
               <Button onClick={()=>{setAddFramegrabSelector(element.media_movie_id); setFramegrabUrl("")}}><AddIcon /></Button>}

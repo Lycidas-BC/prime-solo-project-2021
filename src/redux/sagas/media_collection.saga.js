@@ -3,7 +3,7 @@ import { put, takeEvery } from 'redux-saga/effects';
 
 function* getMediaCollection(action) {
   try {
-    let orderBy = '"media"."id"';
+    let orderBy = '"media"."id" DESC';
     if (action.payload) {
       orderBy = action.payload.order;
     }
