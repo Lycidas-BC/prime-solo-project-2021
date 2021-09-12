@@ -1,15 +1,15 @@
-import { combineReducers } from 'redux';
-import errors from './errors.reducer';
-import user from './user.reducer';
-import tmdbSearchReducer from './tmdb_search.reducer';
-import tmdbConfigReducer from './tmdb_config.reducer';
-import tmdbDetailsReducer from './tmdb_details.reducer';
-import tmdbStreamingOptionsReducer from './tmdb_streaming_options.reducer';
-import mediaItem from './media_item.reducer';
-import mediaCollectionReducer from './media_collection.reducer';
-import mediaItemDetailsReducer from './media_item_details.reducer';
-import itemInCollection from './item_in_collection.reducer';
-import movieFramegrabs from './movie_framegrab.reducer';
+import { combineReducers } from "redux";
+import errors from "./errors.reducer";
+import user from "./user.reducer";
+import tmdbSearchReducer from "./tmdb_search.reducer";
+import tmdbConfigReducer from "./tmdb_config.reducer";
+import tmdbDetailsReducer from "./tmdb_details.reducer";
+import tmdbStreamingOptionsReducer from "./tmdb_streaming_options.reducer";
+import mediaItem from "./media_item.reducer";
+import mediaCollectionReducer from "./media_collection.reducer";
+import mediaItemDetailsReducer from "./media_item_details.reducer";
+import itemInCollection from "./item_in_collection.reducer";
+import movieFramegrabs from "./movie_framegrab.reducer";
 
 // rootReducer is the primary reducer for our entire project
 // It bundles up all of the other reducers so our project can use them.

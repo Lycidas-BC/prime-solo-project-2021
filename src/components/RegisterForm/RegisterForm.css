@@ -1,15 +1,15 @@
 .formInput {
-    width: 100%;
+  width: 100%;
 }
 
 label {
-    width: 200px;
-    display:inline-block;
-    margin-left:10px;
+  width: 200px;
+  display: inline-block;
+  margin-left: 10px;
 }
 
 input {
-    width: 150px;
-    display:inline-block;
-    margin-right:10px;
+  width: 150px;
+  display: inline-block;
+  margin-right: 10px;
 }

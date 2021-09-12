@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import './RegisterForm.css';
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import "./RegisterForm.css";
 
 function RegisterForm() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
-  const [first_name, setFirstName] = useState('');
-  const [last_name, setLastName] = useState('');
-  const [image_url, setImageUrl] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
+  const [image_url, setImageUrl] = useState("");
 
   const errors = useSelector((store) => store.errors);
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ function RegisterForm() {
     event.preventDefault();
 
     dispatch({
-      type: 'REGISTER',
+      type: "REGISTER",
       payload: {
         username: username,
         password: password,
@@ -37,7 +37,7 @@ function RegisterForm() {
           {errors.registrationMessage}
         </h3>
       )}
-      <div className="formInput" >
+      <div className="formInput">
         <label htmlFor="username">
           Username:
           <input
@@ -49,7 +49,7 @@ function RegisterForm() {
           />
         </label>
       </div>
-      <div className="formInput" >
+      <div className="formInput">
         <label htmlFor="password">
           Password:
           <input
@@ -61,7 +61,7 @@ function RegisterForm() {
           />
         </label>
       </div>
-      <div className="formInput" >
+      <div className="formInput">
         <label htmlFor="email">
           Email:
           <input
@@ -73,7 +73,7 @@ function RegisterForm() {
           />
         </label>
       </div>
-      <div className="formInput" >
+      <div className="formInput">
         <label htmlFor="first_name">
           First name:
           <input
@@ -85,7 +85,7 @@ function RegisterForm() {
           />
         </label>
       </div>
-      <div className="formInput" >
+      <div className="formInput">
         <label htmlFor="last_name">
           Last name:
           <input
@@ -97,7 +97,7 @@ function RegisterForm() {
           />
         </label>
       </div>
-      <div className="formInput" >
+      <div className="formInput">
         <label htmlFor="image_url">
           Image URL:
           <input

@@ -1,39 +1,39 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 import {
   HashRouter as Router,
   Route,
   Redirect,
   Switch,
-} from 'react-router-dom';
+} from "react-router-dom";
 
-import { useDispatch } from 'react-redux';
+import { useDispatch } from "react-redux";
 
-import Nav from '../Nav/Nav';
-import Footer from '../Footer/Footer';
+import Nav from "../Nav/Nav";
+import Footer from "../Footer/Footer";
 
-import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
+import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 
-import AboutPage from '../AboutPage/AboutPage';
-import UserPage from '../UserPage/UserPage';
-import InfoPage from '../InfoPage/InfoPage';
-import LandingPage from '../LandingPage/LandingPage';
-import LoginPage from '../LoginPage/LoginPage';
-import RegisterPage from '../RegisterPage/RegisterPage';
-import SearchPage from '../SearchPage/SearchPage';
-import AddMedia from '../AddMedia/AddMedia';
-import MediaItem from '../MediaItem/MediaItem';
-import DisplayCollection from '../DisplayCollection/DisplayCollection';
-import BrowseSearchResults from '../BrowseSearchResults/BrowseSearchResults';
-import BrowsePersonResults from '../BrowsePersonResults/BrowsePersonResults';
-import FramegrabsAndComparisons from '../FramegrabsAndComparisons/FramegrabsAndComparisons';
-import './App.css';
+import AboutPage from "../AboutPage/AboutPage";
+import UserPage from "../UserPage/UserPage";
+import InfoPage from "../InfoPage/InfoPage";
+import LandingPage from "../LandingPage/LandingPage";
+import LoginPage from "../LoginPage/LoginPage";
+import RegisterPage from "../RegisterPage/RegisterPage";
+import SearchPage from "../SearchPage/SearchPage";
+import AddMedia from "../AddMedia/AddMedia";
+import MediaItem from "../MediaItem/MediaItem";
+import DisplayCollection from "../DisplayCollection/DisplayCollection";
+import BrowseSearchResults from "../BrowseSearchResults/BrowseSearchResults";
+import BrowsePersonResults from "../BrowsePersonResults/BrowsePersonResults";
+import FramegrabsAndComparisons from "../FramegrabsAndComparisons/FramegrabsAndComparisons";
+import "./App.css";
 
 function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch({ type: 'FETCH_USER' });
-    dispatch({ type: 'INITIALIZE_TMDB' }); // initialize API config
+    dispatch({ type: "FETCH_USER" });
+    dispatch({ type: "INITIALIZE_TMDB" }); // initialize API config
   }, [dispatch]);
 
   return (
@@ -86,9 +86,12 @@ function App() {
             exact
             path="/search"
           >
-            <SearchPage typeList={['multi', 'movie', 'tv', 'person']} genericSearch={true}/>
+            <SearchPage
+              typeList={["multi", "movie", "tv", "person"]}
+              genericSearch={true}
+            />
           </Route>
-          
+
           <Route
             // shows MediaItem (logged in or not)
             exact

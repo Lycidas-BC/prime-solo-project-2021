@@ -1,16 +1,21 @@
-const express = require('express');
-const pool = require('../modules/pool');
+const express = require("express");
+const pool = require("../modules/pool");
 const router = express.Router();
-const { rejectUnauthenticated } = require('../modules/authentication-middleware');
+const {
+  rejectUnauthenticated,
+} = require("../modules/authentication-middleware");
 
 /**
  * GET media collection
  */
-router.get('/', rejectUnauthenticated, (req, res) => {
+router.get("/", rejectUnauthenticated, (req, res) => {
   // GET route code here
   console.log("in GET collection");
-  const orderBy = req.query.orderBy || req.query.orderBy === "" ? req.query.orderBy : '"media"."id"';
-  
+  const orderBy =
+    req.query.orderBy || req.query.orderBy === ""
+      ? req.query.orderBy
+      : '"media"."id"';
+
   const queryText = `
     SELECT "media"."id", "media"."item", "media"."distributor", "media"."product_page", "media"."format", "media"."cover_art", "media"."description", "media"."dimensions", "media"."shelf"
     FROM "media"
@@ -22,13 +27,19 @@ router.get('/', rejectUnauthenticated, (req, res) => {
     .query(queryText, [req.user.id])
     .then((response) => {
       if (response.rows.length === 0) {
-        res.send([{columnHeaders: response.fields.map(element => {return element.name})}]);
+        res.send([
+          {
+            columnHeaders: response.fields.map((element) => {
+              return element.name;
+            }),
+          },
+        ]);
       } else {
         res.send(response.rows);
       }
     })
     .catch((err) => {
-      console.log('GET media collection failed: ', err);
+      console.log("GET media collection failed: ", err);
       res.sendStatus(500);
     });
 });
@@ -36,7 +47,7 @@ router.get('/', rejectUnauthenticated, (req, res) => {
 /**
  * GET specific media item
  */
- router.get('/:mediaId', rejectUnauthenticated, (req, res) => {
+router.get("/:mediaId", rejectUnauthenticated, (req, res) => {
   // GET route code here
   console.log("in GET media item", req.params.mediaId);
 
@@ -50,13 +61,19 @@ router.get('/', rejectUnauthenticated, (req, res) => {
     .query(queryText, [req.params.mediaId])
     .then((response) => {
       if (response.rows.length === 0) {
-        res.send([{columnHeaders: response.fields.map(element => {return element.name})}]);
+        res.send([
+          {
+            columnHeaders: response.fields.map((element) => {
+              return element.name;
+            }),
+          },
+        ]);
       } else {
         res.send(response.rows);
       }
     })
     .catch((err) => {
-      console.log('GET media item failed: ', err);
+      console.log("GET media item failed: ", err);
       res.sendStatus(500);
     });
 });
@@ -64,7 +81,7 @@ router.get('/', rejectUnauthenticated, (req, res) => {
 /**
  * is any movie from the list in user media collection?
  */
- router.get('/searchCollection/:tmdbId', rejectUnauthenticated, (req, res) => {
+router.get("/searchCollection/:tmdbId", rejectUnauthenticated, (req, res) => {
   // GET route code here
   console.log("search collection for movie");
   const tmdbIdList = decodeURIComponent(req.params.tmdbId).split(",");
@@ -78,8 +95,8 @@ router.get('/', rejectUnauthenticated, (req, res) => {
     (
   `;
   for (const index in tmdbIdList) {
-    queryText += `"movie"."tmdb_id" = $${Number(index)+2}`;
-    if (Number(index)+1 < tmdbIdList.length) {
+    queryText += `"movie"."tmdb_id" = $${Number(index) + 2}`;
+    if (Number(index) + 1 < tmdbIdList.length) {
       queryText += ` OR
       `;
     }
@@ -91,13 +108,19 @@ router.get('/', rejectUnauthenticated, (req, res) => {
     .query(queryText, queryParams)
     .then((response) => {
       if (response.rows.length === 0) {
-        res.send([{columnHeaders: response.fields.map(element => {return element.name})}]);
+        res.send([
+          {
+            columnHeaders: response.fields.map((element) => {
+              return element.name;
+            }),
+          },
+        ]);
       } else {
         res.send(response.rows);
       }
     })
     .catch((err) => {
-      console.log('search collection for movie failed: ', err);
+      console.log("search collection for movie failed: ", err);
       res.sendStatus(500);
     });
 });
@@ -105,7 +128,7 @@ router.get('/', rejectUnauthenticated, (req, res) => {
 /**
  * GET framegrabs associated with movie
  */
- router.get('/framegrabs/:tmdb_id', rejectUnauthenticated, (req, res) => {
+router.get("/framegrabs/:tmdb_id", rejectUnauthenticated, (req, res) => {
   // GET route code here
   console.log("in GET media item", req.params.tmdb_id);
 
@@ -129,7 +152,7 @@ router.get('/', rejectUnauthenticated, (req, res) => {
       }
     })
     .catch((err) => {
-      console.log('GET media item failed: ', err);
+      console.log("GET media item failed: ", err);
       res.sendStatus(500);
     });
 });
@@ -137,7 +160,7 @@ router.get('/', rejectUnauthenticated, (req, res) => {
 /**
  * GET media item details
  */
- router.get('/media_movies/:mediaId', rejectUnauthenticated, (req, res) => {
+router.get("/media_movies/:mediaId", rejectUnauthenticated, (req, res) => {
   // GET route code here
   console.log("in GET media_movies");
   const mediaId = req.params.mediaId;
@@ -152,13 +175,19 @@ router.get('/', rejectUnauthenticated, (req, res) => {
     .query(queryText, [mediaId])
     .then((response) => {
       if (response.rows.length === 0) {
-        res.send([{columnHeaders: response.fields.map(element => {return element.name})}]);
+        res.send([
+          {
+            columnHeaders: response.fields.map((element) => {
+              return element.name;
+            }),
+          },
+        ]);
       } else {
         res.send(response.rows);
       }
     })
     .catch((err) => {
-      console.log('GET media_movies failed: ', err);
+      console.log("GET media_movies failed: ", err);
       res.sendStatus(500);
     });
 });
@@ -166,36 +195,46 @@ router.get('/', rejectUnauthenticated, (req, res) => {
 /**
  * GET media item details
  */
- router.get('/media_specialfeatures/:mediaId', rejectUnauthenticated, (req, res) => {
-  // GET route code here
-  console.log("in GET media_specialfeatures");
-  const mediaId = req.params.mediaId;
+router.get(
+  "/media_specialfeatures/:mediaId",
+  rejectUnauthenticated,
+  (req, res) => {
+    // GET route code here
+    console.log("in GET media_specialfeatures");
+    const mediaId = req.params.mediaId;
 
-  const queryText = `
+    const queryText = `
     SELECT "specialfeature"."description"
     FROM "specialfeature"
     JOIN "media_specialfeature" ON "specialfeature"."id" = "media_specialfeature"."specialfeature_id"
     WHERE "media_specialfeature"."media_id" = $1;
   `;
-  pool
-    .query(queryText, [mediaId])
-    .then((response) => {
-      if (response.rows.length === 0) {
-        res.send([{columnHeaders: response.fields.map(element => {return element.name})}]);
-      } else {
-        res.send(response.rows);
-      }
-    })
-    .catch((err) => {
-      console.log('GET media_specialfeatures failed: ', err);
-      res.sendStatus(500);
-    });
-});
+    pool
+      .query(queryText, [mediaId])
+      .then((response) => {
+        if (response.rows.length === 0) {
+          res.send([
+            {
+              columnHeaders: response.fields.map((element) => {
+                return element.name;
+              }),
+            },
+          ]);
+        } else {
+          res.send(response.rows);
+        }
+      })
+      .catch((err) => {
+        console.log("GET media_specialfeatures failed: ", err);
+        res.sendStatus(500);
+      });
+  }
+);
 
 /**
  * GET media item details
  */
- router.get('/media_movie_notes/:mediaId', rejectUnauthenticated, (req, res) => {
+router.get("/media_movie_notes/:mediaId", rejectUnauthenticated, (req, res) => {
   // GET route code here
   console.log("in GET media_movie_notes");
   const mediaId = req.params.mediaId;
@@ -212,13 +251,19 @@ router.get('/', rejectUnauthenticated, (req, res) => {
     .then((response) => {
       console.log(response.data);
       if (response.rows.length === 0) {
-        res.send([{columnHeaders: response.fields.map(element => {return element.name})}]);
+        res.send([
+          {
+            columnHeaders: response.fields.map((element) => {
+              return element.name;
+            }),
+          },
+        ]);
       } else {
         res.send(response.data);
       }
     })
     .catch((err) => {
-      console.log('GET media_movie_notes failed: ', err);
+      console.log("GET media_movie_notes failed: ", err);
       res.sendStatus(500);
     });
 });
@@ -226,7 +271,7 @@ router.get('/', rejectUnauthenticated, (req, res) => {
 /**
  * POST new item to media collection
  */
-router.post('/media', rejectUnauthenticated, (req, res) => {
+router.post("/media", rejectUnauthenticated, (req, res) => {
   console.log("POST new item to media collection");
   // add media into media table, returning the id of the newly created item
   const mediaInsertQuery = `
@@ -234,52 +279,72 @@ router.post('/media', rejectUnauthenticated, (req, res) => {
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     RETURNING "id" AS "media_id";
   `;
-pool
-  .query(mediaInsertQuery, [req.body.item, req.body.distributor, req.body.format, req.body.cover_art, req.body.description, req.body.dimensions, req.body.shelf, req.body.product_url])
-  .then((response) => {
-    // update the user_media join table with the user id and newly-created media id
-    const newMediaId = response.rows[0].media_id;
-    const userMediaInsertQuery = `
+  pool
+    .query(mediaInsertQuery, [
+      req.body.item,
+      req.body.distributor,
+      req.body.format,
+      req.body.cover_art,
+      req.body.description,
+      req.body.dimensions,
+      req.body.shelf,
+      req.body.product_url,
+    ])
+    .then((response) => {
+      // update the user_media join table with the user id and newly-created media id
+      const newMediaId = response.rows[0].media_id;
+      const userMediaInsertQuery = `
       INSERT INTO "user_media" ("user_id", "media_id")
       VALUES ($1, $2);
     `;
-  pool
-    .query(userMediaInsertQuery, [req.user.id, newMediaId])
-    .then(() => {
-      res.status(201).send({newMediaId: newMediaId});
+      pool
+        .query(userMediaInsertQuery, [req.user.id, newMediaId])
+        .then(() => {
+          res.status(201).send({ newMediaId: newMediaId });
+        })
+        .catch((err) => {
+          console.log(
+            "POST to media succeeded, but insert to user_media failed: ",
+            err
+          );
+          res.sendStatus(500);
+        });
     })
     .catch((err) => {
-      console.log('POST to media succeeded, but insert to user_media failed: ', err);
+      console.log("POST to media failed: ", err);
       res.sendStatus(500);
     });
-  })
-  .catch((err) => {
-    console.log('POST to media failed: ', err);
-    res.sendStatus(500);
-  });
 });
 
 /**
  * POST media movies
  */
- router.post('/movie/:mediaId', rejectUnauthenticated, (req, res) => {
-   const mediaId = req.params.mediaId;
-   const newMovieList = req.body.movieList;
-   let counter = 0;
-   for (const newMovie of newMovieList) {
-    const tmdbId = (Array.isArray(newMovie.tmdb_id) ? newMovie.tmdb_id[0] : Number.isInteger(newMovie.tmdb_id) ? newMovie.tmdb_id: null);
+router.post("/movie/:mediaId", rejectUnauthenticated, (req, res) => {
+  const mediaId = req.params.mediaId;
+  const newMovieList = req.body.movieList;
+  let counter = 0;
+  for (const newMovie of newMovieList) {
+    const tmdbId = Array.isArray(newMovie.tmdb_id)
+      ? newMovie.tmdb_id[0]
+      : Number.isInteger(newMovie.tmdb_id)
+      ? newMovie.tmdb_id
+      : null;
     const movieInsertIfNotExistQuery = `
       INSERT INTO "movie" ("name", "tmdb_id", "content_type")
       VALUES ($1, $2, $3)
       ON CONFLICT ("tmdb_id") WHERE NOT NULL
       DO NOTHING;
     `;
-    
+
     pool
-      .query(movieInsertIfNotExistQuery, [newMovie.movie, tmdbId, newMovie.media_type])
+      .query(movieInsertIfNotExistQuery, [
+        newMovie.movie,
+        tmdbId,
+        newMovie.media_type,
+      ])
       .then(() => {
         let getMovieIdQuery = "";
-        if (tmdbId != null){
+        if (tmdbId != null) {
           getMovieIdQuery = `
             SELECT "id"
             FROM "movie"
@@ -293,7 +358,7 @@ pool
           `;
         }
         pool
-          .query(getMovieIdQuery, [(tmdbId ? tmdbId : newMovie.movie)])
+          .query(getMovieIdQuery, [tmdbId ? tmdbId : newMovie.movie])
           .then((response) => {
             const movieId = response.rows[0].id;
             const mediaMovieInsertQuery = `
@@ -301,7 +366,14 @@ pool
               VALUES($1, $2, $3, $4, $5, $6);
             `;
             pool
-              .query(mediaMovieInsertQuery, [movieId, mediaId, newMovie.cover_art, newMovie.length, newMovie.description, newMovie.product_url])
+              .query(mediaMovieInsertQuery, [
+                movieId,
+                mediaId,
+                newMovie.cover_art,
+                newMovie.length,
+                newMovie.description,
+                newMovie.product_url,
+              ])
               .then((response) => {
                 counter++;
                 if (counter === newMovieList.length) {
@@ -316,68 +388,68 @@ pool
           .catch((err) => {
             console.log("failed to get movie id from movie table", err);
             res.sendStatus(500);
-          })
+          });
       })
       .catch((err) => {
         console.log("movie table insert failed", err);
         res.sendStatus(500);
-    });
-   }
+      });
+  }
 });
 
 /**
  * POST media specialfeatures
  */
- router.post('/specialfeature/:mediaId', rejectUnauthenticated, (req, res) => {
+router.post("/specialfeature/:mediaId", rejectUnauthenticated, (req, res) => {
   const mediaId = req.params.mediaId;
   const featuresList = req.body.featuresList;
   let counter = 0;
   for (const newSpecialFeature of featuresList) {
-   const specialFeatureInsertQuery = `
+    const specialFeatureInsertQuery = `
      INSERT INTO "specialfeature" ("description")
      VALUES ($1)
      RETURNING "id";
    `;
 
-   pool
-     .query(specialFeatureInsertQuery, [newSpecialFeature])
-     .then((response) => {
-       const specialFeatureId = response.rows[0].id;
-       const mediaMovieInsertQuery = `
+    pool
+      .query(specialFeatureInsertQuery, [newSpecialFeature])
+      .then((response) => {
+        const specialFeatureId = response.rows[0].id;
+        const mediaMovieInsertQuery = `
          INSERT INTO "media_specialfeature" ("media_id", "specialfeature_id")
          VALUES($1, $2);
        `;
-       pool
-         .query(mediaMovieInsertQuery, [mediaId, specialFeatureId])
-         .then((response) => {
-           counter++;
-           if (counter === featuresList.length) {
-             res.sendStatus(201);
-           }
-         })
-         .catch((err) => {
-           console.log("media_specialfeature table insert failed", err);
-           res.sendStatus(500);
-         });
-     })
-     .catch((err) => {
-       console.log("specialfeature table insert failed", err);
-       res.sendStatus(500);
-   });
+        pool
+          .query(mediaMovieInsertQuery, [mediaId, specialFeatureId])
+          .then((response) => {
+            counter++;
+            if (counter === featuresList.length) {
+              res.sendStatus(201);
+            }
+          })
+          .catch((err) => {
+            console.log("media_specialfeature table insert failed", err);
+            res.sendStatus(500);
+          });
+      })
+      .catch((err) => {
+        console.log("specialfeature table insert failed", err);
+        res.sendStatus(500);
+      });
   }
 });
 
 /**
  * PUT to update item in media collection
  */
- router.put('/:mediaId', (req, res) => {
+router.put("/:mediaId", (req, res) => {
   // PUT route code here
 });
 
 /**
  * DELETE item from collection - this will remove art and notes associated with item
  */
- router.delete('/:mediaId', rejectUnauthenticated, (req, res) => {
+router.delete("/:mediaId", rejectUnauthenticated, (req, res) => {
   // DELETE route code here
   console.log("in delete route", req.user.id, req.params.mediaId);
   const userMediaDeleteQuery = `
@@ -387,7 +459,7 @@ pool
   pool
     .query(userMediaDeleteQuery, [req.user.id, req.params.mediaId])
     .then((response) => {
-        res.sendStatus(201);
+      res.sendStatus(201);
     })
     .catch((err) => {
       console.log("DELETE failed", err);
@@ -398,8 +470,12 @@ pool
 /**
  * POST framegrab to database
  */
- router.post('/framegrab/:movie_media_id', rejectUnauthenticated, (req, res) => {
-  console.log("/framegrab/:movie_media_id", req.body, req.params.movie_media_id);
+router.post("/framegrab/:movie_media_id", rejectUnauthenticated, (req, res) => {
+  console.log(
+    "/framegrab/:movie_media_id",
+    req.body,
+    req.params.movie_media_id
+  );
 
   // add media into media table, returning the id of the newly created item
   const framegrabInsertQuery = `
@@ -407,29 +483,35 @@ pool
     VALUES ($1, $2)
     RETURNING "id" AS "framegrab_id";
   `;
-pool
-  .query(framegrabInsertQuery, [req.body.path, req.body.timestamp])
-  .then((response) => {
-    // update the user_media join table with the user id and newly-created media id
-    const newFramegrabId = response.rows[0].framegrab_id;
-    const mediaMovieFramegrabInsertQuery = `
+  pool
+    .query(framegrabInsertQuery, [req.body.path, req.body.timestamp])
+    .then((response) => {
+      // update the user_media join table with the user id and newly-created media id
+      const newFramegrabId = response.rows[0].framegrab_id;
+      const mediaMovieFramegrabInsertQuery = `
       INSERT INTO "media_movie_framegrab" ("media_movie_id", "framegrab_id")
       VALUES ($1, $2);
     `;
-  pool
-    .query(mediaMovieFramegrabInsertQuery, [req.params.movie_media_id, newFramegrabId])
-    .then(() => {
-      res.sendStatus(201);
+      pool
+        .query(mediaMovieFramegrabInsertQuery, [
+          req.params.movie_media_id,
+          newFramegrabId,
+        ])
+        .then(() => {
+          res.sendStatus(201);
+        })
+        .catch((err) => {
+          console.log(
+            "POST framegrab succeeded, but insert to media_movie_framegrab failed: ",
+            err
+          );
+          res.sendStatus(500);
+        });
     })
     .catch((err) => {
-      console.log('POST framegrab succeeded, but insert to media_movie_framegrab failed: ', err);
+      console.log("POST framegrab failed: ", err);
       res.sendStatus(500);
     });
-  })
-  .catch((err) => {
-    console.log('POST framegrab failed: ', err);
-    res.sendStatus(500);
-  });
 });
 
 module.exports = router;
