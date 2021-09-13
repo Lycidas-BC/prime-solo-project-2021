@@ -101,17 +101,6 @@ function App() {
           </Route>
 
           <ProtectedRoute
-            // with authRedirect:
-            // - if logged in, redirects to "/add_media"
-            // - else shows RegisterPage at "/login"
-            exact
-            path="/login"
-            authRedirect="/add_media"
-          >
-            <LoginPage />
-          </ProtectedRoute>
-
-          <ProtectedRoute
             // logged in shows UserPage else shows LoginPage
             exact
             path="/add_media"
