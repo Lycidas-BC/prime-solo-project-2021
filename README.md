@@ -129,12 +129,6 @@ Before pushing to Heroku, run `npm run build` in terminal. This will create a bu
 
 ## Lay of the Land
 
-There are a few videos linked below that show a walkthrough the client and sever setup to help acclimatize to the boilerplate. Please take some time to watch the videos in order to get a better understanding of what the boilerplate is like.
-
-- [Initial Set](https://vimeo.com/453297271)
-- [Server Walkthrough](https://vimeo.com/453297212)
-- [Client Walkthrough](https://vimeo.com/453297124)
-
 Directory Structure:
 
 - `src/` contains the React application
@@ -142,7 +136,7 @@ Directory Structure:
 - `build/` after you build the project, contains the transpiled code from `src/` and `public/` that will be viewed on the production site
 - `server/` contains the Express App
 
-This code is also heavily commented. We recommend reading through the comments, getting a lay of the land, and becoming comfortable with how the code works before you start making too many changes. If you're wondering where to start, consider reading through component file comments in the following order:
+Components:
 
 - src/components
   - App/App
@@ -155,6 +149,19 @@ This code is also heavily commented. We recommend reading through the comments, 
   - RegisterPage/RegisterPage
   - LogOutButton/LogOutButton
   - ProtectedRoute/ProtectedRoute
+  - DisplayCollection/DisplayCollection
+  - DisplayCollectionItem/DisplayCollectionItem
+  - AddMedia/AddMedia
+  - MediaItem/MediaItem
+  - MediaMovieItem/MediaMovieItem
+  - SearchPage/SearchPage
+  - SearchItem/SearchItem
+  - BrowsePersonResult/BrowsePersonResult
+  - BrowseMovieResult/BrowseMovieResult
+  - MovieList/MovieList
+  - MovieItem/MovieItem
+  - FramegrabsAndComparisons/FramegrabsAndComparisons
+
 
 ## Deployment
 
