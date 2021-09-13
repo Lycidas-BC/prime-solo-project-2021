@@ -1,9 +1,11 @@
 # CineFiles
 An app to organize and track your movie collection, built with React, Redux, Express, Passport, and PostgreSQL (a full list of dependencies can be found in `package.json`).
 
-CineFiles fixes shortcomings of existing movie apps by allowing users to distinguish between different edits and restorations of a movie (e.g. Lord of the Rings theatrical cuts vs extended cuts) and keep track of special features.
+CineFiles fixes shortcomings of existing movie apps by allowing users to distinguish between different edits and restorations of a movie (e.g. Lord of the Rings theatrical cuts vs extended cuts) and keep track of special features. It's easy to browse and compare different editions of a movie side-by-side.
 
-We **STRONGLY** recommend following these instructions carefully. It's a lot, and will take some time to set up, but your life will be much easier this way in the long run.
+## Author
+
+[Benji Copan](https://www.linkedin.com/in/b-copan/) AKA [Lycidas-BC](https://github.com/Lycidas-BC)
 
 ## Prerequisites
 
@@ -37,6 +39,28 @@ ERD diagram is in the scope document. Not all tables are used in the current ver
 - Run `npm run server`
 - Run `npm run client`
 - Navigate to `localhost:3000`
+
+## Built With
+- [react](https://reactjs.org/)
+- [redux](https://redux.js.org/)
+- [redux-saga](https://redux-saga.js.org/)
+- [express](https://expressjs.com/)
+- [axios](https://axios-http.com/)
+- [node postgres](https://www.npmjs.com/package/pg)
+- [passport](http://www.passportjs.org/)
+- [bcrypt.js](https://www.npmjs.com/package/bcryptjs)
+- [cheerio](https://cheerio.js.org/)
+- [dotenv](https://www.npmjs.com/package/dotenv)
+- [cookie-session](https://www.npmjs.com/package/cookie-session)
+- [passport-local](http://www.passportjs.org/packages/passport-local/)
+- [prop-types](https://www.npmjs.com/package/prop-types)
+- [react-dom](https://reactjs.org/docs/react-dom.html)
+- [react-redux](https://react-redux.js.org/)
+- [react-router-dom](https://reactrouter.com/)
+- [react-scripts](https://www.npmjs.com/package/react-scripts)
+- [redux-logger](https://www.npmjs.com/package/redux-logger)
+- [@material-ui/core](https://material-ui.com/getting-started/installation/)
+- [@material-ui/icons](https://next.material-ui.com/components/material-icons/)
 
 ## Project Screenshots
 
@@ -94,31 +118,6 @@ ERD diagram is in the scope document. Not all tables are used in the current ver
 - Show/hide plot summaries
 - Link to Movie Page
 
-## Debugging
-
-To debug, you will need to run the client-side separately from the server. Start the client by running the command `npm run client`. Start the debugging server by selecting the Debug button.
-
-![VSCode Toolbar](documentation/images/vscode-toolbar.png)
-
-Then make sure `Launch Program` is selected from the dropdown, then click the green play arrow.
-
-![VSCode Debug Bar](documentation/images/vscode-debug-bar.png)
-
-## Testing Routes with Postman
-
-To use Postman with this repo, you will need to set up requests in Postman to register a user and login a user at a minimum.
-
-Keep in mind that once you using the login route, Postman will manage your session cookie for you just like a browser, ensuring it is sent with each subsequent request. If you delete the `localhost` cookie in Postman, it will effectively log you out.
-
-1. Start the server - `npm run server`
-2. Import the sample routes JSON file [v2](./PostmanPrimeSoloRoutesv2.json) by clicking `Import` in Postman. Select the file.
-3. Click `Collections` and `Send` the following three calls in order:
-   1. `POST /api/user/register` registers a new user, see body to change username/password
-   2. `POST /api/user/login` will login a user, see body to change username/password
-   3. `GET /api/user` will get user information, by default it's not very much
-
-After running the login route above, you can try any other route you've created that requires a logged in user!
-
 ## Production Build
 
 Before pushing to Heroku, run `npm run build` in terminal. This will create a build folder that contains the code Heroku will be pointed at. You can test this build by typing `npm start`. Keep in mind that `npm start` will let you preview the production build but will **not** auto update.
@@ -129,14 +128,14 @@ Before pushing to Heroku, run `npm run build` in terminal. This will create a bu
 
 ## Lay of the Land
 
-Directory Structure:
+### Directory Structure:
 
 - `src/` contains the React application
 - `public/` contains static assets for the client-side
 - `build/` after you build the project, contains the transpiled code from `src/` and `public/` that will be viewed on the production site
 - `server/` contains the Express App
 
-Components:
+### Components:
 
 - src/components
   - App/App
@@ -162,7 +161,6 @@ Components:
   - MovieItem/MovieItem
   - FramegrabsAndComparisons/FramegrabsAndComparisons
 
-
 ## Deployment
 
 1. Create a new Heroku project
@@ -170,9 +168,5 @@ Components:
 1. Create an Heroku Postgres database
 1. Connect to the Heroku Postgres database from Postico
 1. Create the necessary tables
-1. Add an environment variable for `SERVER_SESSION_SECRET` with a nice random string for security
+1. Add an environment variable for `SERVER_SESSION_SECRET` with a nice random string for security and for the `TMDB_API_KEY`
 1. In the deploy section, select manual deploy
-
-## Update Documentation
-
-Customize this ReadMe and the code comments in this project to read less like a starter repo and more like a project. Here is an example: https://gist.github.com/PurpleBooth/109311bb0361f32d87a2
