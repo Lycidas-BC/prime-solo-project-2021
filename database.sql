@@ -1,3 +1,5 @@
+-- CREATE A DATABASE CALLED 'cinefiles'
+
 -- USER is a reserved keyword with Postgres
 -- You must use double quotes in every query that user is in:
 -- ex. SELECT * FROM "user";
@@ -15,7 +17,6 @@ CREATE TABLE "user" (
   OIDS=FALSE
 );
 
-
 CREATE TABLE "media" (
 	"id" serial NOT NULL,
 	"item" varchar(220) NOT NULL,
@@ -30,7 +31,6 @@ CREATE TABLE "media" (
 ) WITH (
   OIDS=FALSE
 );
-
 
 CREATE TABLE "movie" (
 	"id" serial NOT NULL,
@@ -60,7 +60,6 @@ CREATE TABLE "media_movie" (
   OIDS=FALSE
 );
 
-
 CREATE TABLE "framegrab" (
 	"id" serial NOT NULL,
 	"path" varchar(2000) NOT NULL,
@@ -70,7 +69,6 @@ CREATE TABLE "framegrab" (
   OIDS=FALSE
 );
 
-
 CREATE TABLE "specialfeature" (
 	"id" serial NOT NULL,
 	"description" varchar(500),
@@ -78,7 +76,6 @@ CREATE TABLE "specialfeature" (
 ) WITH (
   OIDS=FALSE
 );
-
 
 CREATE TABLE "media_specialfeature" (
 	"id" serial NOT NULL,
@@ -89,7 +86,6 @@ CREATE TABLE "media_specialfeature" (
   OIDS=FALSE
 );
 
-
 CREATE TABLE "art" (
 	"id" serial NOT NULL,
 	"path" varchar(2000) NOT NULL,
@@ -99,7 +95,6 @@ CREATE TABLE "art" (
   OIDS=FALSE
 );
 
-
 CREATE TABLE "movie_art" (
 	"id" serial NOT NULL,
 	"movie_id" integer NOT NULL,
@@ -108,7 +103,6 @@ CREATE TABLE "movie_art" (
 ) WITH (
   OIDS=FALSE
 );
-
 
 CREATE TABLE "artist" (
 	"id" serial NOT NULL,
@@ -120,7 +114,6 @@ CREATE TABLE "artist" (
   OIDS=FALSE
 );
 
-
 CREATE TABLE "tag" (
 	"id" serial NOT NULL,
 	"tag" varchar(255) NOT NULL,
@@ -128,7 +121,6 @@ CREATE TABLE "tag" (
 ) WITH (
   OIDS=FALSE
 );
-
 
 CREATE TABLE "art_tag" (
 	"id" serial NOT NULL,
@@ -138,7 +130,6 @@ CREATE TABLE "art_tag" (
 ) WITH (
   OIDS=FALSE
 );
-
 
 CREATE TABLE "note" (
 	"id" serial NOT NULL,
@@ -160,7 +151,6 @@ CREATE TABLE "user_media" (
   OIDS=FALSE
 );
 
-
 CREATE TABLE "framegrab_note" (
 	"id" serial NOT NULL,
 	"note_id" integer NOT NULL,
@@ -169,7 +159,6 @@ CREATE TABLE "framegrab_note" (
 ) WITH (
   OIDS=FALSE
 );
-
 
 CREATE TABLE "media_movie_note" (
 	"id" serial NOT NULL,
@@ -181,7 +170,6 @@ CREATE TABLE "media_movie_note" (
   OIDS=FALSE
 );
 
-
 CREATE TABLE "media_note" (
 	"id" serial NOT NULL,
 	"media_id" integer NOT NULL,
@@ -190,7 +178,6 @@ CREATE TABLE "media_note" (
 ) WITH (
   OIDS=FALSE
 );
-
 
 CREATE TABLE "art_note" (
 	"id" serial NOT NULL,
@@ -201,7 +188,6 @@ CREATE TABLE "art_note" (
   OIDS=FALSE
 );
 
-
 CREATE TABLE "follow_table" (
 	"id" serial NOT NULL,
 	"user_id" integer NOT NULL,
@@ -210,7 +196,6 @@ CREATE TABLE "follow_table" (
 ) WITH (
   OIDS=FALSE
 );
-
 
 CREATE TABLE "specialfeature_note" (
 	"id" serial NOT NULL,
@@ -222,7 +207,6 @@ CREATE TABLE "specialfeature_note" (
   OIDS=FALSE
 );
 
-
 CREATE TABLE "art_artist" (
 	"id" serial NOT NULL,
 	"art_id" integer NOT NULL,
@@ -232,7 +216,6 @@ CREATE TABLE "art_artist" (
   OIDS=FALSE
 );
 
-
 CREATE TABLE "artist_note" (
 	"id" serial NOT NULL,
 	"note_id" integer NOT NULL,
@@ -241,7 +224,6 @@ CREATE TABLE "artist_note" (
 ) WITH (
   OIDS=FALSE
 );
-
 
 CREATE TABLE "access" (
 	"id" serial NOT NULL,
@@ -260,7 +242,6 @@ CREATE TABLE "media_movie_framegrab" (
 ) WITH (
   OIDS=FALSE
 );
-
 
 ALTER TABLE "media_movie" ADD CONSTRAINT "media_movie_fk0" FOREIGN KEY ("movie_id") REFERENCES "movie"("id") ON DELETE CASCADE;
 ALTER TABLE "media_movie" ADD CONSTRAINT "media_movie_fk1" FOREIGN KEY ("media_id") REFERENCES "media"("id") ON DELETE CASCADE;
