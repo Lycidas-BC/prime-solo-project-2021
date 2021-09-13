@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
 import "./LandingPage.css";
 
@@ -6,7 +6,6 @@ import "./LandingPage.css";
 import RegisterForm from "../RegisterForm/RegisterForm";
 
 function LandingPage() {
-  const [heading, setHeading] = useState("Welcome");
   const history = useHistory();
 
   const onLogin = (event) => {
@@ -15,7 +14,8 @@ function LandingPage() {
 
   return (
     <div className="container">
-      <h2>{heading}</h2>
+      <h2>Welcome to CineFiles</h2>
+      <h3>The only movie app you'll ever need</h3>
       <div className="grid">
         <div className="grid-col grid-col_4">
           <RegisterForm />
