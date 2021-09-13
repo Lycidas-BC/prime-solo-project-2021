@@ -38,6 +38,62 @@ ERD diagram is in the scope document. Not all tables are used in the current ver
 - Run `npm run client`
 - Navigate to `localhost:3000`
 
+## Project Screenshots
+
+#### Collection Page
+![My Collection Page](public/images/MyCollectionPage.png)
+- Display all movies in current user's collection
+- Sort by name, date added, distributor, or format
+- Remove an item from your collection, see a description of the item, or go to Item Details Page
+- Go to Add Media Page
+
+#### Item Details Page
+![Item Details Page](public/images/ItemDetailsPage1.png)
+- Display box art, title, format, link to product page, and description of item
+
+![Item Details Page](public/images/ItemDetailsPage2.png)
+- Display name and art for all movies in a collection
+  - Link to Movie Page and Edition Comparison Page
+  - Show/hide movie summary and other details
+- List Special Features
+
+#### Add Media Page
+![Add Media Page](public/images/AddMediaPage.png)
+- Manually enter name, title, description, cover art, movies, special features
+- Enter item's URL from the distributor website and CineFiles will webscrape all the relevant data (Currently only supported for Criterion Collection movies and box sets)
+
+#### Edition Comparison Page
+![Edition Comparison Page](public/images/EditionComparisonPage.png)
+- Side by side comparisons of different editions of the same movie
+  - List distributor, format, length
+  - Show/hide cover art for the movie or box set
+- Show/hide framegrabs and timestamps for all editions to allow easy side-by-side comparison of image quality
+- Add framegrab
+- Link to Item Details Page for each edition
+- Link to Movie Page
+
+#### Search Page
+![Search Page](public/images/SearchPage.png)
+- Search for a movie, tv show, person, or multi-search
+- Paginated search results showing name, date, and art
+- Show/hide description
+- link to Movie Page
+
+#### Movie Page
+![Movie Page](public/images/MoviePage.png)
+- Display name, year, length, summary art, imdb link
+- List all items in your collection which contain this movie and link to Item Details Page
+- Display cast names, characters, photographs and crew names, roles, and photographs for all cast and crew, paginated or all on one page
+- Link to Person Page
+
+#### Person Page
+![Person Page](public/images/PersonPage.png)
+- Display name, birth and death dates, bio, link to imdb page, and all items in your collection which this person was involved in with links to Item Details page
+- Display all movies person was involved in and allow user to filter by what role they played and whether or not the movie is in user collection
+- Paginate or show all movies
+- Show/hide plot summaries
+- Link to Movie Page
+
 ## Debugging
 
 To debug, you will need to run the client-side separately from the server. Start the client by running the command `npm run client`. Start the debugging server by selecting the Debug button.
